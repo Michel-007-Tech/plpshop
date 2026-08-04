@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="PLP Shop - Contactez notre service client. Service disponible 24h/24 et 7j/7.">
+    <title>PLP Shop | Contact</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --plp-blue: #1a56db; --plp-blue-dark: #1e40af; --plp-blue-light: #3b82f6;
+            --black: #0a0a0a; --black-light: #1a1a1a; --white: #fefefe; --cream: #faf8f3;
+            --gray-warm: #9c9588; --gray-cool: #6b7280; --burgundy: #722f37;
+            --emerald: #0d5c2e; --navy: #1a1f2e; --orange: #e8690c; --wave-color: #1a73e8;
+            --whatsapp-green: #25d366; --whatsapp-dark: #128c7e;
+            --success: #0d7b4a; --danger: #dc2626;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.15);
+            --transition: all 0.3s ease;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-full: 50px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 16px; scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--cream); color: var(--black); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; flex-direction: column; }
+        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 500; }
+        img { max-width: 100%; height: auto; }
+
+        /* ===== TOP BAR ===== */
+        .luxe-bar { background: var(--plp-blue); color: var(--white); text-align: center; padding: 6px 12px; font-size: clamp(7px, 1vw, 9px); font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: clamp(6px, 1vw, 12px); flex-wrap: wrap; }
+        .luxe-bar span { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .luxe-bar a { color: var(--white); text-decoration: none; }
+
+        /* ===== HEADER ===== */
+        .header-luxe { background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; }
+        .header-container { max-width: 1400px; margin: 0 auto; padding: 0.6rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; flex-wrap: wrap; }
+        .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+        .brand-crest { width: 36px; height: 36px; background: linear-gradient(135deg, var(--plp-blue-dark), var(--plp-blue), var(--plp-blue-light)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 15px; border: 2px solid var(--plp-blue); }
+        .brand-name h2 { font-family: 'Playfair Display', serif; font-size: clamp(16px, 2vw, 20px); color: var(--plp-blue); font-weight: 600; line-height: 1; }
+        .brand-name span { font-size: 7px; color: var(--gray-warm); letter-spacing: 2px; text-transform: uppercase; display: block; }
+        .user-info-header { display: flex; align-items: center; gap: 0.5rem; color: var(--black); font-size: 11px; flex-shrink: 0; }
+        .user-info-header .user-greeting { color: var(--plp-blue); font-weight: 500; font-size: 10px; }
+        .btn-header { background: none; border: 1px solid rgba(26,86,219,0.3); color: var(--plp-blue); padding: 5px 12px; border-radius: var(--radius-full); cursor: pointer; font-size: 9px; font-weight: 500; transition: var(--transition); white-space: nowrap; }
+        .btn-header:hover { background: var(--plp-blue); color: var(--white); }
+
+        /* ===== NAVIGATION ===== */
+        .nav-luxe { background: var(--white); border-top: 1px solid rgba(0,0,0,0.05); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        .nav-luxe::-webkit-scrollbar { display: none; }
+        .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 0.5rem; display: flex; justify-content: center; gap: clamp(0.8rem, 2vw, 1.5rem); white-space: nowrap; }
+        .nav-link { text-decoration: none; color: var(--gray-cool); font-weight: 500; font-size: clamp(8px, 1vw, 9px); text-transform: uppercase; letter-spacing: 1.5px; padding: 0.7rem 0; position: relative; transition: var(--transition); display: flex; align-items: center; gap: 4px; }
+        .nav-link::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background: var(--plp-blue); transition: var(--transition); }
+        .nav-link:hover, .nav-link.active { color: var(--plp-blue); }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: clamp(1rem, 2vw, 2rem) 1rem; }
+
+        /* ===== HERO ===== */
+        .hero-contact { background: linear-gradient(135deg, var(--plp-blue-dark) 0%, var(--plp-blue) 100%); color: var(--white); padding: clamp(1.5rem, 3vw, 3rem) clamp(1rem, 2vw, 2rem); border-radius: var(--radius-sm); text-align: center; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
+        .hero-contact .contact-hero-icon { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 0.8rem; display: block; }
+        .hero-contact .overline { font-size: clamp(8px, 1vw, 10px); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 0.8rem; opacity: 0.9; }
+        .hero-contact h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3.5vw, 2.5rem); font-weight: 600; }
+        .hero-contact h1 em { font-style: italic; }
+        .hero-contact p { opacity: 0.8; font-size: clamp(0.8rem, 1.2vw, 1rem); max-width: 500px; margin: 0 auto; }
+
+        /* ===== WHATSAPP HERO CARD ===== */
+        .whatsapp-hero-card { background: linear-gradient(135deg, #075e54, #128c7e); color: white; padding: clamp(1rem, 2vw, 1.5rem); border-radius: var(--radius-sm); display: flex; align-items: center; gap: clamp(1rem, 2vw, 1.5rem); margin-bottom: 1.5rem; box-shadow: 0 8px 30px rgba(37,211,102,0.25); cursor: pointer; transition: var(--transition); flex-wrap: wrap; }
+        .whatsapp-hero-card:hover { transform: translateY(-2px); }
+        .whatsapp-hero-card .whatsapp-hero-icon { font-size: 2.5rem; flex-shrink: 0; background: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--whatsapp-green); }
+        .whatsapp-hero-card .whatsapp-hero-content { flex: 1; min-width: 180px; }
+        .whatsapp-hero-card h3 { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem, 1.8vw, 1.3rem); color: white; }
+        .whatsapp-hero-card p { font-size: clamp(10px, 1vw, 12px); opacity: 0.9; }
+        .whatsapp-hero-card .whatsapp-number { font-size: clamp(12px, 1.5vw, 16px); font-weight: 700; }
+        .whatsapp-hero-card .btn-whatsapp-hero { display: inline-block; padding: 10px 20px; background: white; color: var(--whatsapp-dark); border-radius: var(--radius-full); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; transition: var(--transition); white-space: nowrap; }
+        .whatsapp-hero-card .btn-whatsapp-hero:hover { background: #e8f5e9; }
+
+        /* ===== CONTACT GRID ===== */
+        .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(1rem, 2vw, 2rem); margin-bottom: 2rem; }
+
+        /* ===== INFO CARDS ===== */
+        .contact-info-section { display: flex; flex-direction: column; gap: 0.8rem; }
+        .contact-info-card { background: var(--white); padding: clamp(0.8rem, 1.5vw, 1.2rem); border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); transition: var(--transition); border: 1px solid rgba(0,0,0,0.06); display: flex; gap: 0.8rem; align-items: flex-start; }
+        .contact-info-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .contact-info-card.whatsapp-card { border-left: 3px solid var(--whatsapp-green); background: linear-gradient(135deg, #f0fdf4, #ffffff); }
+        .contact-icon-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+        .contact-icon-circle.blue { background: rgba(26,86,219,0.1); color: var(--plp-blue-dark); }
+        .contact-icon-circle.emerald { background: rgba(13,92,46,0.1); color: var(--emerald); }
+        .contact-icon-circle.navy { background: rgba(26,31,46,0.1); color: var(--navy); }
+        .contact-icon-circle.orange { background: rgba(232,105,12,0.1); color: var(--orange); }
+        .contact-icon-circle.wave { background: rgba(26,115,232,0.1); color: var(--wave-color); }
+        .contact-icon-circle.burgundy { background: rgba(114,47,55,0.1); color: var(--burgundy); }
+        .contact-icon-circle.whatsapp { background: rgba(37,211,102,0.1); color: var(--whatsapp-green); }
+        .contact-info-content { flex: 1; min-width: 0; }
+        .contact-info-content h4 { font-size: clamp(10px, 1vw, 12px); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 0.2rem; }
+        .contact-info-content p { font-size: clamp(9px, 0.9vw, 11px); color: var(--gray-cool); }
+        .contact-info-content a { color: var(--plp-blue); text-decoration: none; font-weight: 500; font-size: clamp(9px, 0.9vw, 10px); display: inline-flex; align-items: center; gap: 4px; }
+        .contact-info-content .highlight { color: var(--plp-blue-dark); font-weight: 600; font-size: clamp(11px, 1vw, 13px); }
+        .contact-info-content .highlight-whatsapp { color: var(--whatsapp-dark); font-weight: 600; font-size: clamp(11px, 1vw, 13px); }
+
+        /* ===== FORM CARD ===== */
+        .contact-form-card { background: var(--white); padding: clamp(1rem, 2vw, 1.5rem); border-radius: var(--radius-sm); box-shadow: var(--shadow-md); border: 1px solid rgba(0,0,0,0.06); }
+        .contact-form-card .form-header { margin-bottom: 1rem; }
+        .contact-form-card .form-header .tag { display: inline-block; font-size: 8px; text-transform: uppercase; letter-spacing: 2px; color: var(--plp-blue); border: 1px solid rgba(26,86,219,0.2); padding: 4px 10px; border-radius: var(--radius-full); margin-bottom: 0.5rem; font-weight: 600; }
+        .contact-form-card .form-header h3 { font-size: clamp(1.1rem, 1.8vw, 1.4rem); }
+        .contact-form-card .form-header p { color: var(--gray-cool); font-size: 0.8rem; }
+        .form-group-luxe { margin-bottom: 0.8rem; }
+        .form-group-luxe label { display: block; margin-bottom: 0.2rem; font-weight: 500; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group-luxe input, .form-group-luxe select, .form-group-luxe textarea { width: 100%; padding: 9px 12px; border: 1px solid rgba(0,0,0,0.1); font-size: 11px; font-family: 'Montserrat', sans-serif; transition: var(--transition); background: var(--cream); border-radius: 2px; }
+        .form-group-luxe textarea { min-height: 100px; resize: vertical; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+        .btn-submit-luxe { width: 100%; padding: 11px; background: var(--plp-blue); color: var(--white); border: none; font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; transition: var(--transition); border-radius: 2px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-submit-luxe:hover { background: var(--plp-blue-dark); }
+        .btn-whatsapp-submit { width: 100%; padding: 11px; background: linear-gradient(135deg, var(--whatsapp-green), #20bd5a); color: white; border: none; font-weight: 600; font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; transition: var(--transition); border-radius: 2px; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 0.6rem; }
+        .form-success { display: none; text-align: center; padding: 1.5rem; }
+        .form-success.show { display: block; }
+        .form-success i { font-size: 2.5rem; color: var(--success); margin-bottom: 0.5rem; }
+
+        /* ===== MAP ===== */
+        .map-section { background: var(--white); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow-md); margin-bottom: 2rem; border: 1px solid rgba(0,0,0,0.06); }
+        .map-header { padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.6rem; border-bottom: 1px solid rgba(0,0,0,0.06); flex-wrap: wrap; font-size: clamp(9px, 1vw, 11px); }
+        .map-header i { font-size: 18px; color: var(--plp-blue); }
+        .map-header h3 { font-size: clamp(0.9rem, 1.2vw, 1.1rem); }
+        .map-header .map-address { font-size: 9px; color: var(--gray-cool); margin-left: auto; }
+        .map-container { width: 100%; height: clamp(200px, 30vw, 350px); position: relative; overflow: hidden; }
+        .map-container iframe { width: 100%; height: 100%; border: none; }
+        .map-overlay { position: absolute; bottom: 12px; left: 12px; background: var(--white); padding: 8px 12px; border-radius: 2px; box-shadow: var(--shadow-sm); font-size: 9px; display: flex; align-items: center; gap: 6px; z-index: 1; }
+
+        /* ===== FAQ ===== */
+        .faq-section { margin-bottom: 2rem; }
+        .faq-section .section-header { text-align: center; margin-bottom: 1.2rem; }
+        .faq-section .section-header .tag { display: inline-block; font-size: 8px; text-transform: uppercase; letter-spacing: 2px; color: var(--plp-blue); border: 1px solid rgba(26,86,219,0.2); padding: 4px 10px; border-radius: var(--radius-full); margin-bottom: 0.5rem; }
+        .faq-section .section-header h2 { font-size: clamp(1.2rem, 2.5vw, 1.8rem); }
+        .faq-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.6rem; }
+        .faq-card { background: var(--white); padding: 1rem; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); transition: var(--transition); border: 1px solid rgba(0,0,0,0.06); cursor: pointer; }
+        .faq-card .faq-question { display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 11px; }
+        .faq-card .faq-question i { color: var(--plp-blue); font-size: 12px; transition: var(--transition); }
+        .faq-card .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; font-size: 10px; color: var(--gray-cool); }
+        .faq-card.open .faq-answer { max-height: 200px; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid rgba(0,0,0,0.06); }
+        .faq-card.open .faq-question i { transform: rotate(180deg); }
+
+        /* ===== SOCIAL ===== */
+        .social-section { text-align: center; margin-bottom: 2rem; }
+        .social-section h3 { font-size: clamp(1rem, 1.5vw, 1.2rem); margin-bottom: 0.5rem; }
+        .social-links { display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap; }
+        .social-link { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: var(--transition); text-decoration: none; color: var(--white); background: var(--plp-blue); border: 1px solid rgba(255,255,255,0.2); }
+        .social-link:hover { background: var(--plp-blue-dark); }
+
+        /* ===== WHATSAPP FLOAT ===== */
+        .whatsapp-float { position: fixed; bottom: clamp(16px, 3vw, 25px); right: clamp(16px, 3vw, 25px); z-index: 4000; }
+        .whatsapp-float .whatsapp-btn { width: clamp(45px, 6vw, 55px); height: clamp(45px, 6vw, 55px); border-radius: 50%; background: var(--whatsapp-green); color: white; display: flex; align-items: center; justify-content: center; font-size: clamp(22px, 3vw, 26px); box-shadow: 0 4px 20px rgba(37,211,102,0.4); text-decoration: none; transition: var(--transition); }
+
+        /* ===== FOOTER ===== */
+        .footer-luxe { background: var(--black); color: var(--white); padding: 1.5rem 0; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05); }
+        .footer-container { max-width: 1400px; margin: 0 auto; padding: 0 1rem; text-align: center; }
+        .footer-luxe p { font-size: clamp(8px, 0.9vw, 10px); color: rgba(255,255,255,0.4); }
+        .footer-luxe a { color: var(--plp-blue-light); text-decoration: none; }
+        .footer-bottom { margin-top: 0.4rem; font-size: clamp(7px, 0.8vw, 9px); color: rgba(255,255,255,0.25); }
+
+        /* ===== TOAST ===== */
+        .toast-luxe { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); background: var(--plp-blue); color: var(--white); padding: 0.6rem 1rem; border-radius: var(--radius-sm); z-index: 5000; font-size: clamp(9px, 1vw, 10px); letter-spacing: 0.5px; text-transform: uppercase; font-weight: 500; box-shadow: var(--shadow-md); animation: fadeInUp 0.3s ease; max-width: 90vw; text-align: center; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .contact-grid { grid-template-columns: 1fr; }
+            .faq-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .header-container { gap: 0.5rem; }
+            .whatsapp-hero-card { flex-direction: column; text-align: center; }
+            .whatsapp-hero-card .whatsapp-hero-icon { margin: 0 auto; }
+            .form-row { grid-template-columns: 1fr; }
+            .map-header { flex-direction: column; align-items: flex-start; }
+            .map-header .map-address { margin-left: 0; }
+        }
+        @media (max-width: 480px) {
+            .header-container { padding: 0.5rem 0.8rem; }
+            .brand-crest { width: 30px; height: 30px; font-size: 12px; }
+            .brand-name h2 { font-size: 15px; }
+            .contact-info-card { padding: 0.6rem; }
+            .contact-icon-circle { width: 34px; height: 34px; font-size: 14px; }
+            .contact-form-card { padding: 0.8rem; }
+            .whatsapp-hero-card { padding: 0.8rem; }
+            .whatsapp-hero-card .whatsapp-hero-icon { width: 45px; height: 45px; font-size: 2rem; }
+            .faq-card { padding: 0.8rem; }
+            .social-link { width: 35px; height: 35px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="luxe-bar">
+        <span><i class="fas fa-star"></i> PLP Shop - Votre Style, Notre Passion</span>
+        <span><i class="fas fa-truck"></i> Livraison Offerte dès 20 000 FCFA</span>
+        <span><a href="https://wa.me/221779078970"><i class="fab fa-whatsapp"></i> +221 77 907 89 70</a></span>
+    </div>
+
+    <!-- Header -->
+    <header class="header-luxe">
+        <div class="header-container">
+            <a href="index.html" class="brand">
+                <div class="brand-crest"><i class="fas fa-shopping-bag"></i></div>
+                <div class="brand-name">
+                    <h2>PLP SHOP</h2>
+                    <span>Boutique Mode en Ligne</span>
+                </div>
+            </a>
+            <div class="user-info-header" id="userInfoHeader">
+                <span class="user-greeting"><i class="far fa-user"></i> Visiteur</span>
+                <button class="btn-header" onclick="redirectToLogin()"><i class="fas fa-sign-in-alt"></i> Connexion</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav-luxe">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link">🏠 Accueil</a>
+            <a href="suivi.html" class="nav-link">📦 Suivi</a>
+            <a href="collections.html" class="nav-link">🛍️ Collections</a>
+            <a href="contact.html" class="nav-link active">📞 Contact</a>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <div class="main-content">
+        <!-- Hero -->
+        <div class="hero-contact">
+            <i class="fas fa-headset contact-hero-icon"></i>
+            <p class="overline">Service Client Premium</p>
+            <h1>Contactez-<em>Nous</em></h1>
+            <p>Notre équipe est à votre disposition. Service disponible 24h/24 et 7j/7.</p>
+        </div>
+
+        <!-- Carte WhatsApp Hero -->
+        <div class="whatsapp-hero-card" onclick="openWhatsApp()">
+            <div class="whatsapp-hero-icon"><i class="fab fa-whatsapp"></i></div>
+            <div class="whatsapp-hero-content">
+                <h3>Discutez avec nous sur WhatsApp</h3>
+                <p>Réponse en moins de 5 minutes</p>
+                <p class="whatsapp-number"><i class="fab fa-whatsapp"></i> +221 77 907 89 70</p>
+            </div>
+            <a href="https://wa.me/221779078970" target="_blank" class="btn-whatsapp-hero" onclick="event.stopPropagation();">
+                <i class="fab fa-whatsapp"></i> Ouvrir WhatsApp
+            </a>
+        </div>
+
+        <!-- Grille de contact -->
+        <div class="contact-grid">
+            <!-- Informations de contact -->
+            <div class="contact-info-section">
+                <div class="contact-info-card whatsapp-card">
+                    <div class="contact-icon-circle whatsapp"><i class="fab fa-whatsapp"></i></div>
+                    <div class="contact-info-content">
+                        <h4>WhatsApp</h4>
+                        <p class="highlight-whatsapp">+221 77 907 89 70</p>
+                        <a href="https://wa.me/221779078970" target="_blank"><i class="fab fa-whatsapp"></i> Envoyer un message</a>
+                    </div>
+                </div>
+                
+                <div class="contact-info-card">
+                    <div class="contact-icon-circle blue"><i class="fas fa-phone-alt"></i></div>
+                    <div class="contact-info-content">
+                        <h4>Téléphone</h4>
+                        <p class="highlight">+221 77 907 89 70</p>
+                        <a href="tel:+221779078970"><i class="fas fa-phone"></i> Appeler maintenant</a>
+                    </div>
+                </div>
+                
+                <div class="contact-info-card">
+                    <div class="contact-icon-circle emerald"><i class="fas fa-envelope"></i></div>
+                    <div class="contact-info-content">
+                        <h4>Email</h4>
+                        <p class="highlight">contact@plpshop.com</p>
+                        <a href="mailto:contact@plpshop.com"><i class="fas fa-paper-plane"></i> Envoyer un email</a>
+                    </div>
+                </div>
+                
+                <div class="contact-info-card">
+                    <div class="contact-icon-circle navy"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="contact-info-content">
+                        <h4>Adresse</h4>
+                        <p class="highlight">Dakar, Sénégal</p>
+                        <a href="https://maps.google.com/?q=Dakar+Senegal" target="_blank"><i class="fas fa-map"></i> Voir sur Google Maps</a>
+                    </div>
+                </div>
+                
+                <div class="contact-info-card">
+                    <div class="contact-icon-circle orange"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="contact-info-content">
+                        <h4>Orange Money</h4>
+                        <p class="highlight">#144# • Code : PLPSHOP2026</p>
+                    </div>
+                </div>
+                
+                <div class="contact-info-card">
+                    <div class="contact-icon-circle wave"><i class="fas fa-wallet"></i></div>
+                    <div class="contact-info-content">
+                        <h4>Wave</h4>
+                        <p class="highlight">+221 77 907 89 70</p>
+                    </div>
+                </div>
+                
+                <div class="contact-info-card">
+                    <div class="contact-icon-circle burgundy"><i class="fas fa-clock"></i></div>
+                    <div class="contact-info-content">
+                        <h4>Horaires d'ouverture</h4>
+                        <p>Lundi - Samedi : 08h - 20h</p>
+                        <p>Dimanche : 10h - 18h</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulaire de contact -->
+            <div class="contact-form-card">
+                <div class="form-header">
+                    <div class="tag">Message</div>
+                    <h3>Envoyez-nous un message</h3>
+                    <p>Nous vous répondrons dans les plus brefs délais</p>
+                </div>
+                
+                <form id="contactForm" onsubmit="handleContactSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group-luxe">
+                            <label>Nom complet *</label>
+                            <input type="text" id="contactName" required placeholder="Votre nom">
+                        </div>
+                        <div class="form-group-luxe">
+                            <label>Email *</label>
+                            <input type="email" id="contactEmail" required placeholder="votre@email.com">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group-luxe">
+                            <label>Téléphone</label>
+                            <input type="tel" id="contactPhone" placeholder="77 000 00 00">
+                        </div>
+                        <div class="form-group-luxe">
+                            <label>Sujet *</label>
+                            <select id="contactSubject" required>
+                                <option value="">Sélectionnez un sujet</option>
+                                <option value="commande">📦 Commande</option>
+                                <option value="produit">ℹ️ Information produit</option>
+                                <option value="paiement">💳 Paiement</option>
+                                <option value="livraison">🚚 Livraison</option>
+                                <option value="autre">❓ Autre</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group-luxe">
+                        <label>Message *</label>
+                        <textarea id="contactMessage" required placeholder="Décrivez votre demande..."></textarea>
+                    </div>
+                    
+                    <button type="button" class="btn-whatsapp-submit" onclick="sendViaWhatsApp()">
+                        <i class="fab fa-whatsapp"></i> Envoyer via WhatsApp (77 907 89 70)
+                    </button>
+                    
+                    <button type="submit" class="btn-submit-luxe" id="contactSubmitBtn" style="margin-top:0.4rem;">
+                        <i class="fas fa-paper-plane"></i> Envoyer par email
+                    </button>
+                </form>
+                
+                <div class="form-success" id="formSuccess">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Message envoyé avec succès !</h3>
+                    <p>Nous vous répondrons dans les plus brefs délais.</p>
+                    <button class="btn-submit-luxe" style="margin-top:0.8rem;" onclick="resetContactForm()">
+                        Envoyer un nouveau message
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carte -->
+        <div class="map-section">
+            <div class="map-header">
+                <i class="fas fa-map-pin"></i>
+                <h3>📍 Dakar, Sénégal</h3>
+                <span class="map-address">Plateau, Avenue de la République</span>
+            </div>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d61751.12517824296!2d-17.477662749999998!3d14.693700000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xec172f5b3c5bb71%3A0x5c46c5b4b3b3b3b3!2sDakar!5e0!3m2!1sfr!2ssn!4v1690000000000!5m2!1sfr!2ssn" allowfullscreen="" loading="lazy" title="Carte PLP Shop Dakar"></iframe>
+                <div class="map-overlay">
+                    <i class="fas fa-store"></i>
+                    <div>
+                        <strong>PLP SHOP</strong><br>
+                        Dakar, Sénégal
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="faq-section">
+            <div class="section-header">
+                <div class="tag">FAQ</div>
+                <h2>Questions Fréquentes</h2>
+            </div>
+            <div class="faq-grid">
+                <div class="faq-card" onclick="toggleFaq(this)">
+                    <div class="faq-question">
+                        <span>📦 Comment suivre ma commande ?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Rendez-vous sur notre <a href="suivi.html" style="color:var(--plp-blue);">page de suivi</a> et entrez votre numéro de commande. Vous pouvez aussi nous contacter sur WhatsApp au <strong>77 907 89 70</strong>.
+                    </div>
+                </div>
+                
+                <div class="faq-card" onclick="toggleFaq(this)">
+                    <div class="faq-question">
+                        <span>💬 Comment contacter rapidement ?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Le moyen le plus rapide est WhatsApp au <strong>+221 77 907 89 70</strong>. Nous répondons en moyenne en moins de 5 minutes.
+                    </div>
+                </div>
+                
+                <div class="faq-card" onclick="toggleFaq(this)">
+                    <div class="faq-question">
+                        <span>🚚 Quels sont les délais de livraison ?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Livraison en <strong>24-48h</strong> à Dakar et <strong>3-5 jours</strong> dans les autres régions. Livraison <strong>offerte</strong> dès <strong>20 000 FCFA</strong> d'achat.
+                    </div>
+                </div>
+                
+                <div class="faq-card" onclick="toggleFaq(this)">
+                    <div class="faq-question">
+                        <span>💳 Quels moyens de paiement ?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Nous acceptons <strong>Orange Money</strong> (#144# code PLPSHOP2026), <strong>Wave</strong> (+221 77 907 89 70) et <strong>Carte Bancaire</strong> (Visa, Mastercard).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Réseaux sociaux -->
+        <div class="social-section">
+            <h3>Suivez-nous sur les réseaux</h3>
+            <div class="social-links">
+                <a href="https://facebook.com/" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://instagram.com/" target="_blank" class="social-link"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/221779078970" target="_blank" class="social-link"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-luxe">
+        <div class="footer-container">
+            <p><a href="index.html"><i class="fas fa-shopping-bag"></i> PLP SHOP</a> — Votre Style, Notre Passion</p>
+            <p class="footer-bottom">WhatsApp : +221 77 907 89 70 | © 2026 PLP Shop | Made with ❤️</p>
+        </div>
+    </footer>
+
+    <!-- Bouton WhatsApp flottant -->
+    <div class="whatsapp-float">
+        <a href="https://wa.me/221779078970" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
+    </div>
+
+    <script>
+        // Configuration PLP Shop
+        const WHATSAPP_CONFIG = {
+            phoneNumber: '221779078970',
+            defaultMessage: 'Bonjour PLP Shop !'
+        };
+
+        // Gestion utilisateur
+        function loadCurrentUser() {
+            const userData = localStorage.getItem('plpshop_current_user');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    const header = document.getElementById('userInfoHeader');
+                    if (header) {
+                        header.innerHTML = `
+                            <span class="user-greeting"><i class="far fa-user"></i> ${user.name || user.email || 'Client'}</span>
+                            <button class="btn-header" onclick="logoutUser()">Déconnexion</button>
+                        `;
+                    }
+                } catch(e) {
+                    console.error('Erreur chargement utilisateur:', e);
+                }
+            }
+        }
+
+        function logoutUser() {
+            if (confirm('Voulez-vous vous déconnecter ?')) {
+                localStorage.removeItem('plpshop_current_user');
+                window.location.reload();
+            }
+        }
+
+        function redirectToLogin() {
+            window.location.href = 'index.html';
+        }
+
+        function openWhatsApp(message) {
+            const msg = message || WHATSAPP_CONFIG.defaultMessage;
+            window.open(`https://wa.me/${WHATSAPP_CONFIG.phoneNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        // Envoi via WhatsApp
+        function sendViaWhatsApp() {
+            const name = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const phone = document.getElementById('contactPhone').value.trim();
+            const subject = document.getElementById('contactSubject').value;
+            const message = document.getElementById('contactMessage').value.trim();
+
+            if (!name || !email || !subject || !message) {
+                showToast('Veuillez remplir tous les champs obligatoires (*)', 'error');
+                return;
+            }
+
+            const subjectLabels = {
+                commande: '📦 Commande',
+                produit: 'ℹ️ Information produit',
+                paiement: '💳 Paiement',
+                livraison: '🚚 Livraison',
+                autre: '❓ Autre'
+            };
+
+            let whatsappMessage = `🛍️ *PLP SHOP - Contact*\n\n`;
+            whatsappMessage += `👤 *Nom :* ${name}\n`;
+            whatsappMessage += `📧 *Email :* ${email}\n`;
+            if (phone) whatsappMessage += `📱 *Tél :* ${phone}\n`;
+            whatsappMessage += `📋 *Sujet :* ${subjectLabels[subject] || subject}\n\n`;
+            whatsappMessage += `📝 *Message :*\n${message}`;
+
+            // Sauvegarder le message
+            saveMessage({
+                name,
+                email,
+                phone,
+                subject,
+                message,
+                sentVia: 'whatsapp',
+                date: new Date().toISOString()
+            });
+
+            showToast('Redirection vers WhatsApp...', 'success');
+            setTimeout(() => openWhatsApp(whatsappMessage), 500);
+
+            document.getElementById('contactForm').style.display = 'none';
+            document.getElementById('formSuccess').classList.add('show');
+        }
+
+        // Sauvegarde des messages
+        function saveMessage(data) {
+            const messages = JSON.parse(localStorage.getItem('plpshop_contact_messages')) || [];
+            messages.push(data);
+            localStorage.setItem('plpshop_contact_messages', JSON.stringify(messages));
+        }
+
+        // Envoi par email (simulation)
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('contactSubmitBtn');
+            
+            const data = {
+                name: document.getElementById('contactName').value.trim(),
+                email: document.getElementById('contactEmail').value.trim(),
+                phone: document.getElementById('contactPhone').value.trim(),
+                subject: document.getElementById('contactSubject').value,
+                message: document.getElementById('contactMessage').value.trim(),
+                sentVia: 'email',
+                date: new Date().toISOString()
+            };
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+
+            setTimeout(() => {
+                saveMessage(data);
+                document.getElementById('contactForm').style.display = 'none';
+                document.getElementById('formSuccess').classList.add('show');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer par email';
+                showToast('Message envoyé avec succès !', 'success');
+            }, 1000);
+        }
+
+        // Réinitialisation du formulaire
+        function resetContactForm() {
+            document.getElementById('contactForm').style.display = 'block';
+            document.getElementById('formSuccess').classList.remove('show');
+            document.getElementById('contactForm').reset();
+        }
+
+        // Toggle FAQ
+        function toggleFaq(card) {
+            document.querySelectorAll('.faq-card').forEach(c => {
+                if (c !== card) c.classList.remove('open');
+            });
+            card.classList.toggle('open');
+        }
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast-luxe';
+            toast.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, 20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Initialisation
+        function init() {
+            loadCurrentUser();
+            
+            // Pré-remplir le formulaire si l'utilisateur est connecté
+            const user = JSON.parse(localStorage.getItem('plpshop_current_user'));
+            if (user) {
+                const nameInput = document.getElementById('contactName');
+                const emailInput = document.getElementById('contactEmail');
+                const phoneInput = document.getElementById('contactPhone');
+                
+                if (nameInput) nameInput.value = user.name || '';
+                if (emailInput) emailInput.value = user.email || '';
+                if (phoneInput) phoneInput.value = user.phone || '';
+            }
+        }
+
+        init();
+
+        // Exposition globale des fonctions
+        window.toggleFaq = toggleFaq;
+        window.handleContactSubmit = handleContactSubmit;
+        window.resetContactForm = resetContactForm;
+        window.logoutUser = logoutUser;
+        window.redirectToLogin = redirectToLogin;
+        window.openWhatsApp = openWhatsApp;
+        window.sendViaWhatsApp = sendViaWhatsApp;
+    </script>
+</body>
+</html>

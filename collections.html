@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="PLP Shop - Découvrez notre collection exclusive de vêtements pour Homme et Femme.">
+    <title>PLP Shop | Collections Homme & Femme</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --plp-blue: #1a56db; --plp-blue-dark: #1e40af; --plp-blue-light: #3b82f6;
+            --black: #0a0a0a; --black-light: #1a1a1a; --white: #fefefe; --cream: #faf8f3;
+            --gray-warm: #9c9588; --gray-cool: #6b7280; --burgundy: #722f37;
+            --emerald: #0d5c2e; --navy: #1a1f2e; --homme-color: #1a56db;
+            --femme-color: #db2777; --success: #0d7b4a; --danger: #dc2626;
+            --shadow-elegant: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-luxury: 0 20px 60px rgba(0,0,0,0.12);
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 16px; scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--cream); color: var(--black); line-height: 1.7; overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; }
+        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 500; }
+        img { max-width: 100%; height: auto; }
+
+        .luxe-bar { background: var(--plp-blue); color: var(--white); text-align: center; padding: 8px 12px; font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; overflow: hidden; white-space: nowrap; }
+        .header-luxe { background: rgba(255,255,255,0.98); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-bottom: 1px solid rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; }
+        .header-container { max-width: 1600px; margin: 0 auto; padding: 0.8rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
+        .brand-crest { width: 40px; height: 40px; background: linear-gradient(135deg, var(--plp-blue-dark), var(--plp-blue), var(--plp-blue-light)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 18px; border: 2px solid var(--plp-blue); }
+        .brand-name h2 { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--plp-blue); font-weight: 600; letter-spacing: 1px; line-height: 1; }
+        .brand-name span { font-size: 8px; color: var(--gray-warm); letter-spacing: 2px; text-transform: uppercase; font-weight: 500; }
+        .search-luxe { flex: 1; max-width: 400px; min-width: 200px; order: 1; }
+        .search-box { position: relative; display: flex; align-items: center; }
+        .search-luxe input { width: 100%; padding: 12px 50px 12px 20px; border: 1px solid rgba(0,0,0,0.1); border-radius: 50px; font-size: 13px; background: rgba(0,0,0,0.02); color: var(--black); font-family: 'Montserrat', sans-serif; transition: var(--transition-smooth); }
+        .search-luxe input:focus { outline: none; border-color: var(--plp-blue); }
+        .search-luxe button { position: absolute; right: 4px; background: var(--plp-blue); color: var(--white); border: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; transition: all 0.5s ease; display: flex; align-items: center; justify-content: center; }
+        .header-actions-luxe { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; order: 2; }
+        .btn-icon-luxe { position: relative; width: 40px; height: 40px; border: 1px solid rgba(0,0,0,0.1); background: rgba(0,0,0,0.02); border-radius: 50%; cursor: pointer; transition: var(--transition-smooth); display: flex; align-items: center; justify-content: center; color: var(--plp-blue); font-size: 16px; }
+        .btn-icon-luxe:hover { background: var(--plp-blue); color: var(--white); border-color: var(--plp-blue); transform: translateY(-2px); }
+        .badge-luxe { position: absolute; top: -4px; right: -4px; background: var(--danger); color: var(--white); font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 20px; min-width: 20px; text-align: center; border: 2px solid var(--white); }
+        .user-menu { position: relative; }
+        .user-menu-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: var(--white); border-radius: 4px; box-shadow: var(--shadow-luxury); padding: 0.5rem 0; min-width: 220px; display: none; z-index: 1001; }
+        .user-menu-dropdown.show { display: block; }
+        .user-menu-dropdown a { display: flex; align-items: center; gap: 12px; padding: 10px 18px; color: var(--black); text-decoration: none; font-size: 12px; transition: var(--transition-smooth); }
+        .user-menu-dropdown a:hover { background: var(--cream); color: var(--plp-blue-dark); }
+
+        .nav-luxe { background: var(--white); border-top: 1px solid rgba(0,0,0,0.05); border-bottom: 1px solid rgba(0,0,0,0.05); overflow-x: auto; -webkit-overflow-scrolling: touch; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        .nav-luxe .nav-container { max-width: 1600px; margin: 0 auto; padding: 0 1rem; display: flex; justify-content: center; gap: 1.5rem; white-space: nowrap; }
+        .nav-luxe .nav-link { text-decoration: none; color: var(--gray-cool); font-weight: 500; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; padding: 0.8rem 0; position: relative; transition: var(--transition-smooth); }
+        .nav-luxe .nav-link::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background: var(--plp-blue); transition: var(--transition-smooth); }
+        .nav-luxe .nav-link:hover, .nav-luxe .nav-link.active { color: var(--plp-blue); }
+        .nav-luxe .nav-link:hover::after, .nav-luxe .nav-link.active::after { width: 100%; }
+
+        .main-content { flex: 1; max-width: 1600px; width: 100%; margin: 0 auto; padding: 0 1.5rem; }
+        .hero-collection { position: relative; min-height: 50vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--plp-blue-dark) 0%, var(--plp-blue) 100%); overflow: hidden; }
+        .hero-collection::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 60%); z-index: 1; }
+        .hero-collection-content { text-align: center; position: relative; z-index: 2; padding: 4rem 2rem; }
+        .hero-collection .overline { font-size: 11px; text-transform: uppercase; letter-spacing: 6px; color: var(--white); margin-bottom: 1.5rem; font-weight: 500; opacity: 0.9; }
+        .hero-collection h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 600; color: var(--white); margin-bottom: 1rem; }
+        .hero-collection h1 em { font-style: italic; }
+        .hero-collection p { font-size: clamp(0.9rem, 1.5vw, 1.1rem); color: rgba(255,255,255,0.8); max-width: 600px; margin: 0 auto; font-weight: 300; }
+
+        .gender-tabs { display: flex; justify-content: center; gap: 1rem; margin-top: -30px; margin-bottom: 3rem; padding: 0 1rem; flex-wrap: wrap; position: relative; z-index: 10; }
+        .gender-tab { flex: 1; max-width: 350px; padding: 2rem 1.5rem; border-radius: 2px; cursor: pointer; transition: var(--transition-smooth); text-align: center; border: 2px solid rgba(0,0,0,0.08); background: var(--white); box-shadow: var(--shadow-elegant); }
+        .gender-tab:hover { transform: translateY(-4px); box-shadow: var(--shadow-luxury); }
+        .gender-tab.active { border-color: var(--plp-blue); }
+        .gender-tab.homme { border-left: 4px solid var(--homme-color); }
+        .gender-tab.femme { border-left: 4px solid var(--femme-color); }
+        .gender-tab.homme.active { background: linear-gradient(135deg, #f0f4ff, var(--white)); border-color: var(--homme-color); }
+        .gender-tab.femme.active { background: linear-gradient(135deg, #fdf0f7, var(--white)); border-color: var(--femme-color); }
+        .gender-tab .gender-icon { font-size: 3rem; margin-bottom: 0.8rem; display: block; }
+        .gender-tab.homme .gender-icon { color: var(--homme-color); }
+        .gender-tab.femme .gender-icon { color: var(--femme-color); }
+        .gender-tab h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.3rem; font-weight: 600; }
+        .gender-tab p { font-size: 11px; color: var(--gray-cool); font-weight: 400; }
+        .gender-tab .tab-badge { display: inline-block; padding: 4px 12px; border-radius: 50px; font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.8rem; }
+        .gender-tab.homme .tab-badge { background: rgba(26,86,219,0.1); color: var(--homme-color); }
+        .gender-tab.femme .tab-badge { background: rgba(219,39,119,0.1); color: var(--femme-color); }
+        .gender-tab.homme.active .tab-badge { background: var(--homme-color); color: white; }
+        .gender-tab.femme.active .tab-badge { background: var(--femme-color); color: white; }
+
+        .section-title-luxe { text-align: center; margin-bottom: 2rem; }
+        .section-title-luxe .tag { display: inline-block; font-size: 9px; text-transform: uppercase; letter-spacing: 3px; color: var(--plp-blue); border: 1px solid rgba(26,86,219,0.2); padding: 6px 16px; border-radius: 50px; margin-bottom: 1rem; font-weight: 600; }
+        .section-title-luxe h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 500; margin-bottom: 0.5rem; }
+        .section-title-luxe p { color: var(--gray-cool); font-size: 0.9rem; font-weight: 300; }
+
+        .filter-bar { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; padding: 0 1rem; }
+        .filter-btn { padding: 10px 22px; border: 1px solid rgba(0,0,0,0.1); background: var(--white); border-radius: 50px; cursor: pointer; font-weight: 500; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; transition: var(--transition-smooth); font-family: 'Montserrat', sans-serif; color: var(--gray-cool); white-space: nowrap; }
+        .filter-btn:hover, .filter-btn.active { background: var(--plp-blue); color: var(--white); border-color: var(--plp-blue); }
+        .filter-btn.homme-filter.active { background: var(--homme-color); color: white; border-color: var(--homme-color); }
+        .filter-btn.femme-filter.active { background: var(--femme-color); color: white; border-color: var(--femme-color); }
+
+        .products-section { margin: 2rem 0 2rem; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .product-card { background: var(--white); border-radius: 2px; overflow: hidden; transition: var(--transition-smooth); box-shadow: var(--shadow-elegant); position: relative; }
+        .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-luxury); }
+        .product-badge { position: absolute; top: 1rem; left: 1rem; background: var(--danger); color: var(--white); padding: 5px 12px; font-size: 9px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; z-index: 1; border-radius: 2px; }
+        .product-badge.nouveau { background: var(--plp-blue); }
+        .product-image { width: 100%; height: 380px; object-fit: cover; transition: var(--transition-smooth); }
+        .product-card:hover .product-image { transform: scale(1.04); }
+        .product-details { padding: 1.5rem; text-align: center; }
+        .product-category { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--plp-blue); font-weight: 600; margin-bottom: 0.5rem; }
+        .product-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 500; margin-bottom: 0.6rem; }
+        .product-price { font-size: 1.1rem; font-weight: 700; }
+        .original-price { text-decoration: line-through; color: var(--gray-warm); font-size: 0.85rem; margin-left: 0.5rem; font-weight: 400; }
+        .product-gender { display: inline-block; padding: 3px 10px; border-radius: 50px; font-size: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.5rem; }
+        .product-gender.homme { background: rgba(26,86,219,0.1); color: var(--homme-color); }
+        .product-gender.femme { background: rgba(219,39,119,0.1); color: var(--femme-color); }
+        .btn-cart { width: 100%; padding: 12px; margin-top: 0.8rem; background: transparent; border: 1px solid var(--plp-blue); color: var(--plp-blue); font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; transition: var(--transition-smooth); border-radius: 2px; }
+        .btn-cart:hover { background: var(--plp-blue); color: var(--white); }
+
+        .info-banner { background: linear-gradient(135deg, var(--plp-blue-dark), var(--plp-blue)); color: white; padding: 2rem; border-radius: 2px; display: flex; align-items: center; gap: 2rem; margin: 2rem 0 4rem; flex-wrap: wrap; }
+        .info-banner .banner-icon { font-size: 3rem; flex-shrink: 0; }
+        .info-banner .banner-content { flex: 1; min-width: 200px; }
+        .info-banner .banner-content h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .info-banner .banner-content p { font-size: 12px; opacity: 0.9; margin-bottom: 0.3rem; }
+        .info-banner .btn-banner { padding: 12px 24px; background: var(--white); color: var(--plp-blue-dark); border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; transition: var(--transition-smooth); white-space: nowrap; }
+        .info-banner .btn-banner:hover { transform: scale(1.05); }
+
+        .footer-luxe { background: var(--black); color: var(--white); padding: 3rem 0 0; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05); }
+        .footer-container { max-width: 1600px; margin: 0 auto; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2.5rem; }
+        .footer-col h4 { font-family: 'Montserrat', sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--plp-blue-light); margin-bottom: 1.2rem; font-weight: 600; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.6rem; }
+        .footer-col ul li a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 12px; transition: var(--transition-smooth); font-weight: 300; }
+        .footer-col ul li a:hover { color: var(--white); padding-left: 4px; }
+        .footer-bottom { margin-top: 2rem; padding: 1.5rem 0; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; font-size: 10px; color: rgba(255,255,255,0.3); }
+
+        .toast-luxe { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: var(--plp-blue); color: var(--white); padding: 0.8rem 1.5rem; border-radius: 2px; z-index: 3000; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; font-weight: 500; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: fadeInUp 0.4s ease; max-width: 90vw; text-align: center; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+        @media (max-width: 768px) {
+            .header-container { flex-wrap: wrap; gap: 0.8rem; }
+            .search-luxe { order: 3; max-width: 100%; width: 100%; }
+            .hero-collection { min-height: 40vh; }
+            .hero-collection-content { padding: 2rem 1rem; }
+            .gender-tab { padding: 1.2rem 0.8rem; }
+            .gender-tab .gender-icon { font-size: 2rem; }
+            .products-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+            .product-image { height: 250px; }
+            .footer-container { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .hero-collection { min-height: 35vh; }
+            .gender-tabs { flex-direction: column; gap: 0.5rem; }
+            .gender-tab { max-width: 100%; padding: 1rem; }
+            .products-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+            .product-image { height: 200px; }
+            .btn-cart { font-size: 8px; padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="luxe-bar">
+        <i class="fas fa-star"></i> PLP Shop - Votre Style, Notre Passion <i class="fas fa-star"></i> 
+        Collections Homme & Femme <i class="fas fa-star"></i> Livraison Offerte dès 20 000 FCFA
+    </div>
+
+    <!-- Header -->
+    <header class="header-luxe">
+        <div class="header-container">
+            <a href="index.html" class="brand">
+                <div class="brand-crest"><i class="fas fa-shopping-bag"></i></div>
+                <div class="brand-name">
+                    <h2>PLP SHOP</h2>
+                    <span>Boutique Mode en Ligne</span>
+                </div>
+            </a>
+            <div class="search-luxe">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Rechercher un article...">
+                    <button onclick="searchProducts()"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            <div class="header-actions-luxe">
+                <div class="user-menu" id="userMenuContainer">
+                    <button class="btn-icon-luxe" onclick="toggleUserMenu()"><i class="far fa-user"></i></button>
+                    <div class="user-menu-dropdown" id="userMenuDropdown">
+                        <a href="#" onclick="redirectToLogin()"><i class="fas fa-sign-in-alt"></i> Se connecter</a>
+                        <a href="#" onclick="redirectToLogin()"><i class="fas fa-user-plus"></i> S'inscrire</a>
+                    </div>
+                </div>
+                <button class="btn-icon-luxe" onclick="toggleCart()">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="badge-luxe" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav-luxe">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link">Accueil</a>
+            <a href="collections.html" class="nav-link active">Collections</a>
+            <a href="suivi.html" class="nav-link">Suivi</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <div class="main-content">
+        <!-- Hero -->
+        <div class="hero-collection">
+            <div class="hero-collection-content">
+                <p class="overline">Nouvelle Collection 2026</p>
+                <h1>Nos <em>Collections</em></h1>
+                <p>Découvrez notre collection exclusive pour Homme et Femme. Des pièces tendances qui célèbrent votre style unique.</p>
+            </div>
+        </div>
+
+        <!-- Tabs Genre -->
+        <div class="gender-tabs" id="genderTabs">
+            <div class="gender-tab homme active" onclick="switchGender('homme')" id="tabHomme">
+                <i class="fas fa-male gender-icon"></i>
+                <h3>Collection Homme</h3>
+                <p>Élégance masculine • Style affirmé</p>
+                <span class="tab-badge" id="hommeCount">0 articles</span>
+            </div>
+            <div class="gender-tab femme" onclick="switchGender('femme')" id="tabFemme">
+                <i class="fas fa-female gender-icon"></i>
+                <h3>Collection Femme</h3>
+                <p>Raffinement féminin • Tendances mode</p>
+                <span class="tab-badge" id="femmeCount">0 articles</span>
+            </div>
+        </div>
+
+        <!-- Section Produits -->
+        <div class="products-section" id="productsSection">
+            <div class="section-title-luxe">
+                <div class="tag" id="sectionTag">Collection Homme</div>
+                <h2 id="sectionTitle">Style Masculin</h2>
+                <p id="sectionDesc">Des pièces tendances pour l'homme moderne</p>
+            </div>
+            <div class="filter-bar" id="filterBar">
+                <button class="filter-btn homme-filter active" onclick="filterByCategory('all')">Tout</button>
+                <button class="filter-btn homme-filter" onclick="filterByCategory('vêtements')">Vêtements</button>
+                <button class="filter-btn homme-filter" onclick="filterByCategory('shorts')">Shorts</button>
+                <button class="filter-btn homme-filter" onclick="filterByCategory('chaussures')">Chaussures</button>
+                <button class="filter-btn homme-filter" onclick="filterByCategory('accessoires')">Accessoires</button>
+            </div>
+            <div class="products-grid" id="productsGrid"></div>
+        </div>
+
+        <!-- Bannière info -->
+        <div class="info-banner">
+            <div class="banner-icon"><i class="fas fa-truck-fast"></i></div>
+            <div class="banner-content">
+                <h3>Livraison Partout au Sénégal</h3>
+                <p>Livraison <strong>offerte</strong> dès 20 000 FCFA • Dakar en 24-48h</p>
+            </div>
+            <a href="contact.html" class="btn-banner"><i class="fas fa-phone"></i> Nous Contacter</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-luxe">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="brand" style="margin-bottom:1rem;">
+                    <div class="brand-crest"><i class="fas fa-shopping-bag"></i></div>
+                    <div class="brand-name"><h2 style="color:var(--plp-blue-light);">PLP SHOP</h2></div>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Collections</h4>
+                <ul>
+                    <li><a href="collections.html#homme">Homme</a></li>
+                    <li><a href="collections.html#femme">Femme</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Service</h4>
+                <ul>
+                    <li><a href="suivi.html">Suivi de commande</a></li>
+                    <li><a href="contact.html">Contactez-nous</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="https://wa.me/221779078970">+221 77 907 89 70</a></li>
+                    <li style="color:rgba(255,255,255,0.5);font-size:11px;">💳 OM • Wave • CB</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 PLP Shop | Made with ❤️</p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== CLÉ PARTAGÉE AVEC L'ADMIN =====
+        const STORAGE_KEY = 'plpshop_products';
+
+        // ===== PRODUITS PAR DÉFAUT =====
+        const defaultProducts = [
+            { id: 101, name: "Costume Slim Fit", price: 45000, oldPrice: 55000, category: "vêtements", gender: "homme", badge: "promo", image: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&h=500&fit=crop" },
+            { id: 102, name: "Chemise en Lin Blanc", price: 15000, category: "vêtements", gender: "homme", badge: null, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400&h=500&fit=crop" },
+            { id: 103, name: "Pantalon Chino Beige", price: 18000, oldPrice: 22000, category: "vêtements", gender: "homme", badge: "promo", image: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=400&h=500&fit=crop" },
+            { id: 104, name: "Short Sport Premium", price: 8000, category: "shorts", gender: "homme", badge: "nouveau", image: "https://images.unsplash.com/photo-1565693413579-8f2f72c0cfc1?w=400&h=500&fit=crop" },
+            { id: 105, name: "Short Cargo Urban", price: 10000, oldPrice: 13000, category: "shorts", gender: "homme", badge: "promo", image: "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=400&h=500&fit=crop" },
+            { id: 106, name: "Basket Montante Cuir", price: 25000, category: "chaussures", gender: "homme", badge: "nouveau", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=500&fit=crop" },
+            { id: 201, name: "Robe Élégance", price: 35000, oldPrice: 42000, category: "vêtements", gender: "femme", badge: "promo", image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=500&fit=crop" },
+            { id: 202, name: "Ensemble Tailleur Chic", price: 30000, category: "vêtements", gender: "femme", badge: "nouveau", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400&h=500&fit=crop" },
+            { id: 203, name: "Blouse en Soie", price: 18000, oldPrice: 22000, category: "vêtements", gender: "femme", badge: "promo", image: "https://images.unsplash.com/photo-1434389677669-e08b4cda4b40?w=400&h=500&fit=crop" },
+            { id: 204, name: "Short Taille Haute", price: 9000, category: "shorts", gender: "femme", badge: null, image: "https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=400&h=500&fit=crop" },
+            { id: 205, name: "Escarpins Élégants", price: 22000, category: "chaussures", gender: "femme", badge: "nouveau", image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400&h=500&fit=crop" }
+        ];
+
+        let currentGender = 'homme';
+        let currentCategory = 'all';
+
+        // ===== LECTURE DES PRODUITS =====
+        function getProducts() {
+            let products = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            if (!products || products.length === 0) {
+                products = defaultProducts;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+            }
+            return products.map(p => ({
+                ...p,
+                gender: p.gender || 'homme',
+                badge: p.badge || null,
+                category: p.category || 'vêtements',
+                price: p.price || 0,
+                oldPrice: p.oldPrice || null,
+                image: p.image || 'https://via.placeholder.com/400x500?text=PLP+Shop'
+            }));
+        }
+
+        function formatFCFA(amount) {
+            return (amount || 0).toLocaleString('fr-FR') + ' FCFA';
+        }
+
+        function switchGender(gender) {
+            currentGender = gender;
+            currentCategory = 'all';
+            
+            document.getElementById('tabHomme').classList.toggle('active', gender === 'homme');
+            document.getElementById('tabFemme').classList.toggle('active', gender === 'femme');
+            
+            const tag = document.getElementById('sectionTag');
+            const title = document.getElementById('sectionTitle');
+            const desc = document.getElementById('sectionDesc');
+            
+            if (gender === 'homme') {
+                tag.textContent = 'Collection Homme';
+                title.textContent = 'Style Masculin';
+                desc.textContent = 'Des pièces tendances pour l\'homme moderne';
+            } else {
+                tag.textContent = 'Collection Femme';
+                title.textContent = 'Élégance Féminine';
+                desc.textContent = 'Des créations tendances pour la femme élégante';
+            }
+            
+            updateFilterStyles();
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.filter-btn').classList.add('active');
+            displayProducts();
+            document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateFilterStyles() {
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('homme-filter', 'femme-filter');
+                b.classList.add(currentGender === 'homme' ? 'homme-filter' : 'femme-filter');
+            });
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                const text = b.textContent.trim().toLowerCase();
+                if ((category === 'all' && text === 'tout') || text.includes(category)) {
+                    b.classList.add('active');
+                }
+            });
+            displayProducts();
+        }
+
+        function displayProducts() {
+            const grid = document.getElementById('productsGrid');
+            const allProducts = getProducts();
+            
+            let filtered = allProducts.filter(p => p.gender === currentGender);
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(p => p.category === currentCategory);
+            }
+            
+            // Mise à jour des compteurs
+            const hommeCount = allProducts.filter(p => p.gender === 'homme').length;
+            const femmeCount = allProducts.filter(p => p.gender === 'femme').length;
+            document.getElementById('hommeCount').textContent = hommeCount + ' article' + (hommeCount > 1 ? 's' : '');
+            document.getElementById('femmeCount').textContent = femmeCount + ' article' + (femmeCount > 1 ? 's' : '');
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--gray-warm);">
+                        <i class="fas fa-box-open" style="font-size:3rem;margin-bottom:1rem;display:block;"></i>
+                        <p>Aucun produit dans cette catégorie</p>
+                        <p style="font-size:12px;margin-top:0.5rem;">L'administrateur peut ajouter des produits depuis le panneau d'administration.</p>
+                    </div>`;
+                return;
+            }
+            
+            grid.innerHTML = filtered.map(p => {
+                const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+                const badgeLabel = p.badge === 'promo' ? `-${discount}%` : p.badge === 'nouveau' ? 'Nouveau' : '';
+                const badgeClass = p.badge === 'nouveau' ? 'nouveau' : '';
+                
+                return `
+                <div class="product-card">
+                    ${p.badge ? `<div class="product-badge ${badgeClass}">${badgeLabel}</div>` : ''}
+                    <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/400x500?text=PLP+Shop'">
+                    <div class="product-details">
+                        <div class="product-category">${p.category}</div>
+                        <h3 class="product-name">${p.name}</h3>
+                        <div class="product-price">
+                            ${formatFCFA(p.price)}
+                            ${p.oldPrice ? `<span class="original-price">${formatFCFA(p.oldPrice)}</span>` : ''}
+                        </div>
+                        <span class="product-gender ${p.gender}">
+                            <i class="fas fa-${p.gender === 'homme' ? 'male' : 'female'}"></i> 
+                            ${p.gender === 'homme' ? 'Homme' : 'Femme'}
+                        </span>
+                        <button class="btn-cart" onclick="addToCart(${p.id})">
+                            <i class="fas fa-cart-plus"></i> Ajouter au panier
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function searchProducts() {
+            const query = document.getElementById('searchInput')?.value.toLowerCase().trim();
+            if (!query) {
+                displayProducts();
+                return;
+            }
+            
+            const grid = document.getElementById('productsGrid');
+            const allProducts = getProducts();
+            let filtered = allProducts.filter(p => 
+                p.gender === currentGender && 
+                (p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query))
+            );
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;">
+                    <p>Aucun résultat pour "${query}"</p>
+                </div>`;
+                return;
+            }
+            
+            grid.innerHTML = filtered.map(p => {
+                const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+                const badgeLabel = p.badge === 'promo' ? `-${discount}%` : p.badge === 'nouveau' ? 'Nouveau' : '';
+                const badgeClass = p.badge === 'nouveau' ? 'nouveau' : '';
+                
+                return `
+                <div class="product-card">
+                    ${p.badge ? `<div class="product-badge ${badgeClass}">${badgeLabel}</div>` : ''}
+                    <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/400x500'">
+                    <div class="product-details">
+                        <div class="product-category">${p.category}</div>
+                        <h3 class="product-name">${p.name}</h3>
+                        <div class="product-price">
+                            ${formatFCFA(p.price)}
+                            ${p.oldPrice ? `<span class="original-price">${formatFCFA(p.oldPrice)}</span>` : ''}
+                        </div>
+                        <button class="btn-cart" onclick="addToCart(${p.id})">
+                            <i class="fas fa-cart-plus"></i> Ajouter au panier
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ===== PANIER =====
+        function getUserKey() {
+            const user = JSON.parse(localStorage.getItem('plpshop_current_user'));
+            return user ? user.uid : 'guest_' + getOrCreateGuestId();
+        }
+        
+        function getOrCreateGuestId() {
+            let id = localStorage.getItem('plpshop_guest_id');
+            if (!id) {
+                id = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('plpshop_guest_id', id);
+            }
+            return id;
+        }
+        
+        function getCartKey() {
+            return 'plpshop_cart_' + getUserKey();
+        }
+        
+        function getUserCart() {
+            const data = localStorage.getItem(getCartKey());
+            return data ? JSON.parse(data) : [];
+        }
+        
+        function saveUserCart(cart) {
+            localStorage.setItem(getCartKey(), JSON.stringify(cart));
+        }
+        
+        function addToCart(productId) {
+            const allProducts = getProducts();
+            const product = allProducts.find(x => x.id === productId);
+            if (!product) return;
+            
+            let cart = getUserCart();
+            const existingItem = cart.find(i => i.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            
+            saveUserCart(cart);
+            updateCartCount();
+            showToast(product.name + ' ajouté au panier !');
+        }
+        
+        function updateCartCount() {
+            const cart = getUserCart();
+            const el = document.getElementById('cartCount');
+            if (el) el.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+        }
+        
+        function toggleCart() {
+            window.location.href = 'index.html';
+        }
+        
+        function redirectToLogin() {
+            window.location.href = 'index.html';
+        }
+        
+        function toggleUserMenu() {
+            const dd = document.getElementById('userMenuDropdown');
+            if (dd) {
+                dd.classList.toggle('show');
+                document.addEventListener('click', function close(e) {
+                    if (!e.target.closest('.user-menu')) {
+                        dd.classList.remove('show');
+                        document.removeEventListener('click', close);
+                    }
+                });
+            }
+        }
+        
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-luxe';
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, 20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ===== INITIALISATION =====
+        function init() {
+            updateFilterStyles();
+            displayProducts();
+            updateCartCount();
+            
+            // Écouter les changements de l'admin
+            window.addEventListener('storage', function(e) {
+                if (e.key === STORAGE_KEY) {
+                    displayProducts();
+                }
+            });
+            
+            // Menu utilisateur
+            const user = JSON.parse(localStorage.getItem('plpshop_current_user'));
+            if (user) {
+                const dd = document.getElementById('userMenuDropdown');
+                if (dd) {
+                    const displayName = user.name || user.email || 'Client';
+                    const adminLink = user.role === 'admin' 
+                        ? '<a href="admin.html" target="_blank"><i class="fas fa-cog"></i> Administration</a><hr>' 
+                        : '';
+                    dd.innerHTML = `
+                        <div style="padding:14px 18px;border-bottom:1px solid rgba(0,0,0,0.06);">
+                            <div style="font-weight:600;font-size:13px;">${displayName}</div>
+                            <div style="font-size:10px;color:var(--plp-blue);">${user.role === 'admin' ? 'Administrateur' : 'Client'}</div>
+                        </div>
+                        ${adminLink}
+                        <a href="suivi.html"><i class="fas fa-box"></i> Mes commandes</a>
+                        <a href="collections.html"><i class="fas fa-tshirt"></i> Collections</a>
+                        <hr>
+                        <a href="#" onclick="logoutUser();return false;"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+                    `;
+                }
+            }
+            
+            // Recherche
+            document.getElementById('searchInput')?.addEventListener('keyup', e => {
+                if (e.key === 'Enter') searchProducts();
+            });
+        }
+        
+        function logoutUser() {
+            if (confirm('Voulez-vous vous déconnecter ?')) {
+                localStorage.removeItem('plpshop_current_user');
+                window.location.reload();
+            }
+        }
+
+        init();
+
+        // Exposition globale
+        window.switchGender = switchGender;
+        window.filterByCategory = filterByCategory;
+        window.searchProducts = searchProducts;
+        window.addToCart = addToCart;
+        window.toggleCart = toggleCart;
+        window.toggleUserMenu = toggleUserMenu;
+        window.logoutUser = logoutUser;
+
+        console.log('🛍️ Collections PLP Shop | 🔗 Admin synchronisé | Clé: ' + STORAGE_KEY);
+    </script>
+</body>
+</html>
