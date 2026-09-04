@@ -82,12 +82,14 @@
         /* ===== PAYMENT LINKS ===== */
         .payment-links-section { margin-bottom: 1.5rem; }
         .payment-links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.6rem; }
-        .payment-link-card { background: var(--white); border-radius: var(--radius-sm); padding: clamp(0.6rem, 1.5vw, 1rem); text-align: center; border: 1px solid rgba(0,0,0,0.06); box-shadow: var(--shadow-sm); transition: var(--transition); cursor: pointer; text-decoration: none; color: var(--black); display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
-        .payment-link-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .payment-link-card { background: var(--white); border-radius: var(--radius-sm); padding: clamp(0.6rem, 1.5vw, 1rem); text-align: center; border: 1px solid rgba(0,0,0,0.06); box-shadow: var(--shadow-sm); transition: var(--transition); cursor: default; text-decoration: none; color: var(--black); display: flex; flex-direction: column; align-items: center; gap: 0.3rem; opacity: 0.6; position: relative; }
         .payment-link-card .payment-icon { font-size: clamp(1.4rem, 2vw, 1.8rem); }
         .payment-link-card h4 { font-size: clamp(8px, 0.9vw, 10px); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .payment-link-card p { font-size: clamp(7px, 0.7vw, 9px); color: var(--gray-cool); }
-        .payment-link-card .btn-payment-link { display: inline-block; padding: 5px 12px; border-radius: var(--radius-full); font-size: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: var(--transition); margin-top: 0.2rem; }
+        .payment-link-card .btn-payment-link { display: inline-block; padding: 5px 12px; border-radius: var(--radius-full); font-size: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: var(--transition); margin-top: 0.2rem; background: var(--gray-cool); color: var(--white); opacity: 0.5; }
+        .payment-link-card .disabled-badge { position: absolute; top: 4px; right: 4px; background: var(--danger); color: white; font-size: 6px; padding: 2px 6px; border-radius: 2px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        .payment-link-card .lock-icon { font-size: 12px; color: var(--gray-warm); margin-left: 4px; }
+        .payment-link-card .payment-icon.disabled { opacity: 0.4; }
 
         /* ===== SEARCH CARD ===== */
         .search-card { background: var(--white); padding: clamp(1rem, 2vw, 1.5rem); border-radius: var(--radius-sm); box-shadow: var(--shadow-md); margin-bottom: 1.2rem; border: 1px solid rgba(0,0,0,0.06); }
@@ -153,6 +155,10 @@
         /* ===== TOAST ===== */
         .toast-luxe { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); background: var(--plp-blue); color: var(--white); padding: 0.6rem 1rem; border-radius: var(--radius-sm); z-index: 5000; font-size: clamp(9px, 1vw, 10px); letter-spacing: 0.5px; text-transform: uppercase; font-weight: 500; box-shadow: var(--shadow-md); animation: fadeInUp 0.3s ease; max-width: 90vw; text-align: center; }
         @keyframes fadeInUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+        /* ===== BANNIÈRE PAIEMENT DÉSACTIVÉ ===== */
+        .payment-disabled-banner { background: #fef3c7; border: 1px solid #f59e0b; border-radius: var(--radius-sm); padding: 0.6rem 1rem; text-align: center; margin-bottom: 1rem; font-size: 10px; color: #92400e; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+        .payment-disabled-banner i { color: var(--danger); font-size: 14px; }
 
         @media (max-width: 768px) {
             .header-container { gap: 0.5rem; }
@@ -238,37 +244,47 @@
             </div>
         </div>
 
-        <!-- Moyens de paiement -->
+        <!-- Bannière paiement désactivé -->
+        <div class="payment-disabled-banner">
+            <i class="fas fa-lock"></i>
+            <span><strong>Paiement désactivé</strong> — Les moyens de paiement sont actuellement indisponibles. Merci de votre compréhension.</span>
+        </div>
+
+        <!-- Moyens de paiement (désactivés) -->
         <div class="payment-links-section">
             <div style="text-align:center;margin-bottom:1rem;">
-                <div style="display:inline-block;font-size:7px;text-transform:uppercase;letter-spacing:2px;color:var(--plp-blue);border:1px solid rgba(26,86,219,0.2);padding:3px 10px;border-radius:var(--radius-full);margin-bottom:0.4rem;font-weight:600;">Paiement</div>
-                <h3 style="font-size:clamp(1rem,2vw,1.4rem);">Moyens de Paiement</h3>
+                <div style="display:inline-block;font-size:7px;text-transform:uppercase;letter-spacing:2px;color:var(--gray-warm);border:1px solid rgba(0,0,0,0.1);padding:3px 10px;border-radius:var(--radius-full);margin-bottom:0.4rem;font-weight:600;background:#f5f5f5;">🔒 Paiement indisponible</div>
+                <h3 style="font-size:clamp(1rem,2vw,1.4rem);color:var(--gray-cool);">Moyens de Paiement <span style="font-size:0.7rem;color:var(--danger);">(désactivés)</span></h3>
             </div>
             <div class="payment-links-grid">
-                <a href="https://orangemoney.sn/" target="_blank" class="payment-link-card" style="border-left:3px solid var(--orange);">
-                    <i class="fas fa-mobile-alt payment-icon" style="color:var(--orange);"></i>
+                <div class="payment-link-card" style="border-left:3px solid var(--gray-warm);">
+                    <span class="disabled-badge">🔒 désactivé</span>
+                    <i class="fas fa-mobile-alt payment-icon disabled" style="color:var(--gray-warm);"></i>
                     <h4>Orange Money</h4>
                     <p>#144# • Code PLPSHOP2026</p>
-                    <span class="btn-payment-link" style="background:var(--orange);color:white;">Payer</span>
-                </a>
-                <a href="https://wave.com/" target="_blank" class="payment-link-card" style="border-left:3px solid var(--wave-color);">
-                    <i class="fas fa-wallet payment-icon" style="color:var(--wave-color);"></i>
+                    <span class="btn-payment-link">Indisponible</span>
+                </div>
+                <div class="payment-link-card" style="border-left:3px solid var(--gray-warm);">
+                    <span class="disabled-badge">🔒 désactivé</span>
+                    <i class="fas fa-wallet payment-icon disabled" style="color:var(--gray-warm);"></i>
                     <h4>Wave</h4>
                     <p>Transfert instantané</p>
-                    <span class="btn-payment-link" style="background:var(--wave-color);color:white;">Payer</span>
-                </a>
-                <a href="#" class="payment-link-card" style="border-left:3px solid #1a1f71;">
-                    <i class="fab fa-cc-visa payment-icon" style="color:#1a1f71;"></i>
+                    <span class="btn-payment-link">Indisponible</span>
+                </div>
+                <div class="payment-link-card" style="border-left:3px solid var(--gray-warm);">
+                    <span class="disabled-badge">🔒 désactivé</span>
+                    <i class="fab fa-cc-visa payment-icon disabled" style="color:var(--gray-warm);"></i>
                     <h4>Visa</h4>
                     <p>Carte Bancaire</p>
-                    <span class="btn-payment-link" style="background:#1a1f71;color:white;">Payer</span>
-                </a>
-                <a href="#" class="payment-link-card" style="border-left:3px solid #eb001b;">
-                    <i class="fab fa-cc-mastercard payment-icon" style="color:#eb001b;"></i>
+                    <span class="btn-payment-link">Indisponible</span>
+                </div>
+                <div class="payment-link-card" style="border-left:3px solid var(--gray-warm);">
+                    <span class="disabled-badge">🔒 désactivé</span>
+                    <i class="fab fa-cc-mastercard payment-icon disabled" style="color:var(--gray-warm);"></i>
                     <h4>Mastercard</h4>
                     <p>Carte Bancaire</p>
-                    <span class="btn-payment-link" style="background:#eb001b;color:white;">Payer</span>
-                </a>
+                    <span class="btn-payment-link">Indisponible</span>
+                </div>
             </div>
         </div>
 
@@ -295,7 +311,7 @@
         const PAYMENT_LINKS = {
             orange: { 
                 name: 'Orange Money', 
-                url: 'https://orangemoney.sn/', 
+                url: '#', 
                 ussd: '#144#', 
                 merchantCode: 'PLPSHOP2026', 
                 instructions: [
@@ -308,7 +324,7 @@
             },
             wave: { 
                 name: 'Wave', 
-                url: 'https://wave.com/', 
+                url: '#', 
                 merchantPhone: '+221 77 907 89 70', 
                 instructions: [
                     'Ouvrez l\'application Wave',
@@ -568,16 +584,18 @@
             let paymentHTML = '';
             if (paymentMethod === 'orange') {
                 paymentHTML = `
-                    <div style="background:#fff8f0;padding:0.6rem;border-radius:2px;margin:0.6rem 0;border-left:3px solid var(--orange);font-size:9px;">
+                    <div style="background:#f5f5f5;padding:0.6rem;border-radius:2px;margin:0.6rem 0;border-left:3px solid var(--gray-warm);font-size:9px;opacity:0.6;">
                         <strong>📱 Paiement Orange Money</strong><br>
                         USSD : #144# | Code marchand : PLPSHOP2026
+                        <br><small style="color:var(--gray-cool);">⚠️ Paiement désactivé</small>
                     </div>
                 `;
             } else if (paymentMethod === 'wave') {
                 paymentHTML = `
-                    <div style="background:#f0f5ff;padding:0.6rem;border-radius:2px;margin:0.6rem 0;border-left:3px solid var(--wave-color);font-size:9px;">
+                    <div style="background:#f5f5f5;padding:0.6rem;border-radius:2px;margin:0.6rem 0;border-left:3px solid var(--gray-warm);font-size:9px;opacity:0.6;">
                         <strong>💳 Paiement Wave</strong><br>
                         N° marchand : +221 77 907 89 70
+                        <br><small style="color:var(--gray-cool);">⚠️ Paiement désactivé</small>
                     </div>
                 `;
             }

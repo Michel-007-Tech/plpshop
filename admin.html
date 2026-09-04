@@ -23,12 +23,16 @@
             --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
             --transition: all 0.3s ease;
             --radius-sm: 4px;
+            --tshirt-color: #2563eb;
+            --short-color: #059669;
+            --maillot-color: #dc2626;
+            --ensemble-color: #7c3aed;
+            --chaussure-color: #d97706;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { font-size: 16px; scroll-behavior: smooth; }
         img { max-width: 100%; height: auto; }
 
-        /* ===== ÉCRAN DE VÉRIFICATION ===== */
         .owner-verify { display: flex; align-items: center; justify-content: center; min-height: 100vh; min-height: 100dvh; background: linear-gradient(135deg, var(--plp-blue-dark) 0%, var(--plp-blue) 100%); font-family: 'Montserrat', sans-serif; padding: 1rem; }
         .owner-verify-card { background: var(--white); padding: clamp(1.2rem, 3vw, 2rem); border-radius: var(--radius-sm); text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.4); max-width: 380px; width: 100%; border: 1px solid rgba(26,86,219,0.2); }
         .owner-verify-card .crest { width: 45px; height: 45px; background: linear-gradient(135deg, var(--plp-blue-dark), var(--plp-blue), var(--plp-blue-light)); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--white); font-size: 18px; margin-bottom: 0.8rem; border: 2px solid var(--plp-blue); }
@@ -46,10 +50,8 @@
         .error-msg { background: #fce4ec; color: #880e4f; padding: 6px; border-radius: var(--radius-sm); margin-bottom: 0.6rem; font-size: 9px; display: none; border: 1px solid #f8bbd0; }
         .error-msg.show { display: block; }
 
-        /* ===== CORPS ADMIN ===== */
         body.admin-body { font-family: 'Montserrat', sans-serif; background: var(--cream); display: flex; min-height: 100vh; }
 
-        /* ===== SIDEBAR ===== */
         .sidebar { width: 240px; background: var(--black); color: var(--white); padding: 1.5rem 0; position: fixed; height: 100vh; height: 100dvh; overflow-y: auto; z-index: 100; border-right: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease; }
         .sidebar-logo { padding: 0 1rem; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px; }
         .sidebar-logo .crest { width: 32px; height: 32px; background: linear-gradient(135deg, var(--plp-blue-dark), var(--plp-blue), var(--plp-blue-light)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 13px; border: 2px solid var(--plp-blue); flex-shrink: 0; }
@@ -114,9 +116,20 @@
         .btn-add { padding: 6px 14px; background: var(--plp-blue); color: var(--white); border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px; transition: var(--transition); font-family: 'Montserrat', sans-serif; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
         .btn-add:hover { background: var(--plp-blue-dark); }
 
+        /* Filtres par catégorie */
         .filter-buttons { display: flex; gap: 0.2rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
         .filter-btn { padding: 4px 10px; border: 1px solid rgba(0,0,0,0.1); background: transparent; border-radius: 2px; cursor: pointer; font-size: 7px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; transition: var(--transition); font-family: 'Montserrat', sans-serif; color: var(--gray-cool); white-space: nowrap; }
         .filter-btn:hover, .filter-btn.active { background: var(--plp-blue); color: var(--white); border-color: var(--plp-blue); }
+        .filter-btn.tshirt { border-color: var(--tshirt-color); color: var(--tshirt-color); }
+        .filter-btn.tshirt:hover, .filter-btn.tshirt.active { background: var(--tshirt-color); color: white; }
+        .filter-btn.short { border-color: var(--short-color); color: var(--short-color); }
+        .filter-btn.short:hover, .filter-btn.short.active { background: var(--short-color); color: white; }
+        .filter-btn.maillot { border-color: var(--maillot-color); color: var(--maillot-color); }
+        .filter-btn.maillot:hover, .filter-btn.maillot.active { background: var(--maillot-color); color: white; }
+        .filter-btn.ensemble { border-color: var(--ensemble-color); color: var(--ensemble-color); }
+        .filter-btn.ensemble:hover, .filter-btn.ensemble.active { background: var(--ensemble-color); color: white; }
+        .filter-btn.chaussure { border-color: var(--chaussure-color); color: var(--chaussure-color); }
+        .filter-btn.chaussure:hover, .filter-btn.chaussure.active { background: var(--chaussure-color); color: white; }
 
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(4px); }
         .modal.active { display: flex; }
@@ -134,7 +147,6 @@
         .btn-submit:hover { background: var(--plp-blue-dark); }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
 
-        /* ===== UPLOAD D'IMAGE ===== */
         .image-upload-container { border: 2px dashed rgba(26,86,219,0.3); border-radius: var(--radius-sm); padding: 1rem; text-align: center; cursor: pointer; transition: var(--transition); background: rgba(26,86,219,0.02); margin-bottom: 0.6rem; }
         .image-upload-container:hover { border-color: var(--plp-blue); background: rgba(26,86,219,0.05); }
         .image-upload-container i { font-size: 2rem; color: var(--plp-blue); margin-bottom: 0.4rem; }
@@ -150,11 +162,72 @@
         .btn-remove-image { margin-top: 0.3rem; padding: 4px 10px; background: var(--danger); color: var(--white); border: none; border-radius: 2px; cursor: pointer; font-size: 7px; text-transform: uppercase; font-family: 'Montserrat', sans-serif; display: none; }
         .btn-remove-image.show { display: inline-block; }
 
-        /* ===== BOUTON MENU MOBILE ===== */
         .menu-toggle { display: none; background: var(--plp-blue); border: none; color: var(--white); padding: 6px 12px; border-radius: var(--radius-sm); cursor: pointer; font-size: 20px; z-index: 101; }
         .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
 
-        /* ===== RESPONSIVE ===== */
+        /* Badges de catégorie */
+        .category-badge { padding: 2px 6px; border-radius: 2px; font-size: 7px; font-weight: 600; text-transform: uppercase; display: inline-block; white-space: nowrap; }
+        .category-tshirt { background: rgba(37,99,235,0.12); color: var(--tshirt-color); }
+        .category-short { background: rgba(5,150,105,0.12); color: var(--short-color); }
+        .category-maillot { background: rgba(220,38,38,0.12); color: var(--maillot-color); }
+        .category-ensemble { background: rgba(124,58,237,0.12); color: var(--ensemble-color); }
+        .category-chaussure { background: rgba(217,119,6,0.12); color: var(--chaussure-color); }
+
+        /* Sections par catégorie - Style amélioré */
+        .category-section {
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            padding: 0.8rem;
+            margin-bottom: 1.2rem;
+            border-left: 4px solid var(--plp-blue);
+            box-shadow: var(--shadow-sm);
+        }
+        .category-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.4rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+        .category-section .section-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .category-section .section-header .badge-cat {
+            font-size: 7px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .category-section .section-header .badge-cat.count {
+            background: rgba(0,0,0,0.04);
+            color: var(--gray-cool);
+        }
+        .category-section .section-table { overflow-x: auto; }
+        .category-section .section-table table { min-width: 400px; }
+        .category-section .section-table th,
+        .category-section .section-table td { padding: 6px 8px; font-size: 8px; }
+
+        .cat-tshirt { border-left-color: var(--tshirt-color); }
+        .cat-short { border-left-color: var(--short-color); }
+        .cat-maillot { border-left-color: var(--maillot-color); }
+        .cat-ensemble { border-left-color: var(--ensemble-color); }
+        .cat-chaussure { border-left-color: var(--chaussure-color); }
+
+        .badge-tshirt { background: rgba(37,99,235,0.12); color: var(--tshirt-color); }
+        .badge-short { background: rgba(5,150,105,0.12); color: var(--short-color); }
+        .badge-maillot { background: rgba(220,38,38,0.12); color: var(--maillot-color); }
+        .badge-ensemble { background: rgba(124,58,237,0.12); color: var(--ensemble-color); }
+        .badge-chaussure { background: rgba(217,119,6,0.12); color: var(--chaussure-color); }
+
         @media (min-width: 769px) {
             .sidebar { transform: translateX(0) !important; }
             .sidebar-overlay { display: none !important; }
@@ -176,9 +249,6 @@
             .data-section { padding: 0.6rem; }
             th, td { padding: 6px 8px; font-size: 8px; }
             th { font-size: 6px; }
-            .sidebar-menu { padding: 0 0.3rem; }
-            .sidebar-menu a { padding: 10px 0.6rem; font-size: 10px; }
-            .back-to-site { margin: 1rem 0.3rem 0; padding: 10px; font-size: 9px; }
         }
 
         @media (max-width: 480px) {
@@ -196,7 +266,6 @@
     </style>
 </head>
 <body>
-    <!-- Écran de vérification propriétaire -->
     <div id="ownerVerifyScreen" class="owner-verify">
         <div class="owner-verify-card">
             <div class="crest"><i class="fas fa-shopping-bag"></i></div>
@@ -221,7 +290,6 @@
         </div>
     </div>
 
-    <!-- Contenu Admin -->
     <div id="adminContent" style="display:none; width:100%;">
         <button class="menu-toggle" onclick="toggleSidebar()" title="Menu">
             <i class="fas fa-bars"></i>
@@ -236,7 +304,7 @@
             </div>
             <ul class="sidebar-menu">
                 <li><a class="active" onclick="showSection('dashboard');closeSidebar()"><i class="fas fa-chart-line"></i> Dashboard</a></li>
-                <li><a onclick="showSection('products');closeSidebar()"><i class="fas fa-box"></i> Produits</a></li>
+                <li><a onclick="showSection('products');closeSidebar()"><i class="fas fa-box"></i> Produits <span class="badge-count" id="productCount">0</span></a></li>
                 <li><a onclick="showSection('orders');closeSidebar()"><i class="fas fa-shopping-cart"></i> Commandes <span class="badge-count" id="pendingCount">0</span></a></li>
                 <li><a onclick="showSection('users');closeSidebar()"><i class="fas fa-users"></i> Clients</a></li>
                 <li><a onclick="showSection('invoices');closeSidebar()"><i class="fas fa-file-invoice"></i> Factures</a></li>
@@ -256,6 +324,7 @@
                 </div>
             </div>
 
+            <!-- DASHBOARD -->
             <div id="dashboardSection" class="content-section">
                 <div class="stats-grid">
                     <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-box"></i></div><h3 id="totalProducts">0</h3><p>Produits en ligne</p></div>
@@ -266,21 +335,61 @@
                 <div class="data-section"><h3>Dernières commandes</h3><div class="table-container"><table><thead><tr><th>N°</th><th>Client</th><th>Date</th><th>Montant</th><th>Statut</th></tr></thead><tbody id="dashboardRecentOrders"></tbody></table></div></div>
             </div>
 
+            <!-- PRODUITS PAR CATÉGORIE -->
             <div id="productsSection" class="content-section" style="display:none;">
-                <div class="data-section">
-                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.6rem;">
-                        <h3 style="margin:0;padding:0;border:none;">📦 Gestion des produits</h3>
-                        <button class="btn-add" onclick="openProductModal()"><i class="fas fa-plus"></i> Ajouter un produit</button>
+                <!-- Bouton Ajouter global -->
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:1.2rem;">📦 Gestion des produits par catégorie</h2>
+                    <button class="btn-add" onclick="openProductModal()"><i class="fas fa-plus"></i> Ajouter un produit</button>
+                </div>
+
+                <!-- Section T-SHIRT -->
+                <div class="category-section cat-tshirt">
+                    <div class="section-header">
+                        <h3><i class="fas fa-tshirt" style="color:var(--tshirt-color);"></i> T-shirt <span class="badge-cat count" id="count-tshirt">0</span></h3>
+                        <button class="btn-add" onclick="openProductModalWithCategory('t-shirt')" style="padding:4px 10px;font-size:7px;"><i class="fas fa-plus"></i> Ajouter</button>
                     </div>
-                    <div class="filter-buttons">
-                        <button class="filter-btn active" onclick="filterAdminProducts('all')">Tous</button>
-                        <button class="filter-btn" onclick="filterAdminProducts('homme')"><i class="fas fa-male"></i> Homme</button>
-                        <button class="filter-btn" onclick="filterAdminProducts('femme')"><i class="fas fa-female"></i> Femme</button>
+                    <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Badge</th><th>Actions</th></tr></thead><tbody id="table-tshirt"></tbody></table></div>
+                </div>
+
+                <!-- Section SHORT -->
+                <div class="category-section cat-short">
+                    <div class="section-header">
+                        <h3><i class="fas fa-shorts" style="color:var(--short-color);"></i> Short <span class="badge-cat count" id="count-short">0</span></h3>
+                        <button class="btn-add" onclick="openProductModalWithCategory('short')" style="padding:4px 10px;font-size:7px;"><i class="fas fa-plus"></i> Ajouter</button>
                     </div>
-                    <div class="table-container"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Cat.</th><th>Genre</th><th>Prix</th><th>Badge</th><th>Actions</th></tr></thead><tbody id="productsTableBody"></tbody></table></div>
+                    <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Badge</th><th>Actions</th></tr></thead><tbody id="table-short"></tbody></table></div>
+                </div>
+
+                <!-- Section MAILLOT -->
+                <div class="category-section cat-maillot">
+                    <div class="section-header">
+                        <h3><i class="fas fa-jersey" style="color:var(--maillot-color);"></i> Maillot <span class="badge-cat count" id="count-maillot">0</span></h3>
+                        <button class="btn-add" onclick="openProductModalWithCategory('maillot')" style="padding:4px 10px;font-size:7px;"><i class="fas fa-plus"></i> Ajouter</button>
+                    </div>
+                    <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Badge</th><th>Actions</th></tr></thead><tbody id="table-maillot"></tbody></table></div>
+                </div>
+
+                <!-- Section ENSEMBLE SPORT -->
+                <div class="category-section cat-ensemble">
+                    <div class="section-header">
+                        <h3><i class="fas fa-running" style="color:var(--ensemble-color);"></i> Ensemble Sport <span class="badge-cat count" id="count-ensemble">0</span></h3>
+                        <button class="btn-add" onclick="openProductModalWithCategory('ensemble sport')" style="padding:4px 10px;font-size:7px;"><i class="fas fa-plus"></i> Ajouter</button>
+                    </div>
+                    <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Badge</th><th>Actions</th></tr></thead><tbody id="table-ensemble"></tbody></table></div>
+                </div>
+
+                <!-- Section CHAUSSURES -->
+                <div class="category-section cat-chaussure">
+                    <div class="section-header">
+                        <h3><i class="fas fa-shoe-prints" style="color:var(--chaussure-color);"></i> Chaussures <span class="badge-cat count" id="count-chaussure">0</span></h3>
+                        <button class="btn-add" onclick="openProductModalWithCategory('chaussures')" style="padding:4px 10px;font-size:7px;"><i class="fas fa-plus"></i> Ajouter</button>
+                    </div>
+                    <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Badge</th><th>Actions</th></tr></thead><tbody id="table-chaussure"></tbody></table></div>
                 </div>
             </div>
 
+            <!-- COMMANDES -->
             <div id="ordersSection" class="content-section" style="display:none;">
                 <div class="data-section"><h3>🛒 Gestion des commandes</h3>
                     <div class="filter-buttons">
@@ -294,14 +403,17 @@
                 </div>
             </div>
 
+            <!-- CLIENTS -->
             <div id="usersSection" class="content-section" style="display:none;">
                 <div class="data-section"><h3>👥 Liste des clients</h3><div class="table-container"><table><thead><tr><th>ID</th><th>Nom</th><th>Email</th><th>Tél</th><th>Ville</th><th>Rôle</th></tr></thead><tbody id="usersTableBody"></tbody></table></div></div>
             </div>
 
+            <!-- FACTURES -->
             <div id="invoicesSection" class="content-section" style="display:none;">
                 <div class="data-section"><h3>📄 Factures</h3><div class="table-container"><table><thead><tr><th>N° Facture</th><th>Commande</th><th>Client</th><th>Date</th><th>Montant</th><th>Télécharger</th></tr></thead><tbody id="invoicesTableBody"></tbody></table></div></div>
             </div>
 
+            <!-- PARAMÈTRES -->
             <div id="settingsSection" class="content-section" style="display:none;">
                 <div class="data-section"><h3>⚙️ Paramètres de la boutique</h3>
                     <div class="form-group-luxe"><label>Nom</label><input type="text" id="siteName" value="PLP Shop"></div>
@@ -316,7 +428,7 @@
         </div>
     </div>
 
-    <!-- Modal Produit avec Upload -->
+    <!-- MODAL PRODUIT -->
     <div class="modal" id="productModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -333,19 +445,21 @@
                 
                 <div class="form-row">
                     <div class="form-group-luxe">
+                        <label>Catégorie *</label>
+                        <select id="productCategory" required>
+                            <option value="t-shirt">👕 T-shirt</option>
+                            <option value="short">🩳 Short</option>
+                            <option value="maillot">🏃 Maillot</option>
+                            <option value="ensemble sport">🏋️ Ensemble sport</option>
+                            <option value="chaussures">👟 Chaussures</option>
+                        </select>
+                    </div>
+                    <div class="form-group-luxe">
                         <label>Genre *</label>
                         <select id="productGender" required>
                             <option value="homme">👔 Homme</option>
                             <option value="femme">👗 Femme</option>
-                        </select>
-                    </div>
-                    <div class="form-group-luxe">
-                        <label>Catégorie *</label>
-                        <select id="productCategory" required>
-                            <option value="vêtements">Vêtements</option>
-                            <option value="shorts">Shorts</option>
-                            <option value="chaussures">Chaussures</option>
-                            <option value="accessoires">Accessoires</option>
+                            <option value="mixte">👤 Mixte</option>
                         </select>
                     </div>
                 </div>
@@ -361,7 +475,6 @@
                     </div>
                 </div>
                 
-                <!-- Onglets Image -->
                 <div class="form-group-luxe">
                     <label>Image du produit *</label>
                     <div class="image-tabs">
@@ -373,7 +486,6 @@
                         </button>
                     </div>
                     
-                    <!-- Méthode Upload -->
                     <div class="upload-method active" id="uploadMethod">
                         <div class="image-upload-container" onclick="document.getElementById('imageFileInput').click()">
                             <i class="fas fa-cloud-upload-alt"></i>
@@ -388,7 +500,6 @@
                         <input type="hidden" id="uploadedImageData" value="">
                     </div>
                     
-                    <!-- Méthode URL -->
                     <div class="upload-method" id="urlMethod">
                         <input type="text" id="productImageUrl" placeholder="https://images.unsplash.com/..." style="width:100%;">
                         <small style="color:var(--gray-cool);font-size:8px;">Collez l'URL complète de l'image</small>
@@ -401,7 +512,13 @@
                         <option value="">Aucun</option>
                         <option value="promo">Promotion</option>
                         <option value="nouveau">Nouveau</option>
+                        <option value="exclusif">Exclusif</option>
                     </select>
+                </div>
+                
+                <div class="form-group-luxe">
+                    <label>Description</label>
+                    <input type="text" id="productDescription" placeholder="Brève description du produit">
                 </div>
                 
                 <button type="submit" class="btn-submit"><i class="fas fa-save"></i> Enregistrer le produit</button>
@@ -409,7 +526,7 @@
         </div>
     </div>
 
-    <!-- Modal Détails Commande -->
+    <!-- MODAL DÉTAILS COMMANDE -->
     <div class="modal" id="orderDetailModal">
         <div class="modal-content">
             <div class="modal-header"><h3 id="orderDetailTitle">Détails</h3><i class="fas fa-times modal-close" onclick="closeOrderDetail()"></i></div>
@@ -418,7 +535,6 @@
     </div>
 
     <script>
-        // ===== GESTION MENU MOBILE =====
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -434,7 +550,6 @@
         window.toggleSidebar = toggleSidebar;
         window.closeSidebar = closeSidebar;
 
-        // ===== CONFIGURATION =====
         const OWNER_EMAIL = 'admin@plpshop.com';
         const OWNER_SECRET = 'PLPShop2026';
         const STORAGE_KEYS = {
@@ -447,9 +562,33 @@
         
         let currentFilterOrder = 'all';
         let currentAdminProductFilter = 'all';
-        let currentImageMethod = 'upload'; // 'upload' ou 'url'
+        let currentImageMethod = 'upload';
+        let preselectedCategory = null;
 
-        // ===== VÉRIFICATION PROPRIÉTAIRE =====
+        const CATEGORY_ICONS = {
+            't-shirt': '👕',
+            'short': '🩳',
+            'maillot': '🏃',
+            'ensemble sport': '🏋️',
+            'chaussures': '👟'
+        };
+
+        const CATEGORY_CLASSES = {
+            't-shirt': 'category-tshirt',
+            'short': 'category-short',
+            'maillot': 'category-maillot',
+            'ensemble sport': 'category-ensemble',
+            'chaussures': 'category-chaussure'
+        };
+
+        const CATEGORY_NAMES = {
+            't-shirt': 'T-shirt',
+            'short': 'Short',
+            'maillot': 'Maillot',
+            'ensemble sport': 'Ensemble Sport',
+            'chaussures': 'Chaussures'
+        };
+
         function verifyOwner(e) {
             e.preventDefault();
             const email = document.getElementById('ownerEmail').value.trim();
@@ -481,11 +620,10 @@
         }
         checkExistingSession();
 
-        // ===== INITIALISATION =====
         function initAdmin() {
             ensureDefaultData();
             loadDashboard();
-            loadProducts();
+            loadProductsByCategory();
             loadOrders();
             loadUsers();
             loadInvoices();
@@ -495,7 +633,7 @@
 
         function handleStorageChange(e) {
             if (!e.key) return;
-            if (e.key === STORAGE_KEYS.products) { loadDashboard(); loadProducts(); }
+            if (e.key === STORAGE_KEYS.products) { loadDashboard(); loadProductsByCategory(); }
             if (e.key === STORAGE_KEYS.orders) { loadDashboard(); loadOrders(); loadInvoices(); }
             if (e.key === STORAGE_KEYS.users) { loadDashboard(); loadUsers(); }
         }
@@ -503,21 +641,35 @@
         function ensureDefaultData() {
             if (!localStorage.getItem(STORAGE_KEYS.products)) {
                 const defaults = [
-                    { id: 101, name: "Costume Slim Fit", price: 45000, oldPrice: 55000, category: "vêtements", gender: "homme", badge: "promo", image: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&h=500&fit=crop" },
-                    { id: 102, name: "Chemise en Lin Blanc", price: 15000, category: "vêtements", gender: "homme", badge: null, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400&h=500&fit=crop" },
-                    { id: 201, name: "Robe Élégance", price: 35000, oldPrice: 42000, category: "vêtements", gender: "femme", badge: "promo", image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=500&fit=crop" },
-                    { id: 202, name: "Tailleur Chic", price: 30000, category: "vêtements", gender: "femme", badge: "nouveau", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400&h=500&fit=crop" }
+                    { id: 101, name: "T-shirt Premium Noir", price: 12000, oldPrice: 15000, category: "t-shirt", gender: "homme", badge: "promo", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=500&fit=crop", description: "T-shirt en coton bio" },
+                    { id: 102, name: "T-shirt Femme Élégant", price: 10000, category: "t-shirt", gender: "femme", badge: "nouveau", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400&h=500&fit=crop", description: "Coupe féminine" },
+                    { id: 201, name: "Short Sport Homme", price: 15000, oldPrice: 18000, category: "short", gender: "homme", badge: "promo", image: "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=400&h=500&fit=crop", description: "Short de sport respirant" },
+                    { id: 202, name: "Short Athlétique Femme", price: 14000, category: "short", gender: "femme", badge: null, image: "https://images.unsplash.com/photo-1558618666-fcd25c85f169?w=400&h=500&fit=crop", description: "Short running" },
+                    { id: 301, name: "Maillot PSG Domicile", price: 55000, oldPrice: 70000, category: "maillot", gender: "homme", badge: "exclusif", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=500&fit=crop", description: "Maillot officiel" },
+                    { id: 302, name: "Maillot OM Domicile", price: 50000, category: "maillot", gender: "homme", badge: null, image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=500&fit=crop", description: "Maillot officiel OM" },
+                    { id: 401, name: "Ensemble Sport Homme", price: 45000, oldPrice: 55000, category: "ensemble sport", gender: "homme", badge: "promo", image: "https://images.unsplash.com/photo-1518459031867-a89b944bffe4?w=400&h=500&fit=crop", description: "Ensemble jogging" },
+                    { id: 402, name: "Ensemble Yoga Femme", price: 40000, category: "ensemble sport", gender: "femme", badge: "nouveau", image: "https://images.unsplash.com/photo-1558618666-fcd25c85f169?w=400&h=500&fit=crop", description: "Ensemble yoga" },
+                    { id: 501, name: "Basket Nike Air", price: 85000, oldPrice: 100000, category: "chaussures", gender: "homme", badge: "exclusif", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=500&fit=crop", description: "Basket running" },
+                    { id: 502, name: "Basket Adidas Femme", price: 70000, category: "chaussures", gender: "femme", badge: null, image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=500&fit=crop", description: "Basket lifestyle" }
                 ];
                 localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(defaults));
             }
             if (!localStorage.getItem(STORAGE_KEYS.users)) {
                 localStorage.setItem(STORAGE_KEYS.users, JSON.stringify([{ id: 1, name: 'Administrateur', email: 'admin@plpshop.com', phone: '779078970', city: 'Dakar', role: 'admin', createdAt: new Date().toISOString() }]));
             }
+            if (!localStorage.getItem(STORAGE_KEYS.orders)) {
+                const defaultOrders = [
+                    { id: 'CMD-001', customerName: 'Jean Dupont', customerEmail: 'jean@email.com', date: new Date().toISOString(), total: 45000, status: 'En attente', items: [{ name: 'T-shirt Premium Noir', price: 12000, qty: 2 }] },
+                    { id: 'CMD-002', customerName: 'Marie Diallo', customerEmail: 'marie@email.com', date: new Date(Date.now() - 86400000).toISOString(), total: 55000, status: 'Confirmée', items: [{ name: 'Maillot PSG', price: 55000, qty: 1 }] },
+                    { id: 'CMD-003', customerName: 'Ousmane Sarr', customerEmail: 'ousmane@email.com', date: new Date(Date.now() - 172800000).toISOString(), total: 85000, status: 'Expédiée', items: [{ name: 'Basket Nike Air', price: 85000, qty: 1 }] },
+                    { id: 'CMD-004', customerName: 'Aminata Sow', customerEmail: 'aminata@email.com', date: new Date(Date.now() - 259200000).toISOString(), total: 40000, status: 'Livrée', items: [{ name: 'Ensemble Yoga Femme', price: 40000, qty: 1 }] }
+                ];
+                localStorage.setItem(STORAGE_KEYS.orders, JSON.stringify(defaultOrders));
+            }
         }
 
         function formatFCFA(a) { return (a || 0).toLocaleString('fr-FR') + ' FCFA'; }
 
-        // ===== GESTION DES IMAGES =====
         function switchImageTab(method) {
             currentImageMethod = method;
             document.querySelectorAll('.image-tab').forEach(t => t.classList.remove('active'));
@@ -536,7 +688,6 @@
             const file = event.target.files[0];
             if (!file) return;
 
-            // Vérification du type
             const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
             if (!allowedTypes.includes(file.type)) {
                 alert('❌ Format non supporté. Utilisez JPG, PNG, GIF ou WEBP.');
@@ -544,7 +695,6 @@
                 return;
             }
 
-            // Vérification de la taille (5 Mo max)
             if (file.size > 5 * 1024 * 1024) {
                 alert('❌ Image trop volumineuse (max 5 Mo).');
                 event.target.value = '';
@@ -553,18 +703,11 @@
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                // Afficher l'aperçu
                 const preview = document.getElementById('imagePreview');
                 preview.src = e.target.result;
                 preview.classList.add('show');
-                
-                // Afficher le bouton supprimer
                 document.getElementById('btnRemoveImage').classList.add('show');
-                
-                // Stocker l'image en base64
                 document.getElementById('uploadedImageData').value = e.target.result;
-                
-                // Vider l'URL si on était en mode URL
                 document.getElementById('productImageUrl').value = '';
             };
             reader.readAsDataURL(file);
@@ -586,17 +729,6 @@
             }
         }
 
-        function saveImageToStorage(imageData, productId) {
-            if (!imageData || !imageData.startsWith('data:')) return null;
-            
-            const images = JSON.parse(localStorage.getItem(STORAGE_KEYS.images)) || {};
-            const imageKey = 'img_' + productId;
-            images[imageKey] = imageData;
-            localStorage.setItem(STORAGE_KEYS.images, JSON.stringify(images));
-            return imageKey;
-        }
-
-        // ===== NAVIGATION =====
         function showSection(s) {
             document.querySelectorAll('.content-section').forEach(el => el.style.display = 'none');
             document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
@@ -616,7 +748,7 @@
             document.getElementById('sectionTitle').textContent = titles[s] || 'Admin';
             
             if (s === 'dashboard') loadDashboard();
-            if (s === 'products') loadProducts();
+            if (s === 'products') loadProductsByCategory();
             if (s === 'orders') loadOrders();
             if (s === 'users') loadUsers();
             if (s === 'invoices') loadInvoices();
@@ -627,7 +759,6 @@
             return c[s] || 'status-en-attente';
         }
 
-        // ===== DASHBOARD =====
         function loadDashboard() {
             const p = JSON.parse(localStorage.getItem(STORAGE_KEYS.products)) || [];
             const o = JSON.parse(localStorage.getItem(STORAGE_KEYS.orders)) || [];
@@ -637,52 +768,58 @@
             document.getElementById('totalOrders').textContent = o.length;
             document.getElementById('totalUsers').textContent = u.length;
             document.getElementById('totalRevenue').textContent = o.reduce((s, o) => s + (o.total || 0), 0).toLocaleString('fr-FR') + ' FCFA';
+            document.getElementById('productCount').textContent = p.length;
             
             const recent = o.slice(-5).reverse();
             document.getElementById('dashboardRecentOrders').innerHTML = recent.length === 0
                 ? '<tr><td colspan="5" style="text-align:center;padding:2rem;">Aucune commande</td></tr>'
-                : recent.map(o => `<tr><td><strong>#${o.id || 'N/A'}</strong></td><td>${o.customerName || 'N/A'}</td><td>${new Date(o.date).toLocaleDateString('fr-FR')}</td><td><strong>${formatFCFA(o.total)}</strong></td><td><span class="status-badge ${getStatusClass(o.status)}">${o.status || 'En attente'}</span></td></tr>`).join('');
+                : recent.map(o => `<tr><td><strong>${o.id || 'N/A'}</strong></td><td>${o.customerName || 'N/A'}</td><td>${new Date(o.date).toLocaleDateString('fr-FR')}</td><td><strong>${formatFCFA(o.total)}</strong></td><td><span class="status-badge ${getStatusClass(o.status)}">${o.status || 'En attente'}</span></td></tr>`).join('');
             
             document.getElementById('pendingCount').textContent = o.filter(o => o.status === 'En attente').length;
         }
 
-        // ===== PRODUITS =====
         function getProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEYS.products)) || []; }
         function saveProducts(products) {
             localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(products));
             window.dispatchEvent(new StorageEvent('storage', { key: STORAGE_KEYS.products, newValue: JSON.stringify(products) }));
         }
 
-        function filterAdminProducts(f) {
-            currentAdminProductFilter = f;
-            document.querySelectorAll('#productsSection .filter-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('#productsSection .filter-btn').forEach(b => {
-                if ((f === 'all' && b.textContent.trim() === 'Tous') || b.textContent.toLowerCase().includes(f)) b.classList.add('active');
+        // ===== LOAD PRODUCTS BY CATEGORY =====
+        function loadProductsByCategory() {
+            const products = getProducts();
+            const categories = ['t-shirt', 'short', 'maillot', 'ensemble sport', 'chaussures'];
+            
+            categories.forEach(cat => {
+                const filtered = products.filter(p => p.category === cat);
+                const tbody = document.getElementById('table-' + cat.replace(' ', ''));
+                const countEl = document.getElementById('count-' + cat.replace(' ', ''));
+                
+                if (countEl) countEl.textContent = filtered.length;
+                
+                if (tbody) {
+                    tbody.innerHTML = filtered.length === 0
+                        ? '<tr><td colspan="7" style="text-align:center;padding:1rem;color:var(--gray-warm);">Aucun produit</td></tr>'
+                        : filtered.map(p => {
+                            const d = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+                            const bl = p.badge === 'promo' ? `-${d}%` : p.badge === 'nouveau' ? 'New' : p.badge === 'exclusif' ? '⭐' : '—';
+                            const gl = p.gender === 'homme' ? '👔 H' : p.gender === 'femme' ? '👗 F' : '👤 Mixte';
+                            return `<tr>
+                                <td>#${p.id}</td>
+                                <td><img src="${p.image}" style="width:25px;height:25px;object-fit:cover;border-radius:2px;" onerror="this.src='https://via.placeholder.com/25'"></td>
+                                <td>${p.name}</td>
+                                <td><span class="genre-badge ${p.gender === 'homme' ? 'genre-homme' : p.gender === 'femme' ? 'genre-femme' : ''}" style="padding:1px 4px;font-size:6px;">${gl}</span></td>
+                                <td><strong>${formatFCFA(p.price)}</strong>${p.oldPrice ? `<br><small style="text-decoration:line-through;color:var(--gray-warm);font-size:6px;">${formatFCFA(p.oldPrice)}</small>` : ''}</td>
+                                <td>${bl}</td>
+                                <td><div class="action-buttons"><button class="btn-action btn-edit" onclick="editProduct(${p.id})" style="padding:2px 6px;font-size:6px;"><i class="fas fa-edit"></i></button><button class="btn-action btn-delete" onclick="deleteProduct(${p.id})" style="padding:2px 6px;font-size:6px;"><i class="fas fa-trash"></i></button></div></td>
+                            </tr>`;
+                        }).join('');
+                }
             });
-            loadProducts();
         }
 
-        function loadProducts() {
-            let products = getProducts();
-            if (currentAdminProductFilter !== 'all') products = products.filter(p => p.gender === currentAdminProductFilter);
-            
-            document.getElementById('productsTableBody').innerHTML = products.length === 0
-                ? '<tr><td colspan="8" style="text-align:center;padding:2rem;">Aucun produit</td></tr>'
-                : products.map(p => {
-                    const d = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
-                    const bl = p.badge === 'promo' ? `-${d}%` : p.badge === 'nouveau' ? 'New' : '—';
-                    const gl = p.gender === 'homme' ? '👔 H' : '👗 F';
-                    return `<tr>
-                        <td>#${p.id}</td>
-                        <td><img src="${p.image}" style="width:30px;height:30px;object-fit:cover;border-radius:2px;" onerror="this.src='https://via.placeholder.com/30'"></td>
-                        <td>${p.name}</td>
-                        <td>${p.category}</td>
-                        <td><span class="genre-badge ${p.gender === 'homme' ? 'genre-homme' : 'genre-femme'}">${gl}</span></td>
-                        <td><strong>${formatFCFA(p.price)}</strong>${p.oldPrice ? `<br><small style="text-decoration:line-through;color:var(--gray-warm);">${formatFCFA(p.oldPrice)}</small>` : ''}</td>
-                        <td>${bl}</td>
-                        <td><div class="action-buttons"><button class="btn-action btn-edit" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button><button class="btn-action btn-delete" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button></div></td>
-                    </tr>`;
-                }).join('');
+        function openProductModalWithCategory(category) {
+            preselectedCategory = category;
+            openProductModal();
         }
 
         function openProductModal(productId) {
@@ -700,8 +837,8 @@
                     document.getElementById('productPrice').value = product.price;
                     document.getElementById('productOldPrice').value = product.oldPrice || '';
                     document.getElementById('productBadge').value = product.badge || '';
+                    document.getElementById('productDescription').value = product.description || '';
                     
-                    // Vérifier si l'image est en base64 (uploadée) ou URL
                     if (product.image && product.image.startsWith('data:')) {
                         switchImageTab('upload');
                         document.getElementById('uploadedImageData').value = product.image;
@@ -717,6 +854,10 @@
                 document.getElementById('modalTitle').textContent = 'Ajouter un produit';
                 document.getElementById('productForm').reset();
                 document.getElementById('productId').value = '';
+                if (preselectedCategory) {
+                    document.getElementById('productCategory').value = preselectedCategory;
+                    preselectedCategory = null;
+                }
                 switchImageTab('upload');
             }
         }
@@ -734,6 +875,7 @@
         function closeModal() {
             document.getElementById('productModal').classList.remove('active');
             resetImageForm();
+            preselectedCategory = null;
         }
 
         function saveProduct(event) {
@@ -756,7 +898,8 @@
                 price: parseInt(document.getElementById('productPrice').value),
                 oldPrice: document.getElementById('productOldPrice').value ? parseInt(document.getElementById('productOldPrice').value) : null,
                 image: imageData,
-                badge: document.getElementById('productBadge').value || null
+                badge: document.getElementById('productBadge').value || null,
+                description: document.getElementById('productDescription').value.trim() || ''
             };
             
             if (productId) {
@@ -768,7 +911,7 @@
             
             saveProducts(products);
             closeModal();
-            loadProducts();
+            loadProductsByCategory();
             loadDashboard();
             alert('✅ Produit enregistré avec succès !');
         }
@@ -778,13 +921,12 @@
         function deleteProduct(id) {
             if (confirm('Supprimer ce produit ?')) {
                 saveProducts(getProducts().filter(p => p.id !== id));
-                loadProducts();
+                loadProductsByCategory();
                 loadDashboard();
                 alert('Produit supprimé.');
             }
         }
 
-        // ===== COMMANDES =====
         function getOrders() {
             let orders = JSON.parse(localStorage.getItem(STORAGE_KEYS.orders)) || [];
             return orders.map(o => { if (!o.status) o.status = 'En attente'; if (!o.customerName) o.customerName = 'Client'; return o; });
@@ -811,7 +953,7 @@
             document.getElementById('ordersTableBody').innerHTML = orders.length === 0
                 ? '<tr><td colspan="7" style="text-align:center;padding:2rem;">Aucune commande</td></tr>'
                 : orders.map(o => `<tr>
-                    <td><strong>#${o.id || 'N/A'}</strong></td>
+                    <td><strong>${o.id || 'N/A'}</strong></td>
                     <td>${o.customerName || 'N/A'}</td>
                     <td style="font-size:8px;">${o.customerEmail || 'N/A'}</td>
                     <td>${new Date(o.date).toLocaleDateString('fr-FR')}</td>
@@ -835,23 +977,26 @@
             saveOrders(orders);
             loadOrders();
             loadDashboard();
-            alert(`✅ #${oid} → "${status}"`);
+            alert(`✅ ${oid} → "${status}"`);
         }
 
         function viewOrder(oid) {
             const order = getOrders().find(o => o.id === oid);
             if (!order) return;
-            document.getElementById('orderDetailTitle').textContent = `#${order.id}`;
+            document.getElementById('orderDetailTitle').textContent = `${order.id}`;
             document.getElementById('orderDetailContent').innerHTML = `
                 <p><strong>Client:</strong> ${order.customerName || 'N/A'}</p>
                 <p><strong>Email:</strong> ${order.customerEmail || 'N/A'}</p>
                 <p><strong>Montant:</strong> ${formatFCFA(order.total)}</p>
-                <p><strong>Statut:</strong> <span class="status-badge ${getStatusClass(order.status)}">${order.status}</span></p>`;
+                <p><strong>Statut:</strong> <span class="status-badge ${getStatusClass(order.status)}">${order.status}</span></p>
+                <hr style="margin:0.5rem 0;">
+                <p><strong>Articles:</strong></p>
+                ${(order.items || []).map(item => `<p style="font-size:9px;">• ${item.name} x ${item.qty} = ${formatFCFA(item.price * item.qty)}</p>`).join('')}
+            `;
             document.getElementById('orderDetailModal').classList.add('active');
         }
         function closeOrderDetail() { document.getElementById('orderDetailModal').classList.remove('active'); }
 
-        // ===== CLIENTS =====
         function loadUsers() {
             const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.users)) || [];
             document.getElementById('usersTableBody').innerHTML = users.length === 0
@@ -859,12 +1004,11 @@
                 : users.map(u => `<tr><td>#${u.id || 'N/A'}</td><td>${u.name || 'N/A'}</td><td style="font-size:8px;">${u.email || 'N/A'}</td><td>${u.phone || 'N/A'}</td><td>${u.city || 'N/A'}</td><td>${u.role === 'admin' ? '<span style="color:var(--plp-blue);">Admin</span>' : 'Client'}</td></tr>`).join('');
         }
 
-        // ===== FACTURES =====
         function loadInvoices() {
             const orders = getOrders();
             document.getElementById('invoicesTableBody').innerHTML = orders.length === 0
                 ? '<tr><td colspan="6" style="text-align:center;padding:2rem;">Aucune facture</td></tr>'
-                : orders.map(o => `<tr><td>FACT-${o.id}</td><td>#${o.id}</td><td>${o.customerName || 'N/A'}</td><td>${new Date(o.date).toLocaleDateString('fr-FR')}</td><td><strong>${formatFCFA(o.total)}</strong></td><td><button class="btn-action btn-invoice" onclick="generateInvoice('${o.id}')"><i class="fas fa-download"></i> PDF</button></td></tr>`).join('');
+                : orders.map(o => `<tr><td>FACT-${o.id}</td><td>${o.id}</td><td>${o.customerName || 'N/A'}</td><td>${new Date(o.date).toLocaleDateString('fr-FR')}</td><td><strong>${formatFCFA(o.total)}</strong></td><td><button class="btn-action btn-invoice" onclick="generateInvoice('${o.id}')"><i class="fas fa-download"></i> PDF</button></td></tr>`).join('');
         }
 
         function generateInvoice(oid) {
@@ -891,7 +1035,6 @@
             doc.save(`Facture_PLP_${order.id}.pdf`);
         }
 
-        // ===== PARAMÈTRES =====
         function loadSettings() {
             const s = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings));
             if (s) {
@@ -934,7 +1077,8 @@
             if (e.key === 'Escape') { closeModal(); closeOrderDetail(); }
         });
 
-        console.log('🔐 Administration PLP Shop - Upload d\'images activé');
+        console.log('🔐 Administration PLP Shop - Gestion par catégorie activée');
+        console.log('📦 Catégories disponibles: T-shirt, Short, Maillot, Ensemble Sport, Chaussures');
     </script>
 </body>
 </html>
