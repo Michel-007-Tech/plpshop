@@ -16,10 +16,6 @@
 
     <!-- Leaflet CSS for map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
-    <!-- jsPDF pour les factures -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
     <style>
         /* ===== RESET & VARIABLES ===== */
@@ -281,6 +277,7 @@
         .payment-whatsapp-section .payment-info small { color: var(--color-silver); font-size: 9px; }
         .payment-whatsapp-section .whatsapp-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; background: #25d366; color: white; border: none; border-radius: var(--radius-full); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: var(--transition); font-family: var(--font-sans); text-decoration: none; }
         .payment-whatsapp-section .whatsapp-btn:hover { background: #1a9e4f; transform: scale(1.02); }
+        .payment-whatsapp-section .whatsapp-btn:disabled { background: #ccc; cursor: not-allowed; }
 
         .proof-upload { margin-top: 0.6rem; padding: 1rem; background: var(--color-bg); border-radius: var(--radius-sm); border: 2px dashed rgba(201,168,76,0.3); transition: var(--transition); }
         .proof-upload.dragover { border-color: var(--color-gold); background: rgba(201,168,76,0.04); }
@@ -296,8 +293,7 @@
 
         /* ===== FOOTER ===== */
         .footer { background: var(--color-black); color: rgba(255,255,255,0.6); padding: clamp(2.4rem,5vw,4rem) 0 0; margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.04); position: relative; }
-        .footer .footer-bg-pattern { position: absolute; inset: 0; z-index: 0; opacity: 0.02; background-image: radial-gradient(circle at 20% 50%, var(--color-gold) 1px, transparent 1px), radial-gradient(circle at 80% 20%, var(--color-gold) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; }
-        .footer-grid { max-width: 1440px; margin: 0 auto; padding: 0 1.2rem; display: grid; grid-template-columns: 2fr 1fr 1.2fr 1.5fr; gap: clamp(1.2rem,2.5vw,2.5rem); position: relative; z-index: 1; }
+        .footer-grid { max-width: 1440px; margin: 0 auto; padding: 0 1.2rem; display: grid; grid-template-columns: 2fr 1fr 1.2fr; gap: clamp(1.2rem,2.5vw,2.5rem); position: relative; z-index: 1; }
         .footer-col h4 { font-family: var(--font-sans); font-size: clamp(9px,1vw,11px); text-transform: uppercase; letter-spacing: 2px; color: var(--color-gold); margin-bottom: 0.8rem; font-weight: 600; position: relative; display: inline-block; }
         .footer-col h4::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 30px; height: 2px; background: var(--color-gold); opacity: 0.4; }
         .footer-col p, .footer-col li { font-size: clamp(9px,1vw,11px); color: rgba(255,255,255,0.4); line-height: 1.8; }
@@ -319,27 +315,6 @@
         .footer-social a.whatsapp:hover { background: #25d366; border-color: #25d366; color: white; }
         .footer-social a.tiktok:hover { background: #000000; border-color: #ff0050; color: #ff0050; }
         .footer-social a.youtube:hover { background: #ff0000; border-color: #ff0000; color: white; }
-
-        .map-card { background: rgba(255,255,255,0.04); border-radius: var(--radius-md); padding: 0.6rem; border: 1px solid rgba(255,255,255,0.06); overflow: hidden; transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1); position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-        .map-card::before { content: ''; position: absolute; inset: -2px; border-radius: var(--radius-md); padding: 2px; background: linear-gradient(135deg, var(--color-gold), transparent, var(--color-gold)); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0.3; transition: var(--transition); pointer-events: none; }
-        .map-card:hover::before { opacity: 0.8; }
-        .map-card:hover { border-color: rgba(201,168,76,0.3); box-shadow: 0 8px 40px rgba(0,0,0,0.3); transform: translateY(-2px); }
-        #mapDakar { width: 100%; height: 140px; border-radius: var(--radius-sm); background: #1a1a2e; position: relative; z-index: 1; border: 1px solid rgba(255,255,255,0.03); transition: var(--transition); }
-        #mapDakar:hover { border-color: rgba(201,168,76,0.2); }
-        .leaflet-control-zoom { border: none !important; border-radius: var(--radius-sm) !important; overflow: hidden !important; box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important; }
-        .leaflet-control-zoom a { background: rgba(255,255,255,0.9) !important; color: var(--color-black) !important; border: none !important; font-weight: 700 !important; transition: var(--transition) !important; width: 28px !important; height: 28px !important; line-height: 28px !important; font-size: 14px !important; }
-        .leaflet-control-zoom a:hover { background: var(--color-gold) !important; color: var(--color-black) !important; }
-        .leaflet-control-zoom a:first-child { border-bottom: 1px solid rgba(0,0,0,0.08) !important; }
-        .map-card { animation: mapAppear 0.8s ease-out; }
-        @keyframes mapAppear { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        .custom-marker { width: 16px; height: 16px; background: var(--color-gold); border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 0 rgba(201,168,76,0.5); animation: pulse-marker 2s infinite; }
-        @keyframes pulse-marker { 0% { box-shadow: 0 0 0 0 rgba(201,168,76,0.5); } 70% { box-shadow: 0 0 0 16px rgba(201,168,76,0); } 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0); } }
-        .map-card .map-label { display: flex; align-items: center; gap: 8px; padding: 6px 8px 2px; font-size: 8px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; background: rgba(255,255,255,0.02); border-radius: 0 0 var(--radius-sm) var(--radius-sm); margin-top: 4px; }
-        .map-card .map-label i { color: var(--color-gold); font-size: 10px; animation: bounce-location 2s ease-in-out infinite; }
-        @keyframes bounce-location { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-        .map-card .map-label .address-detail { color: rgba(255,255,255,0.15); font-size: 7px; letter-spacing: 0.5px; }
-        .map-card .map-label .status-dot { display: inline-block; width: 6px; height: 6px; background: #4ade80; border-radius: 50%; margin-left: auto; animation: blink-dot 1.5s ease-in-out infinite; }
-        @keyframes blink-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
 
         .footer-bottom { margin-top: 2rem; padding: 1rem 0; border-top: 1px solid rgba(255,255,255,0.04); text-align: center; font-size: clamp(8px,0.9vw,10px); color: rgba(255,255,255,0.25); position: relative; z-index: 1; }
         .footer-bottom .footer-bottom-inner { max-width: 1440px; margin: 0 auto; padding: 0 1.2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.6rem; }
@@ -410,7 +385,6 @@
             .category-cards-grid { grid-template-columns: 1fr; gap: 1rem; }
             .category-card { height: 220px; }
             .footer-bottom .footer-bottom-inner { flex-direction: column; text-align: center; }
-            #mapDakar { height: 110px; }
         }
         @media (max-width: 480px) {
             .top-bar { font-size: 6px; padding: 4px 8px; gap: 6px; }
@@ -433,8 +407,6 @@
             .auth-box { max-width: 95%; }
             .category-card { height: 180px; }
             .category-card .overlay h2 { font-size: 1.6rem; }
-            #mapDakar { height: 90px; }
-            .map-card .map-label .address-detail { display: none; }
         }
     </style>
 </head>
@@ -489,12 +461,12 @@
     <nav class="nav-main">
         <div class="nav-inner">
             <a href="#" class="nav-link active" onclick="scrollToSection('hero')">🏠 Accueil</a>
-            <a href="#" class="nav-link" onclick="scrollToSection('products')">👕 T-shirt</a>
-            <a href="#" class="nav-link" onclick="filterProducts('short')">🩳 Short</a>
-            <a href="#" class="nav-link" onclick="filterProducts('maillot')">🏃 Maillot</a>
-            <a href="#" class="nav-link" onclick="filterProducts('ensemble sport')">🏋️ Ensemble</a>
-            <a href="#" class="nav-link" onclick="filterProducts('chaussures')">👟 Chaussures</a>
-            <a href="#" class="nav-link" onclick="scrollToSection('map')">📍 Localisation</a>
+            <a href="#" class="nav-link" onclick="filterProducts('all'); scrollToSection('products')">👕 Tous</a>
+            <a href="#" class="nav-link" onclick="filterProducts('t-shirt'); scrollToSection('products')">👕 T-shirt</a>
+            <a href="#" class="nav-link" onclick="filterProducts('short'); scrollToSection('products')">🩳 Short</a>
+            <a href="#" class="nav-link" onclick="filterProducts('maillot'); scrollToSection('products')">🏃 Maillot</a>
+            <a href="#" class="nav-link" onclick="filterProducts('ensemble sport'); scrollToSection('products')">🏋️ Ensemble</a>
+            <a href="#" class="nav-link" onclick="filterProducts('chaussures'); scrollToSection('products')">👟 Chaussures</a>
         </div>
     </nav>
 
@@ -571,7 +543,7 @@
             <div class="feature-item">
                 <div class="feature-icon"><i class="fas fa-truck-fast"></i></div>
                 <h4>Livraison Rapide</h4>
-                <p>Partout au Sénégal</p>
+                <p></p>
             </div>
             <div class="feature-item">
                 <div class="feature-icon"><i class="fas fa-medal"></i></div>
@@ -610,23 +582,6 @@
         <div class="products-grid" id="productsGrid"></div>
     </section>
 
-    <!-- ===== MAP SECTION ===== -->
-    <section id="map" style="max-width: 1440px; margin: 2rem auto; padding: 0 1.2rem;">
-        <div style="text-align: center; margin-bottom: 1rem;">
-            <span class="tag" style="display: inline-block; font-size: clamp(7px,0.8vw,9px); text-transform: uppercase; letter-spacing: 2.5px; color: var(--color-gold); border: 1px solid rgba(201,168,76,0.2); padding: 4px 14px; border-radius: var(--radius-full); font-weight: 600; background: rgba(201,168,76,0.03);">📍 Localisation</span>
-            <h2 style="font-size: clamp(1.6rem,3vw,2.4rem); margin-top: 0.5rem; font-weight: 600; letter-spacing: -0.01em;">Nous trouver</h2>
-        </div>
-        <div class="map-card" style="max-width: 800px; margin: 0 auto;">
-            <div id="mapDakar" style="width: 100%; height: 300px; border-radius: var(--radius-sm); background: #1a1a2e;"></div>
-            <div class="map-label" style="display: flex; align-items: center; gap: 8px; padding: 6px 8px 2px; font-size: 8px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; background: rgba(255,255,255,0.02); border-radius: 0 0 var(--radius-sm) var(--radius-sm); margin-top: 4px;">
-                <i class="fas fa-location-dot" style="color: var(--color-gold); font-size: 10px; animation: bounce-location 2s ease-in-out infinite;"></i>
-                <span>PLP Shop — Dakar, Sénégal</span>
-                <span class="address-detail" style="color: rgba(255,255,255,0.15); font-size: 7px; letter-spacing: 0.5px;">· Mermoz, Sacré Cœur</span>
-                <span class="status-dot" style="display: inline-block; width: 6px; height: 6px; background: #4ade80; border-radius: 50%; margin-left: auto; animation: blink-dot 1.5s ease-in-out infinite;"></span>
-            </div>
-        </div>
-    </section>
-
     <!-- ===== WHATSAPP FLOAT ===== -->
     <div class="whatsapp-float">
         <a href="https://wa.me/221768597835" target="_blank" aria-label="WhatsApp">
@@ -636,7 +591,6 @@
 
     <!-- ===== FOOTER ===== -->
     <footer class="footer">
-        <div class="footer-bg-pattern"></div>
         <div class="footer-grid">
             <div class="footer-col">
                 <a href="#" class="brand-link" style="margin-bottom:0.6rem;">
@@ -658,16 +612,11 @@
             <div class="footer-col">
                 <h4>Collections</h4>
                 <ul>
-                    <li><a href="#" onclick="filterProducts('t-shirt')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> T-shirt</a></li>
-                    <li><a href="#" onclick="filterProducts('short')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Short</a></li>
-                    <li><a href="#" onclick="filterProducts('maillot')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Maillot</a></li>
-                    <li><a href="#" onclick="filterProducts('ensemble sport')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Ensemble Sport</a></li>
-                    <li><a href="#" onclick="filterProducts('chaussures')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Chaussures</a></li>
-                </ul>
-                <h4 style="margin-top:0.8rem;">Service</h4>
-                <ul>
-                    <li><a href="#" onclick="scrollToSection('map')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Localisation</a></li>
-                    <li><a href="#"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Contact</a></li>
+                    <li><a href="#" onclick="filterProducts('t-shirt'); scrollToSection('products')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> T-shirt</a></li>
+                    <li><a href="#" onclick="filterProducts('short'); scrollToSection('products')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Short</a></li>
+                    <li><a href="#" onclick="filterProducts('maillot'); scrollToSection('products')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Maillot</a></li>
+                    <li><a href="#" onclick="filterProducts('ensemble sport'); scrollToSection('products')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Ensemble Sport</a></li>
+                    <li><a href="#" onclick="filterProducts('chaussures'); scrollToSection('products')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Chaussures</a></li>
                 </ul>
             </div>
 
@@ -675,9 +624,7 @@
                 <h4>Contact</h4>
                 <div class="contact-item">
                     <i class="fas fa-phone"></i>
-                    <div>
-                        <a href="tel:+221768597835">+221 76 859 78 35</a><br>
-                    </div>
+                    <a href="tel:+221768597835">+221 76 859 78 35</a>
                 </div>
                 <div class="contact-item">
                     <i class="fas fa-envelope"></i>
@@ -691,21 +638,9 @@
                     <i class="fas fa-clock"></i>
                     <span style="color:rgba(255,255,255,0.4);font-size:clamp(9px,1vw,11px);">Lun-Sam: 8h - 20h</span>
                 </div>
-            </div>
-
-            <div class="footer-col">
-                <h4>Nous trouver</h4>
                 <div class="contact-item">
                     <i class="fas fa-map-pin"></i>
-                    <span style="color:rgba(255,255,255,0.5);font-size:clamp(9px,1vw,11px);">
-                        Dakar, Sénégal<br>
-                        <span style="font-size:8px;color:rgba(255,255,255,0.25);">Mermoz, Sacré Cœur</span>
-                    </span>
-                </div>
-                <div style="margin-top:0.6rem;display:flex;gap:0.6rem;flex-wrap:wrap;">
-                    <span style="font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.15);background:rgba(255,255,255,0.03);padding:4px 12px;border-radius:var(--radius-full);border:1px solid rgba(255,255,255,0.03);">
-                        <i class="fas fa-credit-card" style="color:var(--color-gold);"></i> Paiements acceptés
-                    </span>
+                    <span style="color:rgba(255,255,255,0.5);font-size:clamp(9px,1vw,11px);">Dakar, Sénégal</span>
                 </div>
             </div>
         </div>
@@ -886,7 +821,7 @@
 
     <script>
         // ============================================================
-        // CONFIGURATION
+        // CONFIGURATION - SYNCHRONISÉE AVEC ADMIN.HTML
         // ============================================================
         const ADMIN_CONFIG = {
             email: 'admin@plpshop.com',
@@ -899,20 +834,21 @@
 
         const WHATSAPP_NUMBER = '221768597835';
         const WHATSAPP_DISPLAY = '+221 76 859 78 35';
+        
+        // MÊMES CLÉS QUE ADMIN.HTML POUR LE PARTAGE DES DONNÉES
         const STORAGE_KEYS = {
-            products: 'plpshop_products',
+            products: 'plpshop_products', // CLÉ PARTAGÉE AVEC L'ADMIN
             orders: 'plpshop_all_orders',
             users: 'plpshop_users',
-            settings: 'plpshop_settings',
-            images: 'plpshop_images'
+            settings: 'plpshop_settings'
         };
 
         let currentUser = null;
         let currentFilter = 'all';
         let currentModalProduct = null;
-        let mapInstance = null;
         let uploadedProof = null;
         let uploadedProofData = null;
+        let lastProductsSnapshot = '';
 
         const CATEGORY_ICONS = {
             't-shirt': '👕',
@@ -923,101 +859,21 @@
         };
 
         // ============================================================
-        // MAP
-        // ============================================================
-        function initMap() {
-            const mapContainer = document.getElementById('mapDakar');
-            if (!mapContainer) return;
-            if (mapInstance) { mapInstance.invalidateSize(); return; }
-
-            const dakarCoords = [14.7167, -17.4677];
-            mapInstance = L.map('mapDakar', {
-                zoomControl: false,
-                attributionControl: false,
-                fadeAnimation: true,
-                zoomAnimation: true,
-                inertia: true,
-                inertiaDeceleration: 3000,
-                wheelDebounceTime: 100
-            }).setView(dakarCoords, 14);
-
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                maxZoom: 18,
-                minZoom: 10,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(mapInstance);
-
-            L.control.zoom({ position: 'topright' }).addTo(mapInstance);
-
-            const customIcon = L.divIcon({
-                html: `
-                    <div style="position:relative;display:flex;align-items:center;justify-content:center;">
-                        <div class="custom-marker"></div>
-                        <div style="position:absolute;top:-30px;left:50%;transform:translateX(-50%);
-                            background:#c9a84c;color:black;padding:2px 8px;border-radius:4px;
-                            font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;
-                            white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.2);">
-                            PLP SHOP
-                        </div>
-                    </div>
-                `,
-                className: '',
-                iconSize: [16, 16],
-                iconAnchor: [8, 8]
-            });
-
-            L.marker(dakarCoords, { icon: customIcon, riseOnHover: true, zIndexOffset: 1000 }).addTo(mapInstance);
-
-            setTimeout(() => { if (mapInstance) mapInstance.invalidateSize({ animate: true, pan: { animate: true } }); }, 300);
-            window.addEventListener('resize', function resizeMap() { if (mapInstance) setTimeout(() => mapInstance.invalidateSize(), 200); });
-
-            if (window.innerWidth > 768) {
-                mapContainer.addEventListener('mouseenter', function enableZoom() {
-                    if (mapInstance) { mapInstance.scrollWheelZoom.enable(); mapInstance.touchZoom.enable(); }
-                });
-                mapContainer.addEventListener('mouseleave', function disableZoom() {
-                    if (mapInstance) { mapInstance.scrollWheelZoom.disable(); mapInstance.touchZoom.disable(); }
-                });
-            }
-            if (window.innerWidth <= 768) { if (mapInstance) { mapInstance.touchZoom.enable(); mapInstance.doubleClickZoom.enable(); } }
-
-            let zoomLevel = 0;
-            setInterval(() => {
-                if (!mapInstance) return;
-                zoomLevel = (zoomLevel + 1) % 2;
-                mapInstance.setZoom(zoomLevel === 0 ? 14 : 13, { animate: true, duration: 0.8 });
-            }, 4000);
-        }
-
-        // ============================================================
-        // PRODUCTS
+        // PRODUCTS - LIT DEPUIS LE MÊME LOCALSTORAGE QUE L'ADMIN
         // ============================================================
         function getProducts() {
             let p = JSON.parse(localStorage.getItem(STORAGE_KEYS.products));
             if (!p || p.length === 0) {
+                // Produits par défaut si aucun n'existe
                 p = [
                     { id: 1, name: "T-shirt Premium Noir", price: 8000, oldPrice: 12000, category: "t-shirt", gender: "homme", badge: "promo", description: "T-shirt en coton premium, confortable et élégant.", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=500&fit=crop" },
                     { id: 2, name: "T-shirt Blanc Intemporel", price: 7000, category: "t-shirt", gender: "homme", badge: null, description: "T-shirt blanc basique, incontournable.", image: "https://images.unsplash.com/photo-1503342394128-c104d54dba01?w=400&h=500&fit=crop" },
                     { id: 3, name: "T-shirt Femme Élégant", price: 10000, oldPrice: 13000, category: "t-shirt", gender: "femme", badge: "nouveau", description: "T-shirt femme coupe cintrée.", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400&h=500&fit=crop" },
-                    { id: 4, name: "T-shirt Graphique Street", price: 9000, category: "t-shirt", gender: "homme", badge: null, description: "T-shirt avec imprimé graphique tendance.", image: "https://images.unsplash.com/photo-1554568218-0f1715e72254?w=400&h=500&fit=crop" },
-                    { id: 5, name: "Short Sport Homme", price: 7000, oldPrice: 10000, category: "short", gender: "homme", badge: "promo", description: "Short de sport léger et respirant.", image: "https://images.unsplash.com/photo-1565693413579-8f2f72c0cfc1?w=400&h=500&fit=crop" },
-                    { id: 6, name: "Short Cargo", price: 10000, category: "short", gender: "homme", badge: "nouveau", description: "Short cargo avec multiples poches.", image: "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=400&h=500&fit=crop" },
-                    { id: 7, name: "Short Athlétique Femme", price: 8000, category: "short", gender: "femme", badge: null, description: "Short de running coupe féminine.", image: "https://images.unsplash.com/photo-1558618666-fcd25c85f169?w=400&h=500&fit=crop" },
-                    { id: 8, name: "Short Plage Homme", price: 6000, category: "short", gender: "homme", badge: null, description: "Short de plage en coton léger.", image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=400&h=500&fit=crop" },
-                    { id: 9, name: "Maillot PSG Domicile 2026", price: 55000, oldPrice: 70000, category: "maillot", gender: "homme", badge: "exclusif", description: "Maillot officiel du PSG. Édition limitée.", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=500&fit=crop" },
-                    { id: 10, name: "Maillot OM Domicile 2026", price: 50000, category: "maillot", gender: "homme", badge: null, description: "Maillot officiel de l'Olympique de Marseille.", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=500&fit=crop" },
-                    { id: 11, name: "Maillot Basket USA", price: 45000, oldPrice: 55000, category: "maillot", gender: "homme", badge: "promo", description: "Maillot de basket NBA. Style rétro.", image: "https://images.unsplash.com/photo-1519861531473-9200262188bf?w=400&h=500&fit=crop" },
-                    { id: 12, name: "Maillot Femme Sport", price: 40000, category: "maillot", gender: "femme", badge: "nouveau", description: "Maillot de sport coupe femme.", image: "https://images.unsplash.com/photo-1518459031867-a89b944bffe4?w=400&h=500&fit=crop" },
-                    { id: 13, name: "Ensemble Jogging Homme", price: 45000, oldPrice: 60000, category: "ensemble sport", gender: "homme", badge: "promo", description: "Ensemble jogging complet. Sweat + pantalon.", image: "https://images.unsplash.com/photo-1518459031867-a89b944bffe4?w=400&h=500&fit=crop" },
-                    { id: 14, name: "Ensemble Yoga Femme", price: 40000, category: "ensemble sport", gender: "femme", badge: "nouveau", description: "Ensemble yoga haut + legging.", image: "https://images.unsplash.com/photo-1558618666-fcd25c85f169?w=400&h=500&fit=crop" },
-                    { id: 15, name: "Ensemble Running Homme", price: 35000, oldPrice: 45000, category: "ensemble sport", gender: "homme", badge: "promo", description: "Ensemble running technique.", image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=500&fit=crop" },
-                    { id: 16, name: "Ensemble Fitness Femme", price: 38000, category: "ensemble sport", gender: "femme", badge: null, description: "Ensemble fitness complet.", image: "https://images.unsplash.com/photo-1518314916381-77a37c2a49ae?w=400&h=500&fit=crop" },
-                    { id: 17, name: "Ensemble Tennis Homme", price: 42000, oldPrice: 52000, category: "ensemble sport", gender: "homme", badge: "exclusif", description: "Ensemble tennis professionnel.", image: "https://images.unsplash.com/photo-1521537634581-0dced2fd2d34?w=400&h=500&fit=crop" },
-                    { id: 18, name: "Ensemble Gym Femme", price: 36000, category: "ensemble sport", gender: "femme", badge: "nouveau", description: "Ensemble gym femme. Top + yoga.", image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=500&fit=crop" },
-                    { id: 19, name: "Basket Nike Air Max", price: 85000, oldPrice: 100000, category: "chaussures", gender: "homme", badge: "exclusif", description: "Basket Nike Air Max. Édition limitée.", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=500&fit=crop" },
-                    { id: 20, name: "Basket Adidas Femme", price: 70000, category: "chaussures", gender: "femme", badge: null, description: "Basket Adidas lifestyle.", image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=500&fit=crop" },
-                    { id: 21, name: "Escarpins Cuir", price: 22000, category: "chaussures", gender: "femme", badge: "nouveau", description: "Escarpins en cuir véritable.", image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400&h=500&fit=crop" },
-                    { id: 22, name: "Mocassins Homme", price: 28000, category: "chaussures", gender: "homme", badge: null, description: "Mocassins en cuir. Élégance et confort.", image: "https://images.unsplash.com/photo-1533867617858-e7b97e157509?w=400&h=500&fit=crop" }
+                    { id: 4, name: "Short Sport Homme", price: 7000, oldPrice: 10000, category: "short", gender: "homme", badge: "promo", description: "Short de sport léger et respirant.", image: "https://images.unsplash.com/photo-1565693413579-8f2f72c0cfc1?w=400&h=500&fit=crop" },
+                    { id: 5, name: "Short Athlétique Femme", price: 8000, category: "short", gender: "femme", badge: null, description: "Short de running coupe féminine.", image: "https://images.unsplash.com/photo-1558618666-fcd25c85f169?w=400&h=500&fit=crop" },
+                    { id: 6, name: "Maillot PSG Domicile 2026", price: 55000, oldPrice: 70000, category: "maillot", gender: "homme", badge: "exclusif", description: "Maillot officiel du PSG. Édition limitée.", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=500&fit=crop" },
+                    { id: 7, name: "Ensemble Jogging Homme", price: 45000, oldPrice: 60000, category: "ensemble sport", gender: "homme", badge: "promo", description: "Ensemble jogging complet. Sweat + pantalon.", image: "https://images.unsplash.com/photo-1518459031867-a89b944bffe4?w=400&h=500&fit=crop" },
+                    { id: 8, name: "Basket Nike Air Max", price: 85000, oldPrice: 100000, category: "chaussures", gender: "homme", badge: "exclusif", description: "Basket Nike Air Max. Édition limitée.", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=500&fit=crop" }
                 ];
                 localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(p));
             }
@@ -1026,10 +882,35 @@
 
         function saveProducts(products) {
             localStorage.setItem(STORAGE_KEYS.products, JSON.stringify(products));
+            // Déclencher un événement pour la synchronisation
+            window.dispatchEvent(new CustomEvent('productsUpdated', { detail: products }));
             displayProducts();
         }
 
         function formatFCFA(n) { return (n || 0).toLocaleString('fr-FR') + ' FCFA'; }
+
+        // ============================================================
+        // SYNCHRONISATION AVEC L'ADMIN (EN TEMPS RÉEL)
+        // ============================================================
+        window.addEventListener('storage', function(e) {
+            if (e.key === STORAGE_KEYS.products) {
+                console.log('🔄 Produits mis à jour depuis l\'admin');
+                displayProducts();
+                updateCartCount();
+                showToast('Nouveaux produits disponibles !');
+            }
+        });
+
+        window.addEventListener('productsUpdated', function() {
+            console.log('🔄 Produits mis à jour (même onglet)');
+            displayProducts();
+        });
+
+        function reloadProducts() {
+            displayProducts();
+            updateCartCount();
+            showToast('Produits actualisés !');
+        }
 
         // ============================================================
         // DISPLAY PRODUCTS
@@ -1083,11 +964,10 @@
             document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.filter-tab').forEach(t => {
                 const text = t.textContent.trim().toLowerCase();
-                const isMatch = cat === 'all' ? text === 'tout' : text.includes(cat) || text.includes(cat.replace('-', ' '));
+                const isMatch = cat === 'all' ? text === 'tout' : text.includes(cat);
                 if (isMatch) t.classList.add('active');
             });
             displayProducts();
-            document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
         }
 
         function searchProducts() {
@@ -1095,7 +975,6 @@
             if (!q) { displayProducts(); return; }
             const products = getProducts();
             let filtered = products.filter(p => p.name.toLowerCase().includes(q) || (p.category && p.category.toLowerCase().includes(q)));
-            if (currentFilter !== 'all') filtered = filtered.filter(p => p.category === currentFilter);
             const grid = document.getElementById('productsGrid');
             if (filtered.length === 0) {
                 grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--color-silver);">Aucun résultat</div>';
@@ -1103,7 +982,7 @@
             }
             grid.innerHTML = filtered.map(p => `
                 <div class="product-card" onclick="openProductModalIndex(${p.id})">
-                    ${p.badge ? `<div class="badge ${p.badge === 'promo' ? '' : 'sold'}">${p.badge === 'promo' ? `-${Math.round((1-p.price/p.oldPrice)*100)}%` : p.badge === 'exclusif' ? '⭐ Exclusif' : 'Nouveau'}</div>` : ''}
+                    ${p.badge ? `<div class="badge">${p.badge}</div>` : ''}
                     <img src="${p.image}" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/400x500'" alt="${p.name}" />
                     <div class="product-info">
                         <div class="product-category">${p.category || ''}</div>
@@ -1350,9 +1229,9 @@
             const orders = JSON.parse(localStorage.getItem(key)) || [];
             orders.push(order);
             localStorage.setItem(key, JSON.stringify(orders));
-            const all = JSON.parse(localStorage.getItem('plpshop_all_orders')) || [];
+            const all = JSON.parse(localStorage.getItem(STORAGE_KEYS.orders)) || [];
             all.push(order);
-            localStorage.setItem('plpshop_all_orders', JSON.stringify(all));
+            localStorage.setItem(STORAGE_KEYS.orders, JSON.stringify(all));
             window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
             document.getElementById('orderNumberDisplay').textContent = 'N° ' + orderId;
             document.getElementById('paidAmountDisplay').textContent = formatFCFA(grand);
@@ -1413,9 +1292,9 @@
             setTimeout(() => {
                 currentUser = { uid: 'user_' + Date.now(), email: email, name: name, role: 'client', phone: phone, city: '' };
                 localStorage.setItem('plpshop_current_user', JSON.stringify(currentUser));
-                const users = JSON.parse(localStorage.getItem('plpshop_users')) || [];
+                const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.users)) || [];
                 users.push({ id: Date.now(), name, email, phone, role: 'client', createdAt: new Date().toISOString() });
-                localStorage.setItem('plpshop_users', JSON.stringify(users));
+                localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
                 updateUserMenu(); updateCartCount(); closeAuthModal(); showToast('Bienvenue ' + name + ' !');
                 btn.disabled = false; btn.innerHTML = 'Créer mon compte';
             }, 600);
@@ -1445,7 +1324,7 @@
                     </div>
                     ${adminLink}
                     <a href="#"><i class="fas fa-box"></i> Mes commandes</a>
-                    <a href="#"><i class="fas fa-tshirt"></i> Collections</a>
+                    <a href="#" onclick="filterProducts('all'); scrollToSection('products'); return false;"><i class="fas fa-tshirt"></i> Collections</a>
                     <hr>
                     <a href="#" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
                 `;
@@ -1475,7 +1354,6 @@
             t.className = 'toast show';
             t.textContent = msg;
             if (type === 'error') t.style.background = '#9b1c1c';
-            else if (type === 'success') t.style.background = 'var(--color-black)';
             document.body.appendChild(t);
             setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 2600);
         }
@@ -1489,8 +1367,7 @@
             if (card.classList.contains('curtain-open')) return;
             card.classList.add('curtain-open');
             setTimeout(() => {
-                if (gender === 'homme') filterProducts('t-shirt');
-                else if (gender === 'femme') filterProducts('t-shirt');
+                filterProducts('all');
                 document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
                 card.classList.remove('curtain-open');
             }, 1200);
@@ -1528,7 +1405,16 @@
             displayProducts();
             updateCartCount();
             updateUserMenu();
-            setTimeout(initMap, 500);
+            lastProductsSnapshot = JSON.stringify(getProducts());
+            
+            // Vérifier les mises à jour toutes les 3 secondes
+            setInterval(() => {
+                const currentSnapshot = JSON.stringify(getProducts());
+                if (currentSnapshot !== lastProductsSnapshot) {
+                    lastProductsSnapshot = currentSnapshot;
+                    displayProducts();
+                }
+            }, 3000);
         }
         init();
 
@@ -1563,6 +1449,7 @@
         window.handleDragLeave = handleDragLeave;
         window.handleDrop = handleDrop;
         window.checkProofStatus = checkProofStatus;
+        window.reloadProducts = reloadProducts;
     </script>
 </body>
 </html>
