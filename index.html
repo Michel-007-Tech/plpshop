@@ -55,6 +55,46 @@
         ::-webkit-scrollbar-track { background: var(--color-bg); }
         ::-webkit-scrollbar-thumb { background: var(--color-gold); border-radius: 3px; }
 
+        /* ===== CURTAIN OVERLAY (version corrigée avec animation) ===== */
+        .curtain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            pointer-events: none;
+            display: flex;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s 0.8s, opacity 0.3s 0.8s;
+        }
+        .curtain-overlay.open {
+            visibility: visible;
+            opacity: 1;
+            transition: visibility 0s, opacity 0s;
+            pointer-events: auto;
+        }
+        .curtain-left, .curtain-right {
+            width: 50%;
+            height: 100%;
+            background: var(--color-black);
+        }
+        .curtain-overlay.open .curtain-left {
+            animation: slideLeft 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+        }
+        .curtain-overlay.open .curtain-right {
+            animation: slideRight 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+        }
+        @keyframes slideLeft {
+            from { transform: translateX(0); }
+            to { transform: translateX(-100%); }
+        }
+        @keyframes slideRight {
+            from { transform: translateX(0); }
+            to { transform: translateX(100%); }
+        }
+
         /* ===== TOP BAR ===== */
         .top-bar { background: var(--color-black); color: rgba(255,255,255,0.7); padding: 6px 16px; font-size: clamp(7px,0.8vw,9px); font-weight: 400; letter-spacing: 1.2px; text-transform: uppercase; display: flex; justify-content: center; align-items: center; gap: clamp(8px,2vw,24px); flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.04); }
         .top-bar span { display: flex; align-items: center; gap: 4px; }
@@ -383,6 +423,12 @@
 </head>
 <body>
 
+    <!-- ===== CURTAIN OVERLAY (avec animation) ===== -->
+    <div class="curtain-overlay" id="curtainOverlay">
+        <div class="curtain-left"></div>
+        <div class="curtain-right"></div>
+    </div>
+
     <!-- TOP BAR -->
     <div class="top-bar">
         <span><i class="fas fa-star"></i> PLP Shop — Votre Style, Notre Passion</span>
@@ -482,14 +528,16 @@
     <!-- CATEGORY CARDS -->
     <section class="category-cards" id="categoryCards">
         <div class="category-cards-grid">
-            <div class="category-card" onclick="filterProducts('all'); scrollToSection('products')">
+            <!-- Clic déclenche le rideau puis le filtre Homme -->
+            <div class="category-card" onclick="openCurtain('homme')">
                 <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=800&h=600&fit=crop&crop=center" alt="Homme" loading="lazy" />
                 <div class="overlay">
                     <h2>HOMME</h2>
                     <span>Élégance &amp; caractère</span>
                 </div>
             </div>
-            <div class="category-card" onclick="filterProducts('all'); scrollToSection('products')">
+            <!-- Clic déclenche le rideau puis le filtre Femme -->
+            <div class="category-card" onclick="openCurtain('femme')">
                 <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&h=600&fit=crop&crop=center" alt="Femme" loading="lazy" />
                 <div class="overlay">
                     <h2>FEMME</h2>
@@ -857,6 +905,79 @@
         }
 
         // ============================================================
+        // CURTAIN + FILTER BY GENDER (version corrigée)
+        // ============================================================
+        function openCurtain(gender) {
+            const overlay = document.getElementById('curtainOverlay');
+            // Reset animation
+            overlay.classList.remove('open');
+            void overlay.offsetWidth; // force reflow
+            overlay.classList.add('open');
+            
+            // Après 800ms (durée de l'animation), filtrer et scroller
+            setTimeout(() => {
+                filterByGender(gender);
+                document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+                // Cacher le rideau après le scroll
+                setTimeout(() => {
+                    overlay.classList.remove('open');
+                }, 400);
+            }, 800);
+        }
+
+        function filterByGender(gender) {
+            currentFilter = 'all';
+            // Désactiver tous les onglets de filtre
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            // Activer l'onglet "Tout"
+            const toutTab = document.querySelector('.filter-tab');
+            if (toutTab) toutTab.classList.add('active');
+
+            const products = getProducts();
+            const filtered = products.filter(p => p.gender === gender);
+            const grid = document.getElementById('productsGrid');
+            if (!grid) return;
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--color-silver);">Aucun produit pour ce genre</div>';
+            } else {
+                grid.innerHTML = filtered.map(p => {
+                    const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+                    let badgeLabel = '';
+                    if (p.badge === 'promo') badgeLabel = `-${discount}%`;
+                    else if (p.badge === 'nouveau') badgeLabel = 'Nouveau';
+                    else if (p.badge === 'exclusif') badgeLabel = '⭐ Exclusif';
+                    const icon = CATEGORY_ICONS[p.category] || '📦';
+                    return `
+                        <div class="product-card" onclick="openProductModalIndex(${p.id})">
+                            ${badgeLabel ? `<div class="badge">${badgeLabel}</div>` : ''}
+                            <img src="${p.image}" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/400x500'" alt="${p.name}" />
+                            <div class="product-info">
+                                <div class="product-category">${icon} ${p.category || ''} ${p.gender === 'homme' ? '👔' : p.gender === 'femme' ? '👗' : '👤'}</div>
+                                <h3 class="product-name">${p.name}</h3>
+                                <div class="product-price">
+                                    ${formatFCFA(p.price)}
+                                    ${p.oldPrice ? `<span class="old">${formatFCFA(p.oldPrice)}</span>` : ''}
+                                </div>
+                                <div class="product-actions">
+                                    <button class="btn-cart" onclick="event.stopPropagation(); addToCart(${p.id})">
+                                        <i class="fas fa-cart-plus"></i> Panier
+                                    </button>
+                                    <button class="btn-detail" onclick="event.stopPropagation(); openProductModalIndex(${p.id})">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            // Mettre à jour le titre
+            const title = document.getElementById('collectionTitle');
+            if (title) title.textContent = gender === 'homme' ? 'Collection Homme' : 'Collection Femme';
+        }
+
+        // ============================================================
         // DISPLAY PRODUCTS
         // ============================================================
         function displayProducts() {
@@ -905,6 +1026,9 @@
 
         function filterProducts(cat) {
             currentFilter = cat;
+            // Réinitialiser le titre de la collection
+            document.getElementById('collectionTitle').textContent = 'Notre Collection';
+            
             document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.filter-tab').forEach(t => {
                 const text = t.textContent.trim().toLowerCase();
@@ -1359,6 +1483,8 @@
         window.goBackToCart = goBackToCart;
         window.closeCartAfterPayment = closeCartAfterPayment;
         window.filterProducts = filterProducts;
+        window.filterByGender = filterByGender;
+        window.openCurtain = openCurtain;
         window.searchProducts = searchProducts;
         window.openAuthModal = openAuthModal;
         window.closeAuthModal = closeAuthModal;
