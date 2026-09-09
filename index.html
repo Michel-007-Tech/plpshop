@@ -536,7 +536,7 @@
                 </div>
             </div>
             <div class="category-card" onclick="openCurtain('femme')">
-                <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&h=600&fit=crop&crop=center" alt="Femme" loading="lazy" />
+                <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&h=600&fit=crop&crop=center" alt="Femme" loading="lazy" />
                 <div class="overlay">
                     <h2>FEMME</h2>
                     <span>Féminité &amp; audace</span>
@@ -902,15 +902,12 @@
                 return Promise.all(keys.map(function(key) {
                     return idbGet(key).then(function(value) {
                         if (value !== undefined && value !== null) {
-                            // Pour les clés de panier, on vérifie le préfixe
                             if (key === 'plpshop_cart_') {
-                                // On laisse la logique de panier gérer
                                 return;
                             }
                             memCache[key] = value;
                             return;
                         }
-                        // Migration depuis localStorage
                         var legacy = null;
                         try {
                             var raw = localStorage.getItem(key);
@@ -924,7 +921,6 @@
                 }));
             }).catch(function(err) {
                 console.warn('IndexedDB indisponible, retour à localStorage:', err);
-                // Fallback: on lit directement depuis localStorage
                 var data = localStorage.getItem(STORAGE_KEY);
                 if (data) {
                     try { memCache[STORAGE_KEY] = JSON.parse(data); } catch(e) {}
@@ -936,11 +932,9 @@
             var value;
             try { value = JSON.parse(jsonString); } catch (e) { value = jsonString; }
             memCache[key] = value;
-            // Sauvegarde dans localStorage en parallèle
             try {
                 localStorage.setItem(key, jsonString);
             } catch(e) {}
-            // Sauvegarde dans IndexedDB
             idbSet(key, value).catch(function(err) {
                 console.error('Erreur IndexedDB (' + key + '):', err);
             });
@@ -951,7 +945,6 @@
             if (Object.prototype.hasOwnProperty.call(memCache, key) && memCache[key] !== null && memCache[key] !== undefined) {
                 return memCache[key];
             }
-            // Fallback localStorage
             try {
                 var data = localStorage.getItem(key);
                 if (data) {
@@ -964,29 +957,132 @@
         }
 
         // ============================================================
-        // PRODUCTS
+        // PRODUCTS - GESTION DES IMAGES PAR L'ADMIN UNIQUEMENT
         // ============================================================
         function getProducts() {
             var products = safeGetJSON(STORAGE_KEY, null);
             if (!products || products.length === 0) {
                 products = [
-                    { id: 1, name: "T-shirt Premium Noir", price: 8000, oldPrice: 12000, category: "t-shirt", gender: "homme", badge: "promo", description: "T-shirt en coton premium.", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=500&fit=crop" },
-                    { id: 2, name: "T-shirt Blanc Intemporel", price: 7000, category: "t-shirt", gender: "homme", badge: null, description: "T-shirt blanc basique.", image: "https://images.unsplash.com/photo-1503342394128-c104d54dba01?w=400&h=500&fit=crop" },
-                    { id: 3, name: "T-shirt Femme Élégant", price: 10000, oldPrice: 13000, category: "t-shirt", gender: "femme", badge: "nouveau", description: "T-shirt femme coupe cintrée.", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400&h=500&fit=crop" },
-                    { id: 4, name: "Short Sport Homme", price: 7000, oldPrice: 10000, category: "short", gender: "homme", badge: "promo", description: "Short de sport léger.", image: "https://images.unsplash.com/photo-1565693413579-8f2f72c0cfc1?w=400&h=500&fit=crop" },
-                    { id: 5, name: "Short Athlétique Femme", price: 8000, category: "short", gender: "femme", badge: null, description: "Short de running coupe féminine.", image: "https://images.unsplash.com/photo-1558618666-fcd25c85f169?w=400&h=500&fit=crop" },
-                    { id: 6, name: "Maillot PSG Domicile", price: 55000, oldPrice: 70000, category: "maillot", gender: "homme", badge: "exclusif", description: "Maillot officiel du PSG.", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=500&fit=crop" },
-                    { id: 7, name: "Ensemble Jogging Homme", price: 45000, oldPrice: 60000, category: "ensemble sport", gender: "homme", badge: "promo", description: "Ensemble jogging complet.", image: "https://images.unsplash.com/photo-1518459031867-a89b944bffe4?w=400&h=500&fit=crop" },
-                    { id: 8, name: "Basket Nike Air Max", price: 85000, oldPrice: 100000, category: "chaussures", gender: "homme", badge: "exclusif", description: "Basket Nike Air Max.", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=500&fit=crop" }
+                    { 
+                        id: 1, 
+                        name: "T-shirt Premium Noir", 
+                        price: 8000, 
+                        oldPrice: 12000, 
+                        category: "t-shirt", 
+                        gender: "homme", 
+                        badge: "promo", 
+                        description: "T-shirt en coton premium.",
+                        image: "",
+                        imageSetByAdmin: false
+                    },
+                    { 
+                        id: 2, 
+                        name: "T-shirt Blanc Intemporel", 
+                        price: 7000, 
+                        category: "t-shirt", 
+                        gender: "homme", 
+                        badge: null, 
+                        description: "T-shirt blanc basique.",
+                        image: "",
+                        imageSetByAdmin: false
+                    },
+                    { 
+                        id: 3, 
+                        name: "T-shirt Femme Élégant", 
+                        price: 10000, 
+                        oldPrice: 13000, 
+                        category: "t-shirt", 
+                        gender: "femme", 
+                        badge: "nouveau", 
+                        description: "T-shirt femme coupe cintrée.",
+                        image: "",
+                        imageSetByAdmin: false
+                    },
+                    { 
+                        id: 4, 
+                        name: "Short Sport Homme", 
+                        price: 7000, 
+                        oldPrice: 10000, 
+                        category: "short", 
+                        gender: "homme", 
+                        badge: "promo", 
+                        description: "Short de sport léger.",
+                        image: "",
+                        imageSetByAdmin: false
+                    },
+                    { 
+                        id: 5, 
+                        name: "Short Athlétique Femme", 
+                        price: 8000, 
+                        category: "short", 
+                        gender: "femme", 
+                        badge: null, 
+                        description: "Short de running coupe féminine.",
+                        image: "",
+                        imageSetByAdmin: false
+                    },
+                    { 
+                        id: 6, 
+                        name: "Maillot PSG Domicile", 
+                        price: 55000, 
+                        oldPrice: 70000, 
+                        category: "maillot", 
+                        gender: "homme", 
+                        badge: "exclusif", 
+                        description: "Maillot officiel du PSG.",
+                        image: "",
+                        imageSetByAdmin: false
+                    },
+                    { 
+                        id: 7, 
+                        name: "Ensemble Jogging Homme", 
+                        price: 45000, 
+                        oldPrice: 60000, 
+                        category: "ensemble sport", 
+                        gender: "homme", 
+                        badge: "promo", 
+                        description: "Ensemble jogging complet.",
+                        image: "",
+                        imageSetByAdmin: false
+                    },
+                    { 
+                        id: 8, 
+                        name: "Basket Nike Air Max", 
+                        price: 85000, 
+                        oldPrice: 100000, 
+                        category: "chaussures", 
+                        gender: "homme", 
+                        badge: "exclusif", 
+                        description: "Basket Nike Air Max.",
+                        image: "",
+                        imageSetByAdmin: false
+                    }
                 ];
                 safeSetLocalStorage(STORAGE_KEY, JSON.stringify(products));
             }
             return products;
         }
 
+        // Fonction pour obtenir l'image d'un produit avec fallback
+        function getProductImage(product) {
+            if (product.image && product.imageSetByAdmin && product.image.length > 0) {
+                return product.image;
+            }
+            
+            var placeholderText = product.name || 'Image à venir';
+            var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">' +
+                '<rect width="400" height="500" fill="#1a1a2e"/>' +
+                '<rect x="20" y="20" width="360" height="460" fill="none" stroke="#c9a84c" stroke-width="2" stroke-dasharray="10,5"/>' +
+                '<text x="200" y="230" font-family="Arial" font-size="48" fill="#c9a84c" text-anchor="middle">📸</text>' +
+                '<text x="200" y="280" font-family="Arial" font-size="20" fill="#ffffff" text-anchor="middle">Image à venir</text>' +
+                '<text x="200" y="310" font-family="Arial" font-size="14" fill="#888888" text-anchor="middle">Définie par l\'admin</text>' +
+                '</svg>';
+            
+            return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+        }
+
         function saveProducts(products) {
             var result = safeSetLocalStorage(STORAGE_KEY, JSON.stringify(products));
-            // Déclencher l'événement storage pour synchronisation
             try {
                 var event = new StorageEvent('storage', {
                     key: STORAGE_KEY,
@@ -1002,10 +1098,8 @@
         // ============================================================
         // SYNCHRONISATION
         // ============================================================
-        // Écoute des changements via l'événement storage (depuis admin)
         window.addEventListener('storage', function(e) {
             if (e.key === STORAGE_KEY) {
-                // Mettre à jour le cache mémoire
                 try {
                     if (e.newValue) {
                         memCache[STORAGE_KEY] = JSON.parse(e.newValue);
@@ -1016,7 +1110,6 @@
             }
         });
 
-        // Vérification périodique des changements (pour IndexedDB)
         setInterval(function() {
             var currentSnapshot = JSON.stringify(getProducts());
             if (currentSnapshot !== lastProductsSnapshot) {
@@ -1064,9 +1157,11 @@
                     else if (p.badge === 'nouveau') badgeLabel = 'Nouveau';
                     else if (p.badge === 'exclusif') badgeLabel = '⭐ Exclusif';
                     var icon = CATEGORY_ICONS[p.category] || '📦';
+                    var productImage = getProductImage(p);
+                    
                     return '<div class="product-card" onclick="openProductModalIndex(' + p.id + ')">' +
                         (badgeLabel ? '<div class="badge">' + badgeLabel + '</div>' : '') +
-                        '<img src="' + p.image + '" class="product-image" loading="lazy" onerror="this.src=\'https://via.placeholder.com/400x500\'" alt="' + p.name + '" />' +
+                        '<img src="' + productImage + '" class="product-image" loading="lazy" alt="' + p.name + '" />' +
                         '<div class="product-info">' +
                         '<div class="product-category">' + icon + ' ' + (p.category || '') + ' ' + (p.gender === 'homme' ? '👔' : p.gender === 'femme' ? '👗' : '👤') + '</div>' +
                         '<h3 class="product-name">' + p.name + '</h3>' +
@@ -1102,9 +1197,11 @@
                 else if (p.badge === 'nouveau') badgeLabel = 'Nouveau';
                 else if (p.badge === 'exclusif') badgeLabel = '⭐ Exclusif';
                 var icon = CATEGORY_ICONS[p.category] || '📦';
+                var productImage = getProductImage(p);
+                
                 return '<div class="product-card" onclick="openProductModalIndex(' + p.id + ')">' +
                     (badgeLabel ? '<div class="badge">' + badgeLabel + '</div>' : '') +
-                    '<img src="' + p.image + '" class="product-image" loading="lazy" onerror="this.src=\'https://via.placeholder.com/400x500\'" alt="' + p.name + '" />' +
+                    '<img src="' + productImage + '" class="product-image" loading="lazy" alt="' + p.name + '" />' +
                     '<div class="product-info">' +
                     '<div class="product-category">' + icon + ' ' + (p.category || '') + ' ' + (p.gender === 'homme' ? '👔' : p.gender === 'femme' ? '👗' : '👤') + '</div>' +
                     '<h3 class="product-name">' + p.name + '</h3>' +
@@ -1141,9 +1238,16 @@
                 return;
             }
             grid.innerHTML = filtered.map(function(p) {
+                var productImage = getProductImage(p);
+                var discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+                var badgeLabel = '';
+                if (p.badge === 'promo') badgeLabel = '-' + discount + '%';
+                else if (p.badge === 'nouveau') badgeLabel = 'Nouveau';
+                else if (p.badge === 'exclusif') badgeLabel = '⭐ Exclusif';
+                
                 return '<div class="product-card" onclick="openProductModalIndex(' + p.id + ')">' +
-                    (p.badge ? '<div class="badge">' + p.badge + '</div>' : '') +
-                    '<img src="' + p.image + '" class="product-image" loading="lazy" onerror="this.src=\'https://via.placeholder.com/400x500\'" alt="' + p.name + '" />' +
+                    (badgeLabel ? '<div class="badge">' + badgeLabel + '</div>' : '') +
+                    '<img src="' + productImage + '" class="product-image" loading="lazy" alt="' + p.name + '" />' +
                     '<div class="product-info">' +
                     '<div class="product-category">' + (p.category || '') + '</div>' +
                     '<h3 class="product-name">' + p.name + '</h3>' +
@@ -1162,7 +1266,7 @@
             var p = getProducts().find(function(x) { return x.id === id; });
             if (!p) return;
             currentModalProduct = p;
-            document.getElementById('modalImageIndex').src = p.image;
+            document.getElementById('modalImageIndex').src = getProductImage(p);
             document.getElementById('modalNameIndex').textContent = p.name;
             document.getElementById('modalCatIndex').textContent = (p.category || '').toUpperCase();
             document.getElementById('modalCat2Index').textContent = p.category || '';
@@ -1301,7 +1405,7 @@
             } else {
                 list.innerHTML = c.map(function(i) {
                     return '<div class="cart-item">' +
-                        '<img src="' + i.image + '" alt="' + i.name + '" />' +
+                        '<img src="' + getProductImage(i) + '" alt="' + i.name + '" />' +
                         '<div class="info">' +
                         '<div class="name">' + i.name + '</div>' +
                         '<div class="price">' + formatFCFA(i.price * (i.quantity || 1)) + '</div>' +
@@ -1619,7 +1723,6 @@
         loadAllFromDB().then(function() {
             init();
         }).catch(function() {
-            // Fallback: initialisation directe
             init();
         });
 
@@ -1655,6 +1758,7 @@
         window.handleDragLeave = handleDragLeave;
         window.handleDrop = handleDrop;
         window.checkProofStatus = checkProofStatus;
+        window.getProductImage = getProductImage;
     </script>
 </body>
 </html>
