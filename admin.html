@@ -73,6 +73,44 @@
         .btn-logout { padding: 5px 10px; background: transparent; color: var(--danger); border: 1px solid rgba(220,38,38,0.2); border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px; transition: var(--transition); font-family: 'Montserrat', sans-serif; white-space: nowrap; }
         .btn-logout:hover { background: var(--danger); color: var(--white); }
 
+        /* ===== INDICATEUR DE SYNCHRONISATION ===== */
+        .sync-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .sync-indicator.syncing {
+            background: rgba(245, 158, 11, 0.1);
+            color: #92400e;
+        }
+        .sync-indicator.synced {
+            background: rgba(13, 123, 74, 0.1);
+            color: var(--success);
+        }
+        .sync-indicator .sync-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        .sync-indicator.syncing .sync-dot {
+            background: #f59e0b;
+        }
+        .sync-indicator.synced .sync-dot {
+            background: var(--success);
+            animation: none;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.6rem; margin-bottom: 0.8rem; }
         .stat-card { background: var(--white); padding: 0.8rem; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); transition: var(--transition); border: 1px solid rgba(0,0,0,0.06); }
         .stat-card:hover { transform: translateY(-2px); }
@@ -276,8 +314,8 @@
                     <input type="email" id="ownerEmail" required placeholder="admin@plpshop.com">
                 </div>
                 <div class="form-group">
-                    <label>Code secret</label>
-                    <input type="password" id="ownerSecret" required placeholder="Votre code d'accès">
+                    <label>Mot de passe</label>
+                    <input type="password" id="ownerSecret" required placeholder="Votre mot de passe">
                 </div>
                 <button type="submit" class="btn-owner">
                     <i class="fas fa-lock-open"></i> Accéder à l'administration
@@ -314,6 +352,10 @@
             <div class="admin-header">
                 <h1 id="sectionTitle">📊 Tableau de bord</h1>
                 <div class="user-info">
+                    <span class="sync-indicator synced" id="syncIndicator">
+                        <span class="sync-dot"></span>
+                        <span id="syncText">Synchronisé</span>
+                    </span>
                     <a href="index.html" class="btn-visit-site" target="_blank"><i class="fas fa-external-link-alt"></i> Site</a>
                     <div class="user-avatar">A</div>
                     <div><strong>Administrateur</strong></div>
@@ -411,7 +453,7 @@
                     <div class="form-group-luxe"><label>Email</label><input type="email" id="siteEmail" value="contact@plpshop.com"></div>
                     <div class="form-group-luxe"><label>Tél</label><input type="tel" id="sitePhone" value="+221 77 907 89 70"></div>
                     <div class="form-group-luxe"><label>Adresse</label><input type="text" id="siteAddress" value="Dakar, Sénégal"></div>
-                    <div class="form-group-luxe"><label>Code secret</label><input type="password" id="ownerSecretCode" value="PLPShop2026"></div>
+                    <p style="color:var(--gray-warm);font-size:0.85rem;margin:0.5rem 0 1rem;"><i class="fas fa-shield-halved"></i> L'accès administrateur est désormais sécurisé par Firebase Authentication (gérable depuis la console Firebase).</p>
                     <button class="btn-submit" onclick="saveSettings()"><i class="fas fa-save"></i> Enregistrer</button>
                 </div>
             </div>
@@ -509,7 +551,12 @@
     <!-- Toast -->
     <div class="toast-admin" id="toastAdmin"></div>
 
-    <script>
+    <script type="module">
+        import {
+            auth, db, fbSignIn, fbSignOut, fbOnAuthChange,
+            watchCollection, setDocIn, updateDocIn, deleteDocIn, getDocIn, fbTimestamp
+        } from './firebase-init.js';
+
         // ============================================================
         // TOAST NOTIFICATIONS
         // ============================================================
@@ -550,12 +597,6 @@
         // ============================================================
         // CONFIGURATION
         // ============================================================
-        var OWNER_EMAIL = 'admin@plpshop.com';
-        var OWNER_SECRET = 'PLPShop2026';
-        var STORAGE_KEY = 'plpshop_products';
-
-        // Correspondance catégorie -> identifiants DOM (corrige le bug qui empêchait
-        // "ensemble sport" et "chaussures" de s'afficher après enregistrement)
         var CATEGORY_KEYS = {
             't-shirt': 'tshirt',
             'short': 'short',
@@ -568,205 +609,160 @@
         var currentImageMethod = 'upload';
         var preselectedCategory = null;
         var editingProductId = null;
+        var currentAdminUser = null;
 
         // ============================================================
-        // STOCKAGE ÉTENDU (IndexedDB) — remplace localStorage pour supprimer
-        // la limite de quelques Mo. IndexedDB peut stocker des centaines de Mo,
-        // voire plusieurs Go, selon l'espace disque libre de l'appareil.
-        // Un cache mémoire garde toutes les lectures du reste du code
-        // synchrones, sans rien changer à leur écriture.
+        // DONNÉES EN TEMPS RÉEL (FIRESTORE)
+        // Remplace IndexedDB + BroadcastChannel + polling : Firestore
+        // pousse automatiquement les changements à TOUS les appareils
+        // connectés, en quelques centaines de millisecondes.
         // ============================================================
-        var DB_NAME = 'plpshop_db';
-        var DB_VERSION = 1;
-        var STORE_NAME = 'kv';
-        var dbInstance = null;
-        var memCache = {};
-        var useIndexedDB = true;
+        var productsCache = [];
+        var ordersCache = [];
+        var usersCache = [];
+        var settingsCache = {};
+        var unsubscribeProducts = null;
+        var unsubscribeOrders = null;
+        var unsubscribeUsers = null;
 
-        function openDB() {
-            return new Promise(function(resolve, reject) {
-                if (dbInstance) { resolve(dbInstance); return; }
-                if (!window.indexedDB) { reject(new Error('IndexedDB non supporté par ce navigateur')); return; }
-                var req = indexedDB.open(DB_NAME, DB_VERSION);
-                req.onupgradeneeded = function(e) {
-                    var db = e.target.result;
-                    if (!db.objectStoreNames.contains(STORE_NAME)) {
-                        db.createObjectStore(STORE_NAME);
-                    }
-                };
-                req.onsuccess = function(e) { dbInstance = e.target.result; resolve(dbInstance); };
-                req.onerror = function(e) { reject(e.target.error || new Error('Erreur d\'ouverture IndexedDB')); };
-            });
-        }
+        function updateSyncIndicator(state) {
+            var indicator = document.getElementById('syncIndicator');
+            var syncText = document.getElementById('syncText');
+            if (!indicator || !syncText) return;
 
-        function idbGet(key) {
-            return openDB().then(function(db) {
-                return new Promise(function(resolve, reject) {
-                    var tx = db.transaction(STORE_NAME, 'readonly');
-                    var store = tx.objectStore(STORE_NAME);
-                    var req = store.get(key);
-                    req.onsuccess = function() { resolve(req.result); };
-                    req.onerror = function() { reject(req.error); };
-                });
-            });
-        }
-
-        function idbSet(key, value) {
-            return openDB().then(function(db) {
-                return new Promise(function(resolve, reject) {
-                    var tx = db.transaction(STORE_NAME, 'readwrite');
-                    var store = tx.objectStore(STORE_NAME);
-                    var req = store.put(value, key);
-                    req.onsuccess = function() { resolve(true); };
-                    req.onerror = function() { reject(req.error); };
-                });
-            });
-        }
-
-        // Charge toutes les données en mémoire au démarrage. Migre aussi
-        // automatiquement d'anciennes données laissées dans localStorage
-        // (par une version précédente du site) vers IndexedDB.
-        function loadAllFromDB() {
-            var keys = [STORAGE_KEY, 'plpshop_orders', 'plpshop_users', 'plpshop_settings'];
-            return openDB().then(function() {
-                return Promise.all(keys.map(function(key) {
-                    return idbGet(key).then(function(value) {
-                        if (value !== undefined && value !== null) {
-                            memCache[key] = value;
-                            return;
-                        }
-                        var legacy = null;
-                        try {
-                            var raw = localStorage.getItem(key);
-                            legacy = raw ? JSON.parse(raw) : null;
-                        } catch (e) { legacy = null; }
-                        if (legacy !== null) {
-                            memCache[key] = legacy;
-                            idbSet(key, legacy).catch(function() {});
-                        }
-                    });
-                }));
-            }).catch(function(err) {
-                console.warn('IndexedDB indisponible, retour à un stockage classique (limité) :', err);
-                useIndexedDB = false;
-            });
-        }
-
-        var storageReadyPromise = loadAllFromDB();
-
-        function safeSetLocalStorage(key, jsonString) {
-            var value;
-            try { value = JSON.parse(jsonString); } catch (e) { value = jsonString; }
-
-            if (useIndexedDB) {
-                memCache[key] = value; // mise à jour immédiate, l'UI n'attend pas l'écriture disque
-                idbSet(key, value).catch(function(err) {
-                    console.error('Erreur IndexedDB (' + key + '):', err);
-                    showToast('❌ Erreur d\'enregistrement (espace disque insuffisant ?). Réessayez.', 'error');
-                });
-                return true;
-            }
-
-            // Repli sans IndexedDB : ancien comportement localStorage, avec limite
-            try {
-                localStorage.setItem(key, jsonString);
-                memCache[key] = value;
-                return true;
-            } catch (err) {
-                console.error('Erreur localStorage (' + key + '):', err);
-                if (err && (err.name === 'QuotaExceededError' || err.code === 22 || err.code === 1014)) {
-                    showToast('❌ Stockage plein (IndexedDB indisponible sur cet appareil). Utilisez une image plus légère.', 'error');
-                } else {
-                    showToast('❌ Erreur lors de l\'enregistrement. Réessayez.', 'error');
-                }
-                return false;
+            if (state === 'syncing') {
+                indicator.className = 'sync-indicator syncing';
+                syncText.textContent = 'Synchronisation...';
+            } else {
+                indicator.className = 'sync-indicator synced';
+                syncText.textContent = 'Synchronisé';
             }
         }
 
-        function safeGetJSON(key, fallback) {
-            if (Object.prototype.hasOwnProperty.call(memCache, key) && memCache[key] !== null && memCache[key] !== undefined) {
-                return memCache[key];
-            }
-            return fallback;
+        function startRealtimeSync() {
+            updateSyncIndicator('syncing');
+
+            unsubscribeProducts = watchCollection('products', function(list) {
+                productsCache = list;
+                loadProductsByCategory();
+                loadDashboard();
+                updateSyncIndicator('synced');
+            }, function() { showToast('⚠️ Erreur de synchronisation des produits.', 'error'); });
+
+            unsubscribeOrders = watchCollection('orders', function(list) {
+                list.sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
+                ordersCache = list;
+                loadOrders();
+                loadDashboard();
+                updateSyncIndicator('synced');
+            }, function() { showToast('⚠️ Erreur de synchronisation des commandes.', 'error'); });
+
+            unsubscribeUsers = watchCollection('users', function(list) {
+                usersCache = list;
+                loadUsers();
+                loadDashboard();
+            }, function() { showToast('⚠️ Erreur de synchronisation des clients.', 'error'); });
+
+            getDocIn('settings', 'shop').then(function(snap) {
+                settingsCache = snap.exists() ? snap.data() : {};
+                loadSettings();
+            }).catch(function() {});
+        }
+
+        function stopRealtimeSync() {
+            if (unsubscribeProducts) unsubscribeProducts();
+            if (unsubscribeOrders) unsubscribeOrders();
+            if (unsubscribeUsers) unsubscribeUsers();
         }
 
         // ============================================================
-        // AUTHENTIFICATION
+        // AUTHENTIFICATION (FIREBASE AUTH)
         // ============================================================
-        function getOwnerCredentials() {
-            var settings = safeGetJSON('plpshop_settings', null);
-            if (settings && settings.ownerSecret) {
-                return { email: OWNER_EMAIL, secret: settings.ownerSecret };
-            }
-            return { email: OWNER_EMAIL, secret: OWNER_SECRET };
-        }
-
         function verifyOwner(e) {
             e.preventDefault();
-            storageReadyPromise.then(function() {
-                doVerifyOwner();
-            });
+            doVerifyOwner();
+        }
+
+        function showOwnerError(msg) {
+            var errEl = document.getElementById('ownerError');
+            if (!errEl) return;
+            errEl.className = 'error-msg show';
+            errEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + msg;
+            setTimeout(function() { errEl.className = 'error-msg'; }, 4000);
+        }
+
+        function translateAuthError(err) {
+            var code = (err && err.code) || '';
+            if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
+                return 'Email ou mot de passe incorrect.';
+            }
+            if (code === 'auth/too-many-requests') {
+                return 'Trop de tentatives. Réessayez plus tard.';
+            }
+            if (code === 'auth/invalid-email') {
+                return 'Adresse email invalide.';
+            }
+            return 'Une erreur est survenue.';
         }
 
         function doVerifyOwner() {
             var email = document.getElementById('ownerEmail').value.trim();
             var secret = document.getElementById('ownerSecret').value.trim();
-            var creds = getOwnerCredentials();
+            var btn = document.querySelector('#ownerVerifyScreen .btn-owner');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...'; }
 
-            if (email === creds.email && secret === creds.secret) {
-                document.getElementById('ownerVerifyScreen').style.display = 'none';
-                document.getElementById('adminContent').style.display = 'block';
-                document.body.classList.add('admin-body');
-                sessionStorage.setItem('plpshop_owner_auth', 'true');
-                initAdmin();
-                showToast('✅ Bienvenue dans l\'administration !', 'success');
+            fbSignIn(email, secret).then(function(cred) {
+                return getDocIn('users', cred.user.uid);
+            }).then(function(snap) {
+                if (snap.exists() && snap.data().role === 'admin') {
+                    document.getElementById('ownerVerifyScreen').style.display = 'none';
+                    document.getElementById('adminContent').style.display = 'block';
+                    document.body.classList.add('admin-body');
+                    showToast('✅ Bienvenue dans l\'administration !', 'success');
+                } else {
+                    fbSignOut();
+                    showOwnerError('Ce compte n\'a pas les droits administrateur.');
+                }
+            }).catch(function(err) {
+                console.error(err);
+                showOwnerError(translateAuthError(err));
+            }).finally(function() {
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-lock-open"></i> Accéder à l\'administration'; }
+            });
+        }
+
+        // Réagit à l'état de connexion Firebase (persiste automatiquement entre sessions)
+        fbOnAuthChange(function(user) {
+            if (user) {
+                getDocIn('users', user.uid).then(function(snap) {
+                    if (snap.exists() && snap.data().role === 'admin') {
+                        currentAdminUser = user;
+                        document.getElementById('ownerVerifyScreen').style.display = 'none';
+                        document.getElementById('adminContent').style.display = 'block';
+                        document.body.classList.add('admin-body');
+                        initAdmin();
+                    } else {
+                        // Connecté mais pas administrateur : on refuse l'accès à ce panneau
+                        fbSignOut();
+                    }
+                }).catch(function(err) { console.error(err); });
             } else {
-                var errEl = document.getElementById('ownerError');
-                if (!errEl) return;
-                errEl.className = 'error-msg show';
-                errEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Accès refusé. Email ou code incorrect.';
-                setTimeout(function() {
-                    errEl.className = 'error-msg';
-                }, 3000);
+                currentAdminUser = null;
+                stopRealtimeSync();
+                document.getElementById('ownerVerifyScreen').style.display = '';
+                document.getElementById('adminContent').style.display = 'none';
+                document.body.classList.remove('admin-body');
             }
-        }
-
-        function checkExistingSession() {
-            if (sessionStorage.getItem('plpshop_owner_auth') === 'true') {
-                document.getElementById('ownerVerifyScreen').style.display = 'none';
-                document.getElementById('adminContent').style.display = 'block';
-                document.body.classList.add('admin-body');
-                initAdmin();
-            }
-        }
+        });
 
         // ============================================================
         // INITIALISATION
         // ============================================================
+        var adminInitialized = false;
         function initAdmin() {
-            ensureDefaultData();
-            loadDashboard();
-            loadProductsByCategory();
-            loadOrders();
-            loadUsers();
-            loadSettings();
-        }
-
-        function ensureDefaultData() {
-            var existing = safeGetJSON(STORAGE_KEY, null);
-            if (!existing || !existing.length) {
-                var defaults = [
-                    { id: 1, name: "T-shirt Premium Noir", price: 12000, oldPrice: 15000, category: "t-shirt", gender: "homme", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=500&fit=crop", description: "T-shirt en coton bio" },
-                    { id: 2, name: "T-shirt Femme Élégant", price: 10000, category: "t-shirt", gender: "femme", image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400&h=500&fit=crop", description: "Coupe féminine" },
-                    { id: 3, name: "Short Sport Homme", price: 15000, oldPrice: 18000, category: "short", gender: "homme", image: "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=400&h=500&fit=crop", description: "Short de sport respirant" },
-                    { id: 4, name: "Short Athlétique Femme", price: 14000, category: "short", gender: "femme", image: "https://images.unsplash.com/photo-1558618666-fcd25c85f169?w=400&h=500&fit=crop", description: "Short running" },
-                    { id: 5, name: "Maillot PSG Domicile", price: 55000, oldPrice: 70000, category: "maillot", gender: "homme", image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&h=500&fit=crop", description: "Maillot officiel" },
-                    { id: 6, name: "Ensemble Sport Homme", price: 45000, oldPrice: 55000, category: "ensemble sport", gender: "homme", image: "https://images.unsplash.com/photo-1518459031867-a89b944bffe4?w=400&h=500&fit=crop", description: "Ensemble jogging" },
-                    { id: 7, name: "Basket Nike Air", price: 85000, oldPrice: 100000, category: "chaussures", gender: "homme", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=500&fit=crop", description: "Basket running" },
-                    { id: 8, name: "Basket Adidas Femme", price: 70000, category: "chaussures", gender: "femme", image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=500&fit=crop", description: "Basket lifestyle" }
-                ];
-                safeSetLocalStorage(STORAGE_KEY, JSON.stringify(defaults));
-            }
+            if (adminInitialized) return;
+            adminInitialized = true;
+            startRealtimeSync();
         }
 
         // ============================================================
@@ -800,9 +796,6 @@
             }
         }
 
-        // Redimensionne et compresse une image avant de la stocker en base64,
-        // pour éviter de saturer le quota de localStorage (cause principale des
-        // blocages lors de l'enregistrement d'un produit avec image importée).
         function resizeImage(dataUrl, maxWidth, maxHeight, quality, callback) {
             var img = new Image();
             img.onload = function() {
@@ -825,7 +818,6 @@
                 try {
                     resized = canvas.toDataURL('image/jpeg', quality);
                 } catch (err) {
-                    console.error('Erreur de redimensionnement, image conservée telle quelle:', err);
                     resized = dataUrl;
                 }
                 callback(resized);
@@ -851,9 +843,6 @@
                 return;
             }
 
-            // Ce contrôle n'est pas une limite de stockage (IndexedDB en a très peu) :
-            // il évite juste qu'un fichier énorme fasse ramer le navigateur pendant
-            // sa lecture. 20 Mo est largement suffisant pour une photo produit.
             if (file.size > 20 * 1024 * 1024) {
                 showToast('Image trop volumineuse (max 20 Mo).', 'error');
                 event.target.value = '';
@@ -888,8 +877,7 @@
             var removeBtn = document.getElementById('btnRemoveImage');
             var dataInput = document.getElementById('uploadedImageData');
             var fileInput = document.getElementById('imageFileInput');
-            if (preview) { preview.classList.remove('show');
-                preview.src = ''; }
+            if (preview) { preview.classList.remove('show'); preview.src = ''; }
             if (removeBtn) removeBtn.classList.remove('show');
             if (dataInput) dataInput.value = '';
             if (fileInput) fileInput.value = '';
@@ -982,8 +970,7 @@
                         html += '<tr><td><strong>' + (order.id || 'N/A') + '</strong></td><td>' + (order.customerName || 'N/A') +
                             '</td><td>' + new Date(order.date).toLocaleDateString('fr-FR') +
                             '</td><td><strong>' + formatFCFA(order.total) +
-                            '</strong></td><td><span class="status-badge ' + getStatusClass(order.status) + '">' + (order
-                                .status || 'En attente') + '</span></td></tr>';
+                            '</strong></td><td><span class="status-badge ' + getStatusClass(order.status) + '">' + (order.status || 'En attente') + '</span></td></tr>';
                     }
                     recentBody.innerHTML = html;
                 }
@@ -996,11 +983,7 @@
         // PRODUCTS
         // ============================================================
         function getProducts() {
-            return safeGetJSON(STORAGE_KEY, []);
-        }
-
-        function saveProducts(products) {
-            return safeSetLocalStorage(STORAGE_KEY, JSON.stringify(products));
+            return productsCache;
         }
 
         function loadProductsByCategory() {
@@ -1054,11 +1037,9 @@
             if (!modal) return;
             modal.classList.add('active');
 
-            // Réinitialiser le formulaire
             resetImageForm();
 
             if (productId) {
-                // Mode édition
                 document.getElementById('modalTitle').textContent = 'Modifier le produit';
                 var products = getProducts();
                 var product = null;
@@ -1088,7 +1069,6 @@
                     }
                 }
             } else {
-                // Mode ajout
                 document.getElementById('modalTitle').textContent = 'Ajouter un produit';
                 document.getElementById('productForm').reset();
                 document.getElementById('productId').value = '';
@@ -1129,7 +1109,6 @@
             var description = document.getElementById('productDescription').value.trim();
             var imageData = getImageData();
 
-            // Validation
             if (!name) {
                 showToast('❌ Veuillez entrer un nom de produit.', 'error');
                 return;
@@ -1143,52 +1122,30 @@
                 return;
             }
 
-            var products = getProducts();
-            var productId = document.getElementById('productId').value;
-            var isEdit = !!productId;
+            var productIdField = document.getElementById('productId').value;
+            var isEdit = !!productIdField;
+            var productId = isEdit ? parseInt(productIdField) : Date.now();
 
-            if (isEdit) {
-                // Modification
-                var idx = -1;
-                for (var i = 0; i < products.length; i++) {
-                    if (products[i].id === parseInt(productId)) { idx = i; break; }
-                }
-                if (idx !== -1) {
-                    products[idx].name = name;
-                    products[idx].category = category;
-                    products[idx].gender = gender;
-                    products[idx].price = price;
-                    products[idx].oldPrice = oldPrice;
-                    products[idx].description = description;
-                    products[idx].image = imageData;
-                }
-            } else {
-                // Ajout
-                var newProduct = {
-                    id: Date.now(),
-                    name: name,
-                    category: category,
-                    gender: gender,
-                    price: price,
-                    oldPrice: oldPrice,
-                    description: description,
-                    image: imageData
-                };
-                products.push(newProduct);
-            }
+            var productData = {
+                id: productId,
+                name: name,
+                category: category,
+                gender: gender,
+                price: price,
+                oldPrice: oldPrice,
+                description: description,
+                image: imageData,
+                imageSetByAdmin: true
+            };
 
-            var saved = saveProducts(products);
-            if (!saved) {
-                // L'erreur a déjà été affichée par safeSetLocalStorage.
-                // On ne ferme pas la modale pour laisser une chance de réessayer
-                // (par exemple avec une image plus légère ou une URL).
-                return;
-            }
-
-            closeModal();
-            loadProductsByCategory();
-            loadDashboard();
-            showToast('✅ Produit ' + (isEdit ? 'modifié' : 'ajouté') + ' avec succès !', 'success');
+            updateSyncIndicator('syncing');
+            setDocIn('products', productId, productData).then(function() {
+                closeModal();
+                showToast('✅ Produit ' + (isEdit ? 'modifié' : 'ajouté') + ' avec succès !', 'success');
+            }).catch(function(err) {
+                console.error(err);
+                showToast('❌ Erreur lors de l\'enregistrement : ' + (err.message || err), 'error');
+            });
         }
 
         function editProduct(id) {
@@ -1197,33 +1154,20 @@
 
         function deleteProduct(id) {
             if (!confirm('Supprimer ce produit ?')) return;
-            var products = getProducts();
-            var filtered = [];
-            for (var i = 0; i < products.length; i++) {
-                if (products[i].id !== id) filtered.push(products[i]);
-            }
-            if (saveProducts(filtered)) {
-                loadProductsByCategory();
-                loadDashboard();
+            updateSyncIndicator('syncing');
+            deleteDocIn('products', id).then(function() {
                 showToast('🗑️ Produit supprimé.', 'success');
-            }
+            }).catch(function(err) {
+                console.error(err);
+                showToast('❌ Erreur lors de la suppression.', 'error');
+            });
         }
 
         // ============================================================
         // ORDERS
         // ============================================================
         function getOrders() {
-            var data = safeGetJSON('plpshop_orders', null);
-            if (!data) {
-                var defaultOrders = [
-                    { id: 'CMD-001', customerName: 'Jean Dupont', date: new Date().toISOString(), total: 45000, status: 'En attente' },
-                    { id: 'CMD-002', customerName: 'Marie Diallo', date: new Date(Date.now() - 86400000).toISOString(), total: 55000, status: 'Confirmée' },
-                    { id: 'CMD-003', customerName: 'Ousmane Sarr', date: new Date(Date.now() - 172800000).toISOString(), total: 85000, status: 'Expédiée' }
-                ];
-                safeSetLocalStorage('plpshop_orders', JSON.stringify(defaultOrders));
-                return defaultOrders;
-            }
-            return data;
+            return ordersCache;
         }
 
         function loadOrders() {
@@ -1279,18 +1223,12 @@
         }
 
         function updateOrderStatus(oid, status) {
-            var orders = getOrders();
-            for (var i = 0; i < orders.length; i++) {
-                if (orders[i].id === oid) {
-                    orders[i].status = status;
-                    break;
-                }
-            }
-            if (safeSetLocalStorage('plpshop_orders', JSON.stringify(orders))) {
-                loadOrders();
-                loadDashboard();
+            updateDocIn('orders', oid, { status: status }).then(function() {
                 showToast('✅ ' + oid + ' → "' + status + '"', 'success');
-            }
+            }).catch(function(err) {
+                console.error(err);
+                showToast('❌ Erreur lors de la mise à jour.', 'error');
+            });
         }
 
         function viewOrder(oid) {
@@ -1308,27 +1246,21 @@
         // USERS
         // ============================================================
         function getUsers() {
-            var data = safeGetJSON('plpshop_users', null);
-            if (!data) {
-                var defaultUsers = [
-                    { id: 1, name: 'Administrateur', email: 'admin@plpshop.com', phone: '779078970', role: 'admin' },
-                    { id: 2, name: 'Jean Dupont', email: 'jean@email.com', phone: '771234567', role: 'client' },
-                    { id: 3, name: 'Marie Diallo', email: 'marie@email.com', phone: '778765432', role: 'client' }
-                ];
-                safeSetLocalStorage('plpshop_users', JSON.stringify(defaultUsers));
-                return defaultUsers;
-            }
-            return data;
+            return usersCache;
         }
 
         function loadUsers() {
             var users = getUsers();
             var tbody = document.getElementById('usersTableBody');
             if (!tbody) return;
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;">Aucun client</td></tr>';
+                return;
+            }
             var html = '';
             for (var i = 0; i < users.length; i++) {
                 var u = users[i];
-                html += '<tr><td>#' + u.id + '</td><td>' + u.name + '</td><td>' + u.email + '</td><td>' + u.phone + '</td><td>' + (u.role === 'admin' ? '<span style="color:var(--plp-blue);">Admin</span>' : 'Client') + '</td></tr>';
+                html += '<tr><td>#' + (i + 1) + '</td><td>' + u.name + '</td><td>' + u.email + '</td><td>' + (u.phone || '—') + '</td><td>' + (u.role === 'admin' ? '<span style="color:var(--plp-blue);">Admin</span>' : 'Client') + '</td></tr>';
             }
             tbody.innerHTML = html;
         }
@@ -1337,14 +1269,11 @@
         // SETTINGS
         // ============================================================
         function loadSettings() {
-            var s = safeGetJSON('plpshop_settings', null);
-            if (s) {
-                document.getElementById('siteName').value = s.siteName || '';
-                document.getElementById('siteEmail').value = s.email || '';
-                document.getElementById('sitePhone').value = s.phone || '';
-                document.getElementById('siteAddress').value = s.address || '';
-                document.getElementById('ownerSecretCode').value = s.ownerSecret || OWNER_SECRET;
-            }
+            var s = settingsCache || {};
+            document.getElementById('siteName').value = s.siteName || '';
+            document.getElementById('siteEmail').value = s.email || '';
+            document.getElementById('sitePhone').value = s.phone || '';
+            document.getElementById('siteAddress').value = s.address || '';
         }
 
         function saveSettings() {
@@ -1352,12 +1281,15 @@
                 siteName: document.getElementById('siteName').value,
                 email: document.getElementById('siteEmail').value,
                 phone: document.getElementById('sitePhone').value,
-                address: document.getElementById('siteAddress').value,
-                ownerSecret: document.getElementById('ownerSecretCode').value || OWNER_SECRET
+                address: document.getElementById('siteAddress').value
             };
-            if (safeSetLocalStorage('plpshop_settings', JSON.stringify(s))) {
+            setDocIn('settings', 'shop', s).then(function() {
+                settingsCache = s;
                 showToast('✅ Paramètres enregistrés !', 'success');
-            }
+            }).catch(function(err) {
+                console.error(err);
+                showToast('❌ Erreur lors de l\'enregistrement.', 'error');
+            });
         }
 
         // ============================================================
@@ -1365,8 +1297,9 @@
         // ============================================================
         function logout() {
             if (confirm('Se déconnecter ?')) {
-                sessionStorage.removeItem('plpshop_owner_auth');
-                window.location.href = 'index.html';
+                fbSignOut().then(function() {
+                    window.location.href = 'index.html';
+                });
             }
         }
 
@@ -1380,15 +1313,28 @@
         });
 
         // ============================================================
-        // INITIALISATION AU CHARGEMENT
+        // EXPOSITION GLOBALE (requis car type="module")
         // ============================================================
-        storageReadyPromise.then(function() {
-            checkExistingSession();
-        });
+        window.closeModal = closeModal;
+        window.closeSidebar = closeSidebar;
+        window.deleteProduct = deleteProduct;
+        window.editProduct = editProduct;
+        window.filterOrders = filterOrders;
+        window.handleImageUpload = handleImageUpload;
+        window.logout = logout;
+        window.openProductModal = openProductModal;
+        window.openProductModalWithCategory = openProductModalWithCategory;
+        window.removeUploadedImage = removeUploadedImage;
+        window.saveProduct = saveProduct;
+        window.saveSettings = saveSettings;
+        window.showSection = showSection;
+        window.switchImageTab = switchImageTab;
+        window.toggleSidebar = toggleSidebar;
+        window.updateOrderStatus = updateOrderStatus;
+        window.verifyOwner = verifyOwner;
+        window.viewOrder = viewOrder;
 
-        console.log('🔐 Administration PLP Shop - Version corrigée');
-        console.log('📦 Stockage sur IndexedDB : plus de limite de quelques Mo, compression image automatique');
-        console.log('👤 Email: admin@plpshop.com | Code: PLPShop2026');
+        console.log('🔥 Administration PLP Shop - Synchronisation Firebase (temps réel)');
     </script>
 </body>
 </html>

@@ -234,6 +234,12 @@
         .btn-detail { flex: 1; min-width: 60px; padding: 8px 6px; background: transparent; border: 1px solid rgba(0,0,0,0.06); color: var(--color-charcoal); font-weight: 500; font-size: clamp(7px,0.8vw,9px); text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: var(--transition); border-radius: var(--radius-full); font-family: var(--font-sans); display: flex; align-items: center; justify-content: center; gap: 4px; }
         .btn-detail:hover { background: var(--color-bg); border-color: var(--color-black); }
 
+        /* ===== EMPTY STATE ===== */
+        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--color-silver); }
+        .empty-state i { font-size: 4rem; color: var(--color-gold); margin-bottom: 1rem; opacity: 0.5; }
+        .empty-state h3 { font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--color-charcoal); }
+        .empty-state p { font-size: 0.9rem; max-width: 400px; margin: 0 auto; }
+
         /* ===== MODAL PRODUIT ===== */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; padding: 1.2rem; backdrop-filter: blur(12px); animation: fadeIn 0.3s ease; }
         .modal-overlay.active { display: flex; }
@@ -815,19 +821,15 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import {
+            auth, db, fbSignIn, fbSignUp, fbSignOut, fbOnAuthChange,
+            watchCollection, setDocIn, updateDocIn, deleteDocIn, getDocIn, fbTimestamp
+        } from './firebase-init.js';
+
         // ============================================================
         // CONFIGURATION
         // ============================================================
-        var ADMIN_CONFIG = {
-            email: 'admin@plpshop.com',
-            password: 'PLPShop2026',
-            name: 'Administrateur PLP',
-            role: 'admin',
-            phone: '+221 76 859 78 35',
-            city: 'Dakar'
-        };
-
         var WHATSAPP_NUMBER = '221768597835';
         var WHATSAPP_DISPLAY = '+221 76 859 78 35';
         var STORAGE_KEY = 'plpshop_products';
@@ -837,7 +839,7 @@
         var currentModalProduct = null;
         var uploadedProof = null;
         var uploadedProofData = null;
-        var lastProductsSnapshot = '';
+        var productsCache = [];
 
         var CATEGORY_ICONS = {
             't-shirt': '👕',
@@ -897,7 +899,7 @@
         }
 
         function loadAllFromDB() {
-            var keys = [STORAGE_KEY, 'plpshop_current_user', 'plpshop_guest_id', 'plpshop_cart_'];
+            var keys = ['plpshop_guest_id', 'plpshop_cart_'];
             return openDB().then(function() {
                 return Promise.all(keys.map(function(key) {
                     return idbGet(key).then(function(value) {
@@ -957,140 +959,20 @@
         }
 
         // ============================================================
-        // PRODUCTS - GESTION DES IMAGES PAR L'ADMIN UNIQUEMENT
+        // PRODUCTS - GESTION PAR L'ADMIN UNIQUEMENT
         // ============================================================
         function getProducts() {
-            var products = safeGetJSON(STORAGE_KEY, null);
-            if (!products || products.length === 0) {
-                products = [
-                    { 
-                        id: 1, 
-                        name: "T-shirt Premium Noir", 
-                        price: 8000, 
-                        oldPrice: 12000, 
-                        category: "t-shirt", 
-                        gender: "homme", 
-                        badge: "promo", 
-                        description: "T-shirt en coton premium.",
-                        image: "",
-                        imageSetByAdmin: false
-                    },
-                    { 
-                        id: 2, 
-                        name: "T-shirt Blanc Intemporel", 
-                        price: 7000, 
-                        category: "t-shirt", 
-                        gender: "homme", 
-                        badge: null, 
-                        description: "T-shirt blanc basique.",
-                        image: "",
-                        imageSetByAdmin: false
-                    },
-                    { 
-                        id: 3, 
-                        name: "T-shirt Femme Élégant", 
-                        price: 10000, 
-                        oldPrice: 13000, 
-                        category: "t-shirt", 
-                        gender: "femme", 
-                        badge: "nouveau", 
-                        description: "T-shirt femme coupe cintrée.",
-                        image: "",
-                        imageSetByAdmin: false
-                    },
-                    { 
-                        id: 4, 
-                        name: "Short Sport Homme", 
-                        price: 7000, 
-                        oldPrice: 10000, 
-                        category: "short", 
-                        gender: "homme", 
-                        badge: "promo", 
-                        description: "Short de sport léger.",
-                        image: "",
-                        imageSetByAdmin: false
-                    },
-                    { 
-                        id: 5, 
-                        name: "Short Athlétique Femme", 
-                        price: 8000, 
-                        category: "short", 
-                        gender: "femme", 
-                        badge: null, 
-                        description: "Short de running coupe féminine.",
-                        image: "",
-                        imageSetByAdmin: false
-                    },
-                    { 
-                        id: 6, 
-                        name: "Maillot PSG Domicile", 
-                        price: 55000, 
-                        oldPrice: 70000, 
-                        category: "maillot", 
-                        gender: "homme", 
-                        badge: "exclusif", 
-                        description: "Maillot officiel du PSG.",
-                        image: "",
-                        imageSetByAdmin: false
-                    },
-                    { 
-                        id: 7, 
-                        name: "Ensemble Jogging Homme", 
-                        price: 45000, 
-                        oldPrice: 60000, 
-                        category: "ensemble sport", 
-                        gender: "homme", 
-                        badge: "promo", 
-                        description: "Ensemble jogging complet.",
-                        image: "",
-                        imageSetByAdmin: false
-                    },
-                    { 
-                        id: 8, 
-                        name: "Basket Nike Air Max", 
-                        price: 85000, 
-                        oldPrice: 100000, 
-                        category: "chaussures", 
-                        gender: "homme", 
-                        badge: "exclusif", 
-                        description: "Basket Nike Air Max.",
-                        image: "",
-                        imageSetByAdmin: false
-                    }
-                ];
-                safeSetLocalStorage(STORAGE_KEY, JSON.stringify(products));
-            }
-            return products;
+            // Filtrer uniquement les produits valides avec images définies par l'admin
+            return productsCache.filter(function(p) {
+                return p && p.id && p.name && p.image && p.imageSetByAdmin === true && p.image.length > 0;
+            });
         }
 
-        // Fonction pour obtenir l'image d'un produit avec fallback
         function getProductImage(product) {
-            if (product.image && product.imageSetByAdmin && product.image.length > 0) {
+            if (product && product.image && product.imageSetByAdmin === true && product.image.length > 0) {
                 return product.image;
             }
-            
-            var placeholderText = product.name || 'Image à venir';
-            var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">' +
-                '<rect width="400" height="500" fill="#1a1a2e"/>' +
-                '<rect x="20" y="20" width="360" height="460" fill="none" stroke="#c9a84c" stroke-width="2" stroke-dasharray="10,5"/>' +
-                '<text x="200" y="230" font-family="Arial" font-size="48" fill="#c9a84c" text-anchor="middle">📸</text>' +
-                '<text x="200" y="280" font-family="Arial" font-size="20" fill="#ffffff" text-anchor="middle">Image à venir</text>' +
-                '<text x="200" y="310" font-family="Arial" font-size="14" fill="#888888" text-anchor="middle">Définie par l\'admin</text>' +
-                '</svg>';
-            
-            return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
-        }
-
-        function saveProducts(products) {
-            var result = safeSetLocalStorage(STORAGE_KEY, JSON.stringify(products));
-            try {
-                var event = new StorageEvent('storage', {
-                    key: STORAGE_KEY,
-                    newValue: JSON.stringify(products)
-                });
-                window.dispatchEvent(event);
-            } catch(e) {}
-            return result;
+            return 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"></svg>');
         }
 
         function formatFCFA(n) { return (n || 0).toLocaleString('fr-FR') + ' FCFA'; }
@@ -1098,81 +980,29 @@
         // ============================================================
         // SYNCHRONISATION
         // ============================================================
-        window.addEventListener('storage', function(e) {
-            if (e.key === STORAGE_KEY) {
-                try {
-                    if (e.newValue) {
-                        memCache[STORAGE_KEY] = JSON.parse(e.newValue);
-                    }
-                } catch(er) {}
-                displayProducts();
-                updateCartCount();
-            }
+        // ============================================================
+        // SYNCHRONISATION EN TEMPS RÉEL (FIRESTORE)
+        // Remplace IndexedDB + storage events + polling : les produits
+        // ajoutés/modifiés/supprimés depuis l'admin apparaissent ici
+        // automatiquement, sur tout appareil, en temps réel.
+        // ============================================================
+        watchCollection('products', function(list) {
+            productsCache = list;
+            displayProducts();
+            updateCartCount();
         });
 
-        setInterval(function() {
-            var currentSnapshot = JSON.stringify(getProducts());
-            if (currentSnapshot !== lastProductsSnapshot) {
-                lastProductsSnapshot = currentSnapshot;
-                displayProducts();
-            }
-        }, 2000);
-
         // ============================================================
-        // CURTAIN + FILTER BY GENDER
+        // EMPTY STATE DISPLAY
         // ============================================================
-        function openCurtain(gender) {
-            var overlay = document.getElementById('curtainOverlay');
-            overlay.classList.remove('open');
-            void overlay.offsetWidth;
-            overlay.classList.add('open');
-            
-            setTimeout(function() {
-                filterByGender(gender);
-                document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
-                setTimeout(function() {
-                    overlay.classList.remove('open');
-                }, 400);
-            }, 800);
-        }
-
-        function filterByGender(gender) {
-            currentFilter = 'all';
-            document.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
-            var toutTab = document.querySelector('.filter-tab');
-            if (toutTab) toutTab.classList.add('active');
-
-            var products = getProducts();
-            var filtered = products.filter(function(p) { return p.gender === gender; });
+        function displayEmptyState(message, icon) {
             var grid = document.getElementById('productsGrid');
             if (!grid) return;
-            
-            if (filtered.length === 0) {
-                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--color-silver);">Aucun produit pour ce genre</div>';
-            } else {
-                grid.innerHTML = filtered.map(function(p) {
-                    var discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
-                    var badgeLabel = '';
-                    if (p.badge === 'promo') badgeLabel = '-' + discount + '%';
-                    else if (p.badge === 'nouveau') badgeLabel = 'Nouveau';
-                    else if (p.badge === 'exclusif') badgeLabel = '⭐ Exclusif';
-                    var icon = CATEGORY_ICONS[p.category] || '📦';
-                    var productImage = getProductImage(p);
-                    
-                    return '<div class="product-card" onclick="openProductModalIndex(' + p.id + ')">' +
-                        (badgeLabel ? '<div class="badge">' + badgeLabel + '</div>' : '') +
-                        '<img src="' + productImage + '" class="product-image" loading="lazy" alt="' + p.name + '" />' +
-                        '<div class="product-info">' +
-                        '<div class="product-category">' + icon + ' ' + (p.category || '') + ' ' + (p.gender === 'homme' ? '👔' : p.gender === 'femme' ? '👗' : '👤') + '</div>' +
-                        '<h3 class="product-name">' + p.name + '</h3>' +
-                        '<div class="product-price">' + formatFCFA(p.price) + (p.oldPrice ? '<span class="old">' + formatFCFA(p.oldPrice) + '</span>' : '') + '</div>' +
-                        '<div class="product-actions">' +
-                        '<button class="btn-cart" onclick="event.stopPropagation(); addToCart(' + p.id + ')"><i class="fas fa-cart-plus"></i> Panier</button>' +
-                        '<button class="btn-detail" onclick="event.stopPropagation(); openProductModalIndex(' + p.id + ')"><i class="fas fa-eye"></i></button>' +
-                        '</div></div></div>';
-                }).join('');
-            }
-            document.getElementById('collectionTitle').textContent = gender === 'homme' ? 'Collection Homme' : 'Collection Femme';
+            grid.innerHTML = '<div class="empty-state">' +
+                '<i class="fas ' + (icon || 'fa-box-open') + '"></i>' +
+                '<h3>Aucun produit disponible</h3>' +
+                '<p>' + (message || 'La boutique sera bientôt disponible. Revenez plus tard !') + '</p>' +
+                '</div>';
         }
 
         // ============================================================
@@ -1182,14 +1012,22 @@
             var grid = document.getElementById('productsGrid');
             if (!grid) return;
             var products = getProducts();
+            
+            if (products.length === 0) {
+                displayEmptyState('La boutique sera bientôt disponible. Revenez plus tard !', 'fa-box-open');
+                return;
+            }
+            
             var filtered = products;
             if (currentFilter !== 'all') {
                 filtered = products.filter(function(p) { return p.category === currentFilter; });
             }
+            
             if (filtered.length === 0) {
-                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--color-silver);">Aucun produit dans cette catégorie</div>';
+                displayEmptyState('Aucun produit dans cette catégorie pour le moment.', 'fa-filter');
                 return;
             }
+            
             grid.innerHTML = filtered.map(function(p) {
                 var discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
                 var badgeLabel = '';
@@ -1229,12 +1067,18 @@
             var q = document.getElementById('searchInput')?.value.toLowerCase().trim();
             if (!q) { displayProducts(); return; }
             var products = getProducts();
+            
+            if (products.length === 0) {
+                displayEmptyState('La boutique sera bientôt disponible. Revenez plus tard !', 'fa-box-open');
+                return;
+            }
+            
             var filtered = products.filter(function(p) {
                 return p.name.toLowerCase().indexOf(q) !== -1 || (p.category && p.category.toLowerCase().indexOf(q) !== -1);
             });
             var grid = document.getElementById('productsGrid');
             if (filtered.length === 0) {
-                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--color-silver);">Aucun résultat</div>';
+                displayEmptyState('Aucun résultat pour votre recherche.', 'fa-search');
                 return;
             }
             grid.innerHTML = filtered.map(function(p) {
@@ -1257,6 +1101,67 @@
                     '<button class="btn-detail" onclick="event.stopPropagation(); openProductModalIndex(' + p.id + ')"><i class="fas fa-eye"></i></button>' +
                     '</div></div></div>';
             }).join('');
+        }
+
+        function filterByGender(gender) {
+            currentFilter = 'all';
+            document.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+            var toutTab = document.querySelector('.filter-tab');
+            if (toutTab) toutTab.classList.add('active');
+
+            var products = getProducts();
+            
+            if (products.length === 0) {
+                displayEmptyState('La boutique sera bientôt disponible. Revenez plus tard !', 'fa-box-open');
+                document.getElementById('collectionTitle').textContent = 'Boutique bientôt disponible';
+                return;
+            }
+            
+            var filtered = products.filter(function(p) { return p.gender === gender; });
+            var grid = document.getElementById('productsGrid');
+            if (!grid) return;
+            
+            if (filtered.length === 0) {
+                displayEmptyState('Aucun produit ' + gender + ' disponible pour le moment.', 'fa-user');
+            } else {
+                grid.innerHTML = filtered.map(function(p) {
+                    var discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+                    var badgeLabel = '';
+                    if (p.badge === 'promo') badgeLabel = '-' + discount + '%';
+                    else if (p.badge === 'nouveau') badgeLabel = 'Nouveau';
+                    else if (p.badge === 'exclusif') badgeLabel = '⭐ Exclusif';
+                    var icon = CATEGORY_ICONS[p.category] || '📦';
+                    var productImage = getProductImage(p);
+                    
+                    return '<div class="product-card" onclick="openProductModalIndex(' + p.id + ')">' +
+                        (badgeLabel ? '<div class="badge">' + badgeLabel + '</div>' : '') +
+                        '<img src="' + productImage + '" class="product-image" loading="lazy" alt="' + p.name + '" />' +
+                        '<div class="product-info">' +
+                        '<div class="product-category">' + icon + ' ' + (p.category || '') + ' ' + (p.gender === 'homme' ? '👔' : p.gender === 'femme' ? '👗' : '👤') + '</div>' +
+                        '<h3 class="product-name">' + p.name + '</h3>' +
+                        '<div class="product-price">' + formatFCFA(p.price) + (p.oldPrice ? '<span class="old">' + formatFCFA(p.oldPrice) + '</span>' : '') + '</div>' +
+                        '<div class="product-actions">' +
+                        '<button class="btn-cart" onclick="event.stopPropagation(); addToCart(' + p.id + ')"><i class="fas fa-cart-plus"></i> Panier</button>' +
+                        '<button class="btn-detail" onclick="event.stopPropagation(); openProductModalIndex(' + p.id + ')"><i class="fas fa-eye"></i></button>' +
+                        '</div></div></div>';
+                }).join('');
+            }
+            document.getElementById('collectionTitle').textContent = gender === 'homme' ? 'Collection Homme' : 'Collection Femme';
+        }
+
+        function openCurtain(gender) {
+            var overlay = document.getElementById('curtainOverlay');
+            overlay.classList.remove('open');
+            void overlay.offsetWidth;
+            overlay.classList.add('open');
+            
+            setTimeout(function() {
+                filterByGender(gender);
+                document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+                setTimeout(function() {
+                    overlay.classList.remove('open');
+                }, 400);
+            }, 800);
         }
 
         // ============================================================
@@ -1444,6 +1349,33 @@
         // ============================================================
         // PROOF UPLOAD
         // ============================================================
+        function resizeImage(dataUrl, maxWidth, maxHeight, quality, callback) {
+            var img = new Image();
+            img.onload = function() {
+                var width = img.width;
+                var height = img.height;
+                if (width > maxWidth || height > maxHeight) {
+                    var ratio = Math.min(maxWidth / width, maxHeight / height);
+                    width = Math.round(width * ratio);
+                    height = Math.round(height * ratio);
+                }
+                var canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                var resized;
+                try {
+                    resized = canvas.toDataURL('image/jpeg', quality);
+                } catch (err) {
+                    resized = dataUrl;
+                }
+                callback(resized);
+            };
+            img.onerror = function() { callback(dataUrl); };
+            img.src = dataUrl;
+        }
+
         function handleProofUpload(event) {
             var file = event.target.files[0];
             if (!file) return;
@@ -1457,13 +1389,16 @@
             uploadedProof = file;
             var reader = new FileReader();
             reader.onload = function(e) {
-                uploadedProofData = e.target.result;
-                document.getElementById('proofPreview').src = e.target.result;
-                document.getElementById('proofPreview').classList.add('show');
-                document.getElementById('fileName').textContent = file.name;
-                document.getElementById('fileInfo').classList.add('show');
-                document.getElementById('whatsappPayBtn').disabled = false;
-                showToast('✅ Preuve de paiement chargée');
+                // Redimensionnement : Firestore limite chaque document à 1 Mo
+                resizeImage(e.target.result, 1000, 1000, 0.7, function(resizedData) {
+                    uploadedProofData = resizedData;
+                    document.getElementById('proofPreview').src = resizedData;
+                    document.getElementById('proofPreview').classList.add('show');
+                    document.getElementById('fileName').textContent = file.name;
+                    document.getElementById('fileInfo').classList.add('show');
+                    document.getElementById('whatsappPayBtn').disabled = false;
+                    showToast('✅ Preuve de paiement chargée');
+                });
             };
             reader.readAsDataURL(file);
         }
@@ -1528,26 +1463,30 @@
                 customerEmail: currentUser.email,
                 customerPhone: currentUser.phone || '',
                 date: new Date().toISOString(),
-                status: 'En attente de confirmation',
+                status: 'En attente',
                 proofUploaded: true,
                 proofData: uploadedProofData,
                 proofName: uploadedProof ? uploadedProof.name : 'preuve.png'
             };
-            var key = 'plpshop_orders_' + getUserKey();
-            var orders = safeGetJSON(key, []);
-            orders.push(order);
-            safeSetLocalStorage(key, JSON.stringify(orders));
-            var all = safeGetJSON('plpshop_all_orders', []);
-            all.push(order);
-            safeSetLocalStorage('plpshop_all_orders', JSON.stringify(all));
-            window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + message, '_blank');
-            document.getElementById('orderNumberDisplay').textContent = 'N° ' + orderId;
-            document.getElementById('paidAmountDisplay').textContent = formatFCFA(grand);
-            goToStep('confirm');
-            clearUserCart();
-            updateCartCount();
-            showToast('✅ Commande envoyée ! L\'administrateur va vérifier votre preuve de paiement');
-            setTimeout(function() { removeProof(); }, 2000);
+
+            var payBtn = document.getElementById('whatsappPayBtn');
+            if (payBtn) payBtn.disabled = true;
+
+            setDocIn('orders', orderId, order).then(function() {
+                window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + message, '_blank');
+                document.getElementById('orderNumberDisplay').textContent = 'N° ' + orderId;
+                document.getElementById('paidAmountDisplay').textContent = formatFCFA(grand);
+                goToStep('confirm');
+                clearUserCart();
+                updateCartCount();
+                showToast('✅ Commande envoyée ! L\'administrateur va vérifier votre preuve de paiement');
+                setTimeout(function() { removeProof(); }, 2000);
+            }).catch(function(err) {
+                console.error(err);
+                showToast('❌ Erreur lors de l\'envoi de la commande. Réessayez.', 'error');
+            }).finally(function() {
+                if (payBtn) payBtn.disabled = false;
+            });
         }
 
         // ============================================================
@@ -1574,6 +1513,16 @@
 
         function showAuthAlert(msg, type) { var el = document.getElementById('authAlert'); el.textContent = msg; el.className = 'alert-box ' + (type || 'error'); el.style.display = 'block'; setTimeout(function() { el.style.display = 'none'; }, 4000); }
 
+        function translateAuthError(err) {
+            var code = (err && err.code) || '';
+            if (code === 'auth/email-already-in-use') return 'Cet email est déjà utilisé.';
+            if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') return 'Email ou mot de passe incorrect.';
+            if (code === 'auth/weak-password') return 'Mot de passe trop court (6 caractères minimum).';
+            if (code === 'auth/invalid-email') return 'Adresse email invalide.';
+            if (code === 'auth/too-many-requests') return 'Trop de tentatives. Réessayez plus tard.';
+            return 'Une erreur est survenue.';
+        }
+
         function handleLogin(e) {
             e.preventDefault();
             var email = document.getElementById('loginEmail').value.trim();
@@ -1582,25 +1531,16 @@
             if (!email || !password) { showAuthAlert('Veuillez remplir tous les champs', 'error'); return; }
             btn.disabled = true;
             btn.innerHTML = '...';
-            setTimeout(function() {
-                if (email === ADMIN_CONFIG.email && password === ADMIN_CONFIG.password) {
-                    currentUser = { uid: 'admin_' + Date.now(), email: ADMIN_CONFIG.email, name: ADMIN_CONFIG.name, role: 'admin', phone: ADMIN_CONFIG.phone, city: ADMIN_CONFIG.city };
-                    safeSetLocalStorage('plpshop_current_user', JSON.stringify(currentUser));
-                    updateUserMenu();
-                    updateCartCount();
-                    closeAuthModal();
-                    showToast('Bienvenue, Administrateur !');
-                } else {
-                    currentUser = { uid: 'user_' + Date.now(), email: email, name: email.split('@')[0] || 'Client', role: 'client', phone: '', city: '' };
-                    safeSetLocalStorage('plpshop_current_user', JSON.stringify(currentUser));
-                    updateUserMenu();
-                    updateCartCount();
-                    closeAuthModal();
-                    showToast('Bienvenue ' + currentUser.name + ' !');
-                }
+            fbSignIn(email, password).then(function() {
+                closeAuthModal();
+                // updateUserMenu() sera déclenché par fbOnAuthChange
+            }).catch(function(err) {
+                console.error(err);
+                showAuthAlert(translateAuthError(err), 'error');
+            }).finally(function() {
                 btn.disabled = false;
                 btn.innerHTML = 'Se connecter';
-            }, 600);
+            });
         }
 
         function handleRegister(e) {
@@ -1613,37 +1553,41 @@
             if (!name || !email || !phone || !password) { showAuthAlert('Veuillez remplir tous les champs', 'error'); return; }
             btn.disabled = true;
             btn.innerHTML = '...';
-            setTimeout(function() {
-                currentUser = { uid: 'user_' + Date.now(), email: email, name: name, role: 'client', phone: phone, city: '' };
-                safeSetLocalStorage('plpshop_current_user', JSON.stringify(currentUser));
-                var users = safeGetJSON('plpshop_users', []);
-                users.push({ id: Date.now(), name: name, email: email, phone: phone, role: 'client', createdAt: new Date().toISOString() });
-                safeSetLocalStorage('plpshop_users', JSON.stringify(users));
-                updateUserMenu();
-                updateCartCount();
+            fbSignUp(email, password).then(function(cred) {
+                return setDocIn('users', cred.user.uid, {
+                    uid: cred.user.uid,
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    role: 'client',
+                    createdAt: new Date().toISOString()
+                });
+            }).then(function() {
                 closeAuthModal();
                 showToast('Bienvenue ' + name + ' !');
+                // updateUserMenu() sera déclenché par fbOnAuthChange
+            }).catch(function(err) {
+                console.error(err);
+                showAuthAlert(translateAuthError(err), 'error');
+            }).finally(function() {
                 btn.disabled = false;
                 btn.innerHTML = 'Créer mon compte';
-            }, 600);
+            });
         }
 
         function logout() {
             if (confirm('Se déconnecter ?')) {
-                currentUser = null;
-                safeSetLocalStorage('plpshop_current_user', JSON.stringify(null));
-                updateUserMenu();
-                updateCartCount();
-                showToast('Déconnecté');
+                fbSignOut().then(function() {
+                    showToast('Déconnecté');
+                });
             }
         }
 
         function updateUserMenu() {
-            var user = safeGetJSON('plpshop_current_user', null);
             var dd = document.getElementById('userDropdown');
             if (!dd) return;
-            if (user?.uid) {
-                currentUser = user;
+            if (currentUser && currentUser.uid) {
+                var user = currentUser;
                 var adminLink = user.role === 'admin' ? '<a href="admin.html"><i class="fas fa-cog"></i> Administration</a><hr>' : '';
                 dd.innerHTML = '<div class="user-info"><div class="user-name">' + (user.name || 'Utilisateur') + '</div><div class="user-role">' + (user.role === 'admin' ? 'Administrateur' : 'Client') + '</div></div>' +
                     adminLink +
@@ -1651,11 +1595,32 @@
                     '<a href="#" onclick="filterProducts(\'all\'); scrollToSection(\'products\'); return false;"><i class="fas fa-tshirt"></i> Collections</a>' +
                     '<hr><a href="#" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>';
             } else {
-                currentUser = null;
                 dd.innerHTML = '<a href="#" onclick="openAuthModal(); return false;"><i class="fas fa-sign-in-alt"></i> Connexion</a>' +
                     '<a href="#" onclick="openAuthModal(); switchAuthTab(\'register\'); return false;"><i class="fas fa-user-plus"></i> Inscription</a>';
             }
         }
+
+        // Réagit à l'état de connexion Firebase (session persistée automatiquement)
+        fbOnAuthChange(function(user) {
+            if (user) {
+                getDocIn('users', user.uid).then(function(snap) {
+                    var profile = snap.exists() ? snap.data() : {};
+                    currentUser = {
+                        uid: user.uid,
+                        email: user.email,
+                        name: profile.name || (user.email ? user.email.split('@')[0] : 'Client'),
+                        role: profile.role || 'client',
+                        phone: profile.phone || ''
+                    };
+                    updateUserMenu();
+                    updateCartCount();
+                });
+            } else {
+                currentUser = null;
+                updateUserMenu();
+                updateCartCount();
+            }
+        });
 
         function toggleUserMenu() {
             var dd = document.getElementById('userDropdown');
@@ -1688,12 +1653,9 @@
         // INIT
         // ============================================================
         function init() {
-            var user = safeGetJSON('plpshop_current_user', null);
-            if (user?.uid) currentUser = user;
             displayProducts();
             updateCartCount();
             updateUserMenu();
-            lastProductsSnapshot = JSON.stringify(getProducts());
         }
 
         document.addEventListener('scroll', function() {
