@@ -751,7 +751,7 @@
                     <i class="fab fa-whatsapp"></i>
                     <div>
                         <div class="number">
-                            <span>+221 76 859 78 35</span>
+                            <span>+221 78 013 66 21</span>
                             <button class="copy-btn" onclick="copyNumber()" title="Copier le numéro"><i class="fas fa-copy"></i></button>
                         </div>
                         <small>Numéro Wave — Envoyez le montant exact</small>
@@ -900,6 +900,8 @@
         // ============================================================
         var WHATSAPP_NUMBER = '221768597835';
         var WHATSAPP_DISPLAY = '+221 76 859 78 35';
+        var PAYMENT_WAVE_NUMBER = '221780136621';
+        var PAYMENT_WAVE_DISPLAY = '+221 78 013 66 21';
         var STORAGE_KEY = 'plpshop_products';
 
         var currentUser = null;
@@ -1477,7 +1479,7 @@
         function handleDragLeave(e) { e.preventDefault(); document.getElementById('proofUpload').classList.remove('dragover'); }
         function handleDrop(e) { e.preventDefault(); document.getElementById('proofUpload').classList.remove('dragover'); var files = e.dataTransfer.files; if (files.length > 0) { document.getElementById('proofInput').files = files; handleProofUpload({ target: { files: files } }); } }
         function copyNumber() {
-            var number = WHATSAPP_DISPLAY;
+            var number = PAYMENT_WAVE_DISPLAY;
             navigator.clipboard.writeText(number).then(function() { showToast('Numéro copié !'); }).catch(function() {
                 var textarea = document.createElement('textarea');
                 textarea.value = number;
@@ -1524,7 +1526,7 @@
                 '💰 *Sous-total:* ' + formatFCFA(total) + '%0A' +
                 '🚚 *Livraison:* ' + (shipping === 0 ? 'Gratuite' : formatFCFA(shipping)) + '%0A' +
                 '💵 *Total à payer:* ' + formatFCFA(grand) + '%0A%0A' +
-                '📱 *Paiement Wave:* ' + WHATSAPP_DISPLAY + '%0A' +
+                '📱 *Paiement Wave:* ' + PAYMENT_WAVE_DISPLAY + '%0A' +
                 '📸 *Preuve de paiement:* (voir pièce jointe ci-dessous)%0A%0A' +
                 '✅ Veuillez confirmer la commande dès réception du paiement.';
 
@@ -1550,7 +1552,7 @@
             if (payBtn) payBtn.disabled = true;
 
             setDocIn('orders', orderId, order).then(function() {
-                window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + message, '_blank');
+                window.open('https://wa.me/' + PAYMENT_WAVE_NUMBER + '?text=' + message, '_blank');
                 document.getElementById('orderNumberDisplay').textContent = 'N° ' + orderId;
                 document.getElementById('paidAmountDisplay').textContent = formatFCFA(grand);
 
