@@ -73,43 +73,13 @@
         .btn-logout { padding: 5px 10px; background: transparent; color: var(--danger); border: 1px solid rgba(220,38,38,0.2); border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px; transition: var(--transition); font-family: 'Montserrat', sans-serif; white-space: nowrap; }
         .btn-logout:hover { background: var(--danger); color: var(--white); }
 
-        /* ===== INDICATEUR DE SYNCHRONISATION ===== */
-        .sync-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-        .sync-indicator.syncing {
-            background: rgba(245, 158, 11, 0.1);
-            color: #92400e;
-        }
-        .sync-indicator.synced {
-            background: rgba(13, 123, 74, 0.1);
-            color: var(--success);
-        }
-        .sync-indicator .sync-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-        .sync-indicator.syncing .sync-dot {
-            background: #f59e0b;
-        }
-        .sync-indicator.synced .sync-dot {
-            background: var(--success);
-            animation: none;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
+        .sync-indicator { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 8px; font-weight: 500; transition: all 0.3s ease; white-space: nowrap; }
+        .sync-indicator.syncing { background: rgba(245, 158, 11, 0.1); color: #92400e; }
+        .sync-indicator.synced { background: rgba(13, 123, 74, 0.1); color: var(--success); }
+        .sync-indicator .sync-dot { width: 6px; height: 6px; border-radius: 50%; animation: pulse 1.5s infinite; }
+        .sync-indicator.syncing .sync-dot { background: #f59e0b; }
+        .sync-indicator.synced .sync-dot { background: var(--success); animation: none; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.6rem; margin-bottom: 0.8rem; }
         .stat-card { background: var(--white); padding: 0.8rem; border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); transition: var(--transition); border: 1px solid rgba(0,0,0,0.06); }
@@ -190,47 +160,14 @@
         .menu-toggle { display: none; background: var(--plp-blue); border: none; color: var(--white); padding: 6px 12px; border-radius: var(--radius-sm); cursor: pointer; font-size: 20px; z-index: 101; }
         .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
 
-        .category-section {
-            background: var(--white);
-            border-radius: var(--radius-sm);
-            padding: 0.8rem;
-            margin-bottom: 1.2rem;
-            border-left: 4px solid var(--plp-blue);
-            box-shadow: var(--shadow-sm);
-        }
-        .category-section .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 0.4rem;
-            padding-bottom: 0.4rem;
-            border-bottom: 1px solid rgba(0,0,0,0.04);
-        }
-        .category-section .section-header h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 0.95rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .category-section .section-header .badge-cat {
-            font-size: 7px;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        .category-section .section-header .badge-cat.count {
-            background: rgba(0,0,0,0.04);
-            color: var(--gray-cool);
-        }
+        .category-section { background: var(--white); border-radius: var(--radius-sm); padding: 0.8rem; margin-bottom: 1.2rem; border-left: 4px solid var(--plp-blue); box-shadow: var(--shadow-sm); }
+        .category-section .section-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.4rem; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(0,0,0,0.04); }
+        .category-section .section-header h3 { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+        .category-section .section-header .badge-cat { font-size: 7px; padding: 2px 8px; border-radius: 10px; font-weight: 600; text-transform: uppercase; }
+        .category-section .section-header .badge-cat.count { background: rgba(0,0,0,0.04); color: var(--gray-cool); }
         .category-section .section-table { overflow-x: auto; }
         .category-section .section-table table { min-width: 400px; }
-        .category-section .section-table th,
-        .category-section .section-table td { padding: 6px 8px; font-size: 8px; }
+        .category-section .section-table th, .category-section .section-table td { padding: 6px 8px; font-size: 8px; }
 
         .cat-tshirt { border-left-color: var(--tshirt-color); }
         .cat-short { border-left-color: var(--short-color); }
@@ -238,30 +175,44 @@
         .cat-ensemble { border-left-color: var(--ensemble-color); }
         .cat-chaussure { border-left-color: var(--chaussure-color); }
 
-        .toast-admin {
-            position: fixed;
-            bottom: 1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--black);
-            color: var(--white);
-            padding: 10px 24px;
-            border-radius: var(--radius-sm);
-            font-size: 10px;
-            font-weight: 500;
-            z-index: 9999;
-            box-shadow: var(--shadow-md);
-            opacity: 0;
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            transform: translateX(-50%) translateY(20px);
-            pointer-events: none;
-            border: 1px solid rgba(255,255,255,0.05);
-            max-width: 90vw;
-            text-align: center;
-        }
+        .toast-admin { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: var(--black); color: var(--white); padding: 10px 24px; border-radius: var(--radius-sm); font-size: 10px; font-weight: 500; z-index: 9999; box-shadow: var(--shadow-md); opacity: 0; transition: opacity 0.4s ease, transform 0.4s ease; transform: translateX(-50%) translateY(20px); pointer-events: none; border: 1px solid rgba(255,255,255,0.05); max-width: 90vw; text-align: center; }
         .toast-admin.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         .toast-admin.success { background: var(--emerald); }
         .toast-admin.error { background: var(--danger); }
+
+        /* ===== MESSAGES ADMIN ===== */
+        .messages-layout { display: grid; grid-template-columns: 300px 1fr; height: 70vh; min-height: 500px; }
+        .conversations-list { border-right: 1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column; background: var(--cream); }
+        .conversations-header { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(0,0,0,0.06); background: var(--white); }
+        .conversations-header h3 { font-family: 'Playfair Display', serif; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+        .conversations-body { flex: 1; overflow-y: auto; }
+        .conv-item { padding: 0.7rem 1rem; border-bottom: 1px solid rgba(0,0,0,0.04); cursor: pointer; transition: var(--transition); display: flex; gap: 0.6rem; align-items: center; }
+        .conv-item:hover { background: rgba(26,86,219,0.04); }
+        .conv-item.active { background: rgba(26,86,219,0.08); border-left: 3px solid var(--plp-blue); }
+        .conv-item.unread { background: rgba(245,158,11,0.06); }
+        .conv-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--plp-blue); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .conv-info { flex: 1; min-width: 0; }
+        .conv-name { font-weight: 600; font-size: 10px; margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center; }
+        .conv-name .time { font-size: 7px; color: var(--gray-warm); font-weight: 400; }
+        .conv-preview { font-size: 9px; color: var(--gray-warm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .conv-unread-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); flex-shrink: 0; }
+        .chat-area { display: flex; flex-direction: column; background: var(--white); }
+        .chat-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .chat-active { flex: 1; display: flex; flex-direction: column; height: 100%; }
+        .chat-active-header { padding: 0.7rem 1rem; border-bottom: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; gap: 0.7rem; background: var(--cream); }
+        .chat-client-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--plp-blue); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+        .admin-chat-messages { flex: 1; overflow-y: auto; padding: 1rem; background: var(--cream); display: flex; flex-direction: column; gap: 0.5rem; }
+        .admin-chat-input { display: flex; padding: 0.6rem; border-top: 1px solid rgba(0,0,0,0.06); gap: 0.4rem; background: white; }
+        .admin-chat-input input { flex: 1; padding: 9px 14px; border: 1px solid rgba(0,0,0,0.08); border-radius: 20px; font-size: 11px; font-family: 'Montserrat', sans-serif; background: var(--cream); }
+        .admin-chat-input input:focus { outline: none; border-color: var(--plp-blue); background: white; }
+        .admin-chat-send { width: 36px; height: 36px; border-radius: 50%; background: var(--plp-blue); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: var(--transition); }
+        .admin-chat-send:hover { background: var(--plp-blue-dark); }
+
+        .chat-msg { max-width: 80%; padding: 8px 12px; border-radius: 14px; font-size: 11px; line-height: 1.5; word-wrap: break-word; animation: msgIn 0.2s ease; }
+        @keyframes msgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .chat-msg.client { align-self: flex-end; background: var(--black); color: white; border-bottom-right-radius: 4px; }
+        .chat-msg.admin { align-self: flex-start; background: white; color: var(--black); border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .chat-msg .time { font-size: 8px; opacity: 0.5; margin-top: 2px; display: block; }
 
         @media (min-width: 769px) {
             .sidebar { transform: translateX(0) !important; }
@@ -284,6 +235,9 @@
             .data-section { padding: 0.6rem; }
             th, td { padding: 6px 8px; font-size: 8px; }
             th { font-size: 6px; }
+            .messages-layout { grid-template-columns: 1fr; height: auto; }
+            .conversations-list { max-height: 250px; border-right: none; border-bottom: 1px solid rgba(0,0,0,0.06); }
+            .chat-area { min-height: 400px; }
         }
 
         @media (max-width: 480px) {
@@ -341,8 +295,8 @@
                 <li><a class="active" onclick="showSection('dashboard');closeSidebar()"><i class="fas fa-chart-line"></i> Dashboard</a></li>
                 <li><a onclick="showSection('products');closeSidebar()"><i class="fas fa-box"></i> Produits <span class="badge-count" id="productCount">0</span></a></li>
                 <li><a onclick="showSection('orders');closeSidebar()"><i class="fas fa-shopping-cart"></i> Commandes <span class="badge-count" id="pendingCount">0</span></a></li>
+                <li><a onclick="showSection('messages');closeSidebar()"><i class="fas fa-comments"></i> Messages <span class="badge-count" id="unreadMessagesCount" style="display:none;">0</span></a></li>
                 <li><a onclick="showSection('users');closeSidebar()"><i class="fas fa-users"></i> Clients</a></li>
-                <li><a onclick="showSection('invoices');closeSidebar()"><i class="fas fa-file-invoice"></i> Factures</a></li>
                 <li><a onclick="showSection('settings');closeSidebar()"><i class="fas fa-cog"></i> Paramètres</a></li>
             </ul>
             <a href="index.html" class="back-to-site" target="_blank"><i class="fas fa-store"></i> Voir la boutique</a>
@@ -381,7 +335,6 @@
                     <button class="btn-add" onclick="openProductModal()" style="background:var(--plp-blue);"><i class="fas fa-plus"></i> Ajouter un produit</button>
                 </div>
 
-                <!-- Section T-SHIRT -->
                 <div class="category-section cat-tshirt">
                     <div class="section-header">
                         <h3><i class="fas fa-tshirt" style="color:var(--tshirt-color);"></i> T-shirts <span class="badge-cat count" id="count-tshirt">0</span></h3>
@@ -390,7 +343,6 @@
                     <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-tshirt"></tbody></table></div>
                 </div>
 
-                <!-- Section SHORT -->
                 <div class="category-section cat-short">
                     <div class="section-header">
                         <h3><i class="fas fa-shorts" style="color:var(--short-color);"></i> Shorts <span class="badge-cat count" id="count-short">0</span></h3>
@@ -399,7 +351,6 @@
                     <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-short"></tbody></table></div>
                 </div>
 
-                <!-- Section MAILLOT -->
                 <div class="category-section cat-maillot">
                     <div class="section-header">
                         <h3><i class="fas fa-jersey" style="color:var(--maillot-color);"></i> Maillots <span class="badge-cat count" id="count-maillot">0</span></h3>
@@ -408,7 +359,6 @@
                     <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-maillot"></tbody></table></div>
                 </div>
 
-                <!-- Section ENSEMBLE SPORT -->
                 <div class="category-section cat-ensemble">
                     <div class="section-header">
                         <h3><i class="fas fa-running" style="color:var(--ensemble-color);"></i> Ensembles Sport <span class="badge-cat count" id="count-ensemble">0</span></h3>
@@ -417,7 +367,6 @@
                     <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-ensemble"></tbody></table></div>
                 </div>
 
-                <!-- Section CHAUSSURES -->
                 <div class="category-section cat-chaussure">
                     <div class="section-header">
                         <h3><i class="fas fa-shoe-prints" style="color:var(--chaussure-color);"></i> Chaussures <span class="badge-cat count" id="count-chaussure">0</span></h3>
@@ -441,6 +390,43 @@
                 </div>
             </div>
 
+            <!-- MESSAGES -->
+            <div id="messagesSection" class="content-section" style="display:none;">
+                <div class="data-section" style="padding:0;overflow:hidden;">
+                    <div class="messages-layout">
+                        <div class="conversations-list" id="conversationsList">
+                            <div class="conversations-header">
+                                <h3><i class="fas fa-comments"></i> Conversations</h3>
+                            </div>
+                            <div class="conversations-body" id="conversationsBody">
+                                <p style="text-align:center;padding:2rem;color:var(--gray-warm);font-size:10px;">Aucune conversation</p>
+                            </div>
+                        </div>
+                        <div class="chat-area" id="adminChatArea">
+                            <div class="chat-empty" id="adminChatEmpty">
+                                <i class="fas fa-comments" style="font-size:3rem;color:var(--plp-blue);opacity:0.3;margin-bottom:1rem;"></i>
+                                <p style="color:var(--gray-warm);font-size:11px;">Sélectionnez une conversation pour commencer</p>
+                            </div>
+                            <div class="chat-active" id="adminChatActive" style="display:none;">
+                                <div class="chat-active-header">
+                                    <div class="chat-client-avatar" id="adminChatAvatar">?</div>
+                                    <div>
+                                        <div style="font-weight:600;font-size:12px;" id="adminChatName">Client</div>
+                                        <div style="font-size:9px;color:var(--gray-warm);" id="adminChatPhone">—</div>
+                                    </div>
+                                    <button class="btn-action btn-delete" style="margin-left:auto;" onclick="deleteConversation()"><i class="fas fa-trash"></i></button>
+                                </div>
+                                <div class="admin-chat-messages" id="adminChatMessages"></div>
+                                <div class="admin-chat-input">
+                                    <input type="text" id="adminChatInput" placeholder="Répondre..." onkeyup="if(event.key==='Enter') adminSendMessage()" />
+                                    <button onclick="adminSendMessage()" class="admin-chat-send"><i class="fas fa-paper-plane"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- CLIENTS -->
             <div id="usersSection" class="content-section" style="display:none;">
                 <div class="data-section"><h3>👥 Liste des clients</h3><div class="table-container"><table><thead><tr><th>ID</th><th>Nom</th><th>Email</th><th>Tél</th><th>Rôle</th></tr></thead><tbody id="usersTableBody"></tbody></table></div></div>
@@ -451,9 +437,9 @@
                 <div class="data-section"><h3>⚙️ Paramètres de la boutique</h3>
                     <div class="form-group-luxe"><label>Nom</label><input type="text" id="siteName" value="PLP Shop"></div>
                     <div class="form-group-luxe"><label>Email</label><input type="email" id="siteEmail" value="contact@plpshop.com"></div>
-                    <div class="form-group-luxe"><label>Tél</label><input type="tel" id="sitePhone" value="+221 77 907 89 70"></div>
+                    <div class="form-group-luxe"><label>Tél</label><input type="tel" id="sitePhone" value="+221 78 013 66 21"></div>
                     <div class="form-group-luxe"><label>Adresse</label><input type="text" id="siteAddress" value="Dakar, Sénégal"></div>
-                    <p style="color:var(--gray-warm);font-size:0.85rem;margin:0.5rem 0 1rem;"><i class="fas fa-shield-halved"></i> L'accès administrateur est désormais sécurisé par Firebase Authentication (gérable depuis la console Firebase).</p>
+                    <p style="color:var(--gray-warm);font-size:0.85rem;margin:0.5rem 0 1rem;"><i class="fas fa-shield-halved"></i> L'accès administrateur est sécurisé par Firebase Authentication.</p>
                     <button class="btn-submit" onclick="saveSettings()"><i class="fas fa-save"></i> Enregistrer</button>
                 </div>
             </div>
@@ -554,11 +540,12 @@
     <script type="module">
         import {
             auth, db, fbSignIn, fbSignOut, fbOnAuthChange,
-            watchCollection, setDocIn, updateDocIn, deleteDocIn, getDocIn, fbTimestamp
+            watchCollection, setDocIn, updateDocIn, deleteDocIn, getDocIn, fbTimestamp,
+            watchConversations, watchMessages, sendMessage, markConversationRead
         } from './firebase-init.js';
 
         // ============================================================
-        // TOAST NOTIFICATIONS
+        // TOAST
         // ============================================================
         function showToast(message, type) {
             type = type || 'success';
@@ -612,18 +599,19 @@
         var currentAdminUser = null;
 
         // ============================================================
-        // DONNÉES EN TEMPS RÉEL (FIRESTORE)
-        // Remplace IndexedDB + BroadcastChannel + polling : Firestore
-        // pousse automatiquement les changements à TOUS les appareils
-        // connectés, en quelques centaines de millisecondes.
+        // DONNÉES EN TEMPS RÉEL
         // ============================================================
         var productsCache = [];
         var ordersCache = [];
         var usersCache = [];
         var settingsCache = {};
+        var conversationsCache = [];
         var unsubscribeProducts = null;
         var unsubscribeOrders = null;
         var unsubscribeUsers = null;
+
+        var activeConversationId = null;
+        var adminMessagesUnsubscribe = null;
 
         function updateSyncIndicator(state) {
             var indicator = document.getElementById('syncIndicator');
@@ -676,7 +664,7 @@
         }
 
         // ============================================================
-        // AUTHENTIFICATION (FIREBASE AUTH)
+        // AUTH
         // ============================================================
         function verifyOwner(e) {
             e.preventDefault();
@@ -731,7 +719,6 @@
             });
         }
 
-        // Réagit à l'état de connexion Firebase (persiste automatiquement entre sessions)
         fbOnAuthChange(function(user) {
             if (user) {
                 getDocIn('users', user.uid).then(function(snap) {
@@ -742,7 +729,6 @@
                         document.body.classList.add('admin-body');
                         initAdmin();
                     } else {
-                        // Connecté mais pas administrateur : on refuse l'accès à ce panneau
                         fbSignOut();
                     }
                 }).catch(function(err) { console.error(err); });
@@ -763,6 +749,7 @@
             if (adminInitialized) return;
             adminInitialized = true;
             startRealtimeSync();
+            watchConversationsRealtime();
         }
 
         // ============================================================
@@ -779,12 +766,8 @@
             currentImageMethod = method;
             var tabs = document.querySelectorAll('.image-tab');
             var methods = document.querySelectorAll('.upload-method');
-            for (var i = 0; i < tabs.length; i++) {
-                tabs[i].classList.remove('active');
-            }
-            for (var j = 0; j < methods.length; j++) {
-                methods[j].classList.remove('active');
-            }
+            for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+            for (var j = 0; j < methods.length; j++) methods[j].classList.remove('active');
             if (method === 'upload') {
                 if (tabs[0]) tabs[0].classList.add('active');
                 var uploadMethod = document.getElementById('uploadMethod');
@@ -910,6 +893,7 @@
                 dashboard: 'dashboardSection',
                 products: 'productsSection',
                 orders: 'ordersSection',
+                messages: 'messagesSection',
                 users: 'usersSection',
                 settings: 'settingsSection'
             };
@@ -920,6 +904,7 @@
                 dashboard: '📊 Tableau de bord',
                 products: '📦 Gestion des produits',
                 orders: '🛒 Gestion des commandes',
+                messages: '💬 Messagerie',
                 users: '👥 Gestion des clients',
                 settings: '⚙️ Paramètres'
             };
@@ -1109,18 +1094,9 @@
             var description = document.getElementById('productDescription').value.trim();
             var imageData = getImageData();
 
-            if (!name) {
-                showToast('❌ Veuillez entrer un nom de produit.', 'error');
-                return;
-            }
-            if (!price || price <= 0) {
-                showToast('❌ Veuillez entrer un prix valide.', 'error');
-                return;
-            }
-            if (!imageData) {
-                showToast('❌ Veuillez fournir une image (upload ou URL).', 'error');
-                return;
-            }
+            if (!name) { showToast('❌ Veuillez entrer un nom de produit.', 'error'); return; }
+            if (!price || price <= 0) { showToast('❌ Veuillez entrer un prix valide.', 'error'); return; }
+            if (!imageData) { showToast('❌ Veuillez fournir une image (upload ou URL).', 'error'); return; }
 
             var productIdField = document.getElementById('productId').value;
             var isEdit = !!productIdField;
@@ -1187,6 +1163,7 @@
             var html = '';
             for (var j = 0; j < orders.length; j++) {
                 var o = orders[j];
+                var guestTag = o.isGuest ? ' <span style="font-size:7px;color:var(--warning);">(invité)</span>' : '';
                 var actions = '<button class="btn-action btn-view" onclick="viewOrder(\'' + o.id + '\')"><i class="fas fa-eye"></i></button>';
                 if (o.status === 'En attente') {
                     actions += '<button class="btn-action btn-validate" onclick="updateOrderStatus(\'' + o.id + '\',\'Confirmée\')">✓</button>';
@@ -1199,7 +1176,7 @@
                 }
                 html += '<tr>' +
                     '<td><strong>' + o.id + '</strong></td>' +
-                    '<td>' + o.customerName + '</td>' +
+                    '<td>' + o.customerName + guestTag + '</td>' +
                     '<td>' + new Date(o.date).toLocaleDateString('fr-FR') + '</td>' +
                     '<td><strong>' + formatFCFA(o.total) + '</strong></td>' +
                     '<td><span class="status-badge ' + getStatusClass(o.status) + '">' + o.status + '</span></td>' +
@@ -1238,7 +1215,13 @@
                 if (orders[i].id === oid) { order = orders[i]; break; }
             }
             if (order) {
-                alert('Commande: ' + order.id + '\nClient: ' + order.customerName + '\nMontant: ' + formatFCFA(order.total) + '\nStatut: ' + order.status);
+                var info = 'Commande: ' + order.id + '\n' +
+                    'Client: ' + order.customerName + (order.isGuest ? ' (Invité)' : '') + '\n' +
+                    'Téléphone: ' + (order.customerPhone || '—') + '\n' +
+                    'Adresse: ' + (order.customerAddress || '—') + '\n' +
+                    'Montant: ' + formatFCFA(order.total) + '\n' +
+                    'Statut: ' + order.status;
+                alert(info);
             }
         }
 
@@ -1263,6 +1246,129 @@
                 html += '<tr><td>#' + (i + 1) + '</td><td>' + u.name + '</td><td>' + u.email + '</td><td>' + (u.phone || '—') + '</td><td>' + (u.role === 'admin' ? '<span style="color:var(--plp-blue);">Admin</span>' : 'Client') + '</td></tr>';
             }
             tbody.innerHTML = html;
+        }
+
+        // ============================================================
+        // MESSAGERIE ADMIN
+        // ============================================================
+        function watchConversationsRealtime() {
+            watchConversations(function(list) {
+                conversationsCache = list;
+                renderConversationsList();
+                updateUnreadMessagesBadge();
+            }, function() {
+                showToast('⚠️ Erreur de synchronisation des messages.', 'error');
+            });
+        }
+
+        function updateUnreadMessagesBadge() {
+            var unread = conversationsCache.filter(function(c) { return c.unreadByAdmin; }).length;
+            var badge = document.getElementById('unreadMessagesCount');
+            if (badge) {
+                if (unread > 0) {
+                    badge.textContent = unread;
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        function renderConversationsList() {
+            var body = document.getElementById('conversationsBody');
+            if (!body) return;
+            if (conversationsCache.length === 0) {
+                body.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--gray-warm);font-size:10px;">Aucune conversation</p>';
+                return;
+            }
+            body.innerHTML = conversationsCache.map(function(c) {
+                var initial = (c.clientName || '?').charAt(0).toUpperCase();
+                var time = c.lastMessageAt ? new Date(c.lastMessageAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '';
+                var preview = c.lastMessage || 'Nouvelle conversation';
+                if (preview.length > 40) preview = preview.substring(0, 40) + '...';
+                var isUnread = c.unreadByAdmin ? 'unread' : '';
+                var isActive = c.id === activeConversationId ? 'active' : '';
+                return '<div class="conv-item ' + isUnread + ' ' + isActive + '" onclick="openConversation(\'' + c.id + '\')">' +
+                    '<div class="conv-avatar">' + initial + '</div>' +
+                    '<div class="conv-info">' +
+                    '<div class="conv-name">' + escapeHtmlAdmin(c.clientName || 'Invité') + '<span class="time">' + time + '</span></div>' +
+                    '<div class="conv-preview">' + escapeHtmlAdmin(preview) + '</div>' +
+                    '</div>' +
+                    (c.unreadByAdmin ? '<div class="conv-unread-dot"></div>' : '') +
+                    '</div>';
+            }).join('');
+        }
+
+        function escapeHtmlAdmin(text) {
+            var div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+
+        function openConversation(convId) {
+            activeConversationId = convId;
+            var conv = conversationsCache.find(function(c) { return c.id === convId; });
+            if (!conv) return;
+
+            document.getElementById('adminChatEmpty').style.display = 'none';
+            document.getElementById('adminChatActive').style.display = 'flex';
+            document.getElementById('adminChatName').textContent = conv.clientName || 'Invité';
+            document.getElementById('adminChatPhone').textContent = conv.clientPhone || 'Pas de téléphone';
+            document.getElementById('adminChatAvatar').textContent = (conv.clientName || '?').charAt(0).toUpperCase();
+
+            markConversationRead(convId, 'admin').catch(function(){});
+
+            if (adminMessagesUnsubscribe) adminMessagesUnsubscribe();
+            adminMessagesUnsubscribe = watchMessages(convId, function(messages) {
+                renderAdminMessages(messages);
+            });
+
+            renderConversationsList();
+        }
+
+        function renderAdminMessages(messages) {
+            var container = document.getElementById('adminChatMessages');
+            if (!container) return;
+            if (messages.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:var(--gray-warm);font-size:10px;padding:2rem;">Aucun message</p>';
+                return;
+            }
+            container.innerHTML = messages.map(function(m) {
+                var time = m.createdAt ? new Date(m.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '';
+                var cls = m.sender === 'admin' ? 'client' : 'admin';
+                return '<div class="chat-msg ' + cls + '">' + escapeHtmlAdmin(m.text) + '<span class="time">' + time + '</span></div>';
+            }).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function adminSendMessage() {
+            var input = document.getElementById('adminChatInput');
+            if (!input || !activeConversationId) return;
+            var text = input.value.trim();
+            if (!text) return;
+            input.value = '';
+            try {
+                await sendMessage(activeConversationId, 'admin', text);
+            } catch (err) {
+                console.error(err);
+                showToast('❌ Erreur d\'envoi', 'error');
+            }
+        }
+
+        async function deleteConversation() {
+            if (!activeConversationId) return;
+            if (!confirm('Supprimer cette conversation ?')) return;
+            try {
+                await deleteDocIn('conversations', activeConversationId);
+                activeConversationId = null;
+                document.getElementById('adminChatEmpty').style.display = 'flex';
+                document.getElementById('adminChatActive').style.display = 'none';
+                if (adminMessagesUnsubscribe) adminMessagesUnsubscribe();
+                showToast('🗑️ Conversation supprimée');
+            } catch (err) {
+                console.error(err);
+                showToast('❌ Erreur', 'error');
+            }
         }
 
         // ============================================================
@@ -1313,7 +1419,7 @@
         });
 
         // ============================================================
-        // EXPOSITION GLOBALE (requis car type="module")
+        // EXPOSITION GLOBALE
         // ============================================================
         window.closeModal = closeModal;
         window.closeSidebar = closeSidebar;
@@ -1333,8 +1439,11 @@
         window.updateOrderStatus = updateOrderStatus;
         window.verifyOwner = verifyOwner;
         window.viewOrder = viewOrder;
+        window.openConversation = openConversation;
+        window.adminSendMessage = adminSendMessage;
+        window.deleteConversation = deleteConversation;
 
-        console.log('🔥 Administration PLP Shop - Synchronisation Firebase (temps réel)');
+        console.log('🔥 Administration PLP Shop - Synchronisation Firebase (temps réel) + Chat');
     </script>
 </body>
 </html>

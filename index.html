@@ -6,12 +6,9 @@
     <meta name="description" content="PLP Shop - Boutique mode & luxe. Découvrez notre collection exclusive." />
     <title>PLP Shop | Mode & Luxe</title>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <style>
@@ -56,44 +53,13 @@
         ::-webkit-scrollbar-thumb { background: var(--color-gold); border-radius: 3px; }
 
         /* ===== CURTAIN OVERLAY ===== */
-        .curtain-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            pointer-events: none;
-            display: flex;
-            visibility: hidden;
-            opacity: 0;
-            transition: visibility 0s 0.8s, opacity 0.3s 0.8s;
-        }
-        .curtain-overlay.open {
-            visibility: visible;
-            opacity: 1;
-            transition: visibility 0s, opacity 0s;
-            pointer-events: auto;
-        }
-        .curtain-left, .curtain-right {
-            width: 50%;
-            height: 100%;
-            background: var(--color-black);
-        }
-        .curtain-overlay.open .curtain-left {
-            animation: slideLeft 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards;
-        }
-        .curtain-overlay.open .curtain-right {
-            animation: slideRight 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards;
-        }
-        @keyframes slideLeft {
-            from { transform: translateX(0); }
-            to { transform: translateX(-100%); }
-        }
-        @keyframes slideRight {
-            from { transform: translateX(0); }
-            to { transform: translateX(100%); }
-        }
+        .curtain-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; pointer-events: none; display: flex; visibility: hidden; opacity: 0; transition: visibility 0s 0.8s, opacity 0.3s 0.8s; }
+        .curtain-overlay.open { visibility: visible; opacity: 1; transition: visibility 0s, opacity 0s; pointer-events: auto; }
+        .curtain-left, .curtain-right { width: 50%; height: 100%; background: var(--color-black); }
+        .curtain-overlay.open .curtain-left { animation: slideLeft 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards; }
+        .curtain-overlay.open .curtain-right { animation: slideRight 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards; }
+        @keyframes slideLeft { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+        @keyframes slideRight { from { transform: translateX(0); } to { transform: translateX(100%); } }
 
         /* ===== TOP BAR ===== */
         .top-bar { background: var(--color-black); color: rgba(255,255,255,0.7); padding: 6px 16px; font-size: clamp(7px,0.8vw,9px); font-weight: 400; letter-spacing: 1.2px; text-transform: uppercase; display: flex; justify-content: center; align-items: center; gap: clamp(8px,2vw,24px); flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.04); }
@@ -270,6 +236,30 @@
         .whatsapp-float a { width: clamp(48px,6vw,60px); height: clamp(48px,6vw,60px); border-radius: 50%; background: #25d366; color: white; display: flex; align-items: center; justify-content: center; font-size: clamp(24px,3vw,30px); box-shadow: 0 6px 30px rgba(37,211,102,0.35); transition: var(--transition-bounce); text-decoration: none; }
         .whatsapp-float a:hover { transform: scale(1.08); box-shadow: 0 12px 48px rgba(37,211,102,0.45); }
 
+        /* ===== CHAT ===== */
+        .chat-float { position: fixed; bottom: clamp(18px,3vw,28px); right: clamp(80px,10vw,100px); z-index: 3999; }
+        .chat-float-btn { width: clamp(48px,6vw,60px); height: clamp(48px,6vw,60px); border-radius: 50%; background: var(--color-black); color: var(--color-gold); border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; font-size: clamp(20px,2.5vw,26px); cursor: pointer; box-shadow: 0 6px 30px rgba(0,0,0,0.3); transition: var(--transition-bounce); position: relative; }
+        .chat-float-btn:hover { transform: scale(1.08); background: var(--color-gold); color: var(--color-black); }
+        .chat-badge { position: absolute; top: -4px; right: -4px; background: #dc2626; color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 10px; min-width: 18px; text-align: center; border: 2px solid white; }
+        .chat-widget { position: fixed; bottom: clamp(80px,10vw,100px); right: clamp(18px,3vw,28px); width: 360px; max-width: calc(100vw - 36px); height: 500px; max-height: calc(100vh - 120px); background: var(--color-white); border-radius: var(--radius-lg); box-shadow: 0 20px 60px rgba(0,0,0,0.3); z-index: 4001; display: none; flex-direction: column; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); }
+        .chat-widget.open { display: flex; animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+        .chat-widget-header { background: var(--color-black); color: white; padding: 0.8rem 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .chat-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--color-gold); color: var(--color-black); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .chat-close { background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 16px; transition: var(--transition); }
+        .chat-close:hover { color: white; transform: rotate(90deg); }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 1rem; background: var(--color-bg); display: flex; flex-direction: column; gap: 0.5rem; }
+        .chat-welcome { text-align: center; padding: 1.5rem 0.5rem; }
+        .chat-msg { max-width: 80%; padding: 8px 12px; border-radius: 14px; font-size: 12px; line-height: 1.5; word-wrap: break-word; animation: msgIn 0.2s ease; }
+        @keyframes msgIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .chat-msg.client { align-self: flex-end; background: var(--color-black); color: white; border-bottom-right-radius: 4px; }
+        .chat-msg.admin { align-self: flex-start; background: white; color: var(--color-black); border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .chat-msg .time { font-size: 8px; opacity: 0.5; margin-top: 2px; display: block; }
+        .chat-input-wrap { display: flex; padding: 0.6rem; background: white; border-top: 1px solid rgba(0,0,0,0.06); gap: 0.4rem; }
+        .chat-input-wrap input { flex: 1; padding: 10px 14px; border: 1px solid rgba(0,0,0,0.08); border-radius: var(--radius-full); font-size: 12px; font-family: var(--font-sans); background: var(--color-bg); }
+        .chat-input-wrap input:focus { outline: none; border-color: var(--color-gold); background: white; }
+        .chat-send-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--color-gold); color: var(--color-black); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: var(--transition); }
+        .chat-send-btn:hover { background: var(--color-black); color: var(--color-gold); transform: scale(1.05); }
+
         /* ===== CART SIDEBAR ===== */
         .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1100; opacity: 0; visibility: hidden; transition: var(--transition); backdrop-filter: blur(4px); }
         .cart-overlay.open { opacity: 1; visibility: visible; }
@@ -321,6 +311,12 @@
         .proof-upload .preview-img { max-width: 80px; max-height: 80px; border-radius: 4px; object-fit: cover; border: 1px solid rgba(0,0,0,0.06); display: none; }
         .proof-upload .preview-img.show { display: block; }
 
+        /* ===== FORM GROUP ===== */
+        .form-group { margin-bottom: 0.6rem; }
+        .form-group label { display: block; margin-bottom: 0.2rem; font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-silver); }
+        .form-group input { width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius-sm); font-size: 13px; background: var(--color-white); transition: var(--transition); font-family: var(--font-sans); }
+        .form-group input:focus { outline: none; border-color: var(--color-gold); background: var(--color-white); }
+
         /* ===== FOOTER ===== */
         .footer { background: var(--color-black); color: rgba(255,255,255,0.6); padding: clamp(2.4rem,5vw,4rem) 0 0; margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.04); position: relative; }
         .footer-grid { max-width: 1440px; margin: 0 auto; padding: 0 1.2rem; display: grid; grid-template-columns: 2fr 1fr 1.2fr; gap: clamp(1.2rem,2.5vw,2.5rem); position: relative; z-index: 1; }
@@ -358,10 +354,6 @@
         .auth-tab.active { color: var(--color-black); border-bottom: 2px solid var(--color-gold); margin-bottom: -2px; }
         .auth-form { display: none; }
         .auth-form.active { display: block; }
-        .auth-form .form-group { margin-bottom: 0.8rem; }
-        .auth-form .form-group label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-silver); }
-        .auth-form .form-group input { width: 100%; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius-sm); font-size: 13px; background: var(--color-bg); transition: var(--transition); font-family: var(--font-sans); }
-        .auth-form .form-group input:focus { outline: none; border-color: var(--color-gold); background: var(--color-white); }
         .btn-auth { width: 100%; padding: 12px; background: var(--color-black); color: var(--color-white); border: none; border-radius: var(--radius-full); font-weight: 600; cursor: pointer; text-transform: uppercase; font-size: 10px; letter-spacing: 1.2px; transition: var(--transition); font-family: var(--font-sans); }
         .btn-auth:hover { background: var(--color-gold); color: var(--color-black); }
         .alert-box { padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 0.8rem; font-size: 11px; display: none; border-left: 3px solid; }
@@ -404,6 +396,8 @@
             .category-cards-grid { grid-template-columns: 1fr; gap: 1rem; }
             .category-card { height: 220px; }
             .footer-bottom .footer-bottom-inner { flex-direction: column; text-align: center; }
+            .chat-float { right: clamp(80px,18vw,100px); }
+            .chat-widget { width: calc(100vw - 36px); height: 60vh; }
         }
         @media (max-width: 480px) {
             .top-bar { font-size: 6px; padding: 4px 8px; gap: 6px; }
@@ -424,6 +418,8 @@
             .modal-details h2 { font-size: 1.2rem; }
             .auth-box { max-width: 95%; }
             .category-card { height: 180px; }
+            .chat-float { right: 16px; bottom: 80px; }
+            .chat-widget { width: calc(100vw - 24px); height: 65vh; bottom: 70px; right: 12px; }
         }
     </style>
 </head>
@@ -572,7 +568,7 @@
             <div class="feature-item">
                 <div class="feature-icon"><i class="fas fa-headset"></i></div>
                 <h4>Support Client</h4>
-                <p>WhatsApp 24/7</p>
+                <p>Chat en direct</p>
             </div>
         </div>
     </section>
@@ -595,6 +591,42 @@
         </div>
         <div class="products-grid" id="productsGrid"></div>
     </section>
+
+    <!-- CHAT FLOAT -->
+    <div class="chat-float" id="chatFloat">
+        <button class="chat-float-btn" onclick="toggleChatWidget()" aria-label="Chat">
+            <i class="fas fa-comments"></i>
+            <span class="chat-badge" id="chatUnreadBadge" style="display:none;">0</span>
+        </button>
+    </div>
+
+    <!-- CHAT WIDGET -->
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-widget-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="chat-avatar"><i class="fas fa-headset"></i></div>
+                <div>
+                    <div style="font-weight:600;font-size:13px;color:white;">Service Client PLP</div>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.6);display:flex;align-items:center;gap:4px;">
+                        <span style="width:6px;height:6px;background:#25d366;border-radius:50%;display:inline-block;"></span>
+                        En ligne
+                    </div>
+                </div>
+            </div>
+            <button class="chat-close" onclick="toggleChatWidget()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-welcome">
+                <i class="fas fa-comments" style="font-size:2rem;color:var(--color-gold);margin-bottom:0.6rem;"></i>
+                <h4 style="font-family:var(--font-serif);font-size:1.1rem;margin-bottom:0.3rem;">Bienvenue !</h4>
+                <p style="font-size:11px;color:var(--color-silver);line-height:1.6;">Posez votre question, notre équipe vous répondra dans les plus brefs délais.</p>
+            </div>
+        </div>
+        <div class="chat-input-wrap">
+            <input type="text" id="chatInput" placeholder="Écrivez votre message..." onkeyup="if(event.key==='Enter') sendChatMessage()" />
+            <button onclick="sendChatMessage()" class="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
 
     <!-- WHATSAPP FLOAT -->
     <div class="whatsapp-float">
@@ -695,7 +727,26 @@
 
         <div class="cart-section" id="sectionPayment">
             <h4 style="font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem;">Paiement via WhatsApp</h4>
-            
+
+            <!-- FORMULAIRE INVITÉ -->
+            <div id="guestFormSection" style="margin-bottom:0.8rem; padding:0.8rem; background:var(--color-bg); border-radius:var(--radius-sm); border:1px solid rgba(201,168,76,0.2);">
+                <h4 style="font-size:10px;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem;display:flex;align-items:center;gap:6px;">
+                    <i class="fas fa-user" style="color:var(--color-gold);"></i> Vos informations de livraison
+                </h4>
+                <div class="form-group">
+                    <label>Nom complet *</label>
+                    <input type="text" id="guestName" required placeholder="Ex: Amadou Diallo" />
+                </div>
+                <div class="form-group">
+                    <label>Téléphone / WhatsApp *</label>
+                    <input type="tel" id="guestPhone" required placeholder="+221 78 000 00 00" />
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Adresse de livraison *</label>
+                    <input type="text" id="guestAddress" required placeholder="Quartier, rue, ville..." />
+                </div>
+            </div>
+
             <div class="payment-whatsapp-section">
                 <div class="payment-info">
                     <i class="fab fa-whatsapp"></i>
@@ -738,6 +789,23 @@
                 <h3>Commande envoyée !</h3>
                 <p id="orderNumberDisplay"></p>
                 <p style="color:var(--color-gold);font-weight:600;" id="paidAmountDisplay"></p>
+
+                <!-- PROPOSITION DE CRÉATION DE COMPTE (MODE INVITÉ) -->
+                <div id="guestAccountProposal" style="display:none; margin-top:1.2rem; padding:1rem; background:var(--color-bg); border-radius:var(--radius-sm); border:1px solid rgba(201,168,76,0.25); text-align:left;">
+                    <h4 style="font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.4rem;color:var(--color-black);">
+                        <i class="fas fa-gift" style="color:var(--color-gold);"></i> Suivez votre colis
+                    </h4>
+                    <p style="font-size:10px;color:var(--color-silver);margin-bottom:0.6rem;line-height:1.6;">
+                        Créez un compte (facultatif) pour suivre l'état de votre commande en temps réel et retrouver votre historique.
+                    </p>
+                    <button onclick="openAuthModal(); switchAuthTab('register'); closeCartAfterPayment();" style="width:100%;padding:10px;border:none;border-radius:var(--radius-full);font-weight:600;cursor:pointer;text-transform:uppercase;font-size:9px;letter-spacing:1px;background:var(--color-gold);color:var(--color-black);font-family:var(--font-sans);transition:var(--transition);">
+                        <i class="fas fa-user-plus"></i> Créer mon compte
+                    </button>
+                    <button onclick="document.getElementById('guestAccountProposal').style.display='none';" style="width:100%;margin-top:0.4rem;padding:8px;background:none;border:none;color:var(--color-silver);font-size:9px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-family:var(--font-sans);">
+                        Plus tard
+                    </button>
+                </div>
+
                 <button onclick="closeCartAfterPayment()" style="margin-top:0.8rem; width:100%; padding:12px; border:none; border-radius:var(--radius-full); font-weight:600; cursor:pointer; text-transform:uppercase; font-size:9px; display:flex; align-items:center; justify-content:center; gap:6px; transition:var(--transition); font-family:var(--font-sans); letter-spacing:1px; background:var(--color-black); color:var(--color-white);">Fermer</button>
             </div>
         </div>
@@ -824,7 +892,8 @@
     <script type="module">
         import {
             auth, db, fbSignIn, fbSignUp, fbSignOut, fbOnAuthChange,
-            watchCollection, setDocIn, updateDocIn, deleteDocIn, getDocIn, fbTimestamp
+            watchCollection, setDocIn, updateDocIn, deleteDocIn, getDocIn, fbTimestamp,
+            getOrCreateConversation, watchMessages, watchConversation, sendMessage, markConversationRead
         } from './firebase-init.js';
 
         // ============================================================
@@ -850,7 +919,7 @@
         };
 
         // ============================================================
-        // STOCKAGE INDEXEDDB + MEMCACHE (UNIFIÉ AVEC ADMIN)
+        // STOCKAGE INDEXEDDB + MEMCACHE
         // ============================================================
         var DB_NAME = 'plpshop_db';
         var DB_VERSION = 1;
@@ -904,9 +973,7 @@
                 return Promise.all(keys.map(function(key) {
                     return idbGet(key).then(function(value) {
                         if (value !== undefined && value !== null) {
-                            if (key === 'plpshop_cart_') {
-                                return;
-                            }
+                            if (key === 'plpshop_cart_') return;
                             memCache[key] = value;
                             return;
                         }
@@ -934,9 +1001,7 @@
             var value;
             try { value = JSON.parse(jsonString); } catch (e) { value = jsonString; }
             memCache[key] = value;
-            try {
-                localStorage.setItem(key, jsonString);
-            } catch(e) {}
+            try { localStorage.setItem(key, jsonString); } catch(e) {}
             idbSet(key, value).catch(function(err) {
                 console.error('Erreur IndexedDB (' + key + '):', err);
             });
@@ -959,10 +1024,9 @@
         }
 
         // ============================================================
-        // PRODUCTS - GESTION PAR L'ADMIN UNIQUEMENT
+        // PRODUCTS
         // ============================================================
         function getProducts() {
-            // Filtrer uniquement les produits valides avec images définies par l'admin
             return productsCache.filter(function(p) {
                 return p && p.id && p.name && p.image && p.imageSetByAdmin === true && p.image.length > 0;
             });
@@ -978,13 +1042,7 @@
         function formatFCFA(n) { return (n || 0).toLocaleString('fr-FR') + ' FCFA'; }
 
         // ============================================================
-        // SYNCHRONISATION
-        // ============================================================
-        // ============================================================
-        // SYNCHRONISATION EN TEMPS RÉEL (FIRESTORE)
-        // Remplace IndexedDB + storage events + polling : les produits
-        // ajoutés/modifiés/supprimés depuis l'admin apparaissent ici
-        // automatiquement, sur tout appareil, en temps réel.
+        // SYNCHRONISATION TEMPS RÉEL
         // ============================================================
         watchCollection('products', function(list) {
             productsCache = list;
@@ -993,7 +1051,7 @@
         });
 
         // ============================================================
-        // EMPTY STATE DISPLAY
+        // EMPTY STATE
         // ============================================================
         function displayEmptyState(message, icon) {
             var grid = document.getElementById('productsGrid');
@@ -1338,9 +1396,16 @@
         function goToPayment() {
             var c = getUserCart();
             if (c.length === 0) { showToast('Panier vide', 'error'); return; }
-            if (!currentUser) { showToast('Connectez-vous d\'abord', 'error'); openAuthModal(); return; }
+            // MODE INVITÉ : plus besoin d'être connecté
             goToStep('payment');
             checkProofStatus();
+            // Pré-remplir si connecté
+            if (currentUser) {
+                var nameField = document.getElementById('guestName');
+                var phoneField = document.getElementById('guestPhone');
+                if (nameField && !nameField.value) nameField.value = currentUser.name || '';
+                if (phoneField && !phoneField.value) phoneField.value = currentUser.phone || '';
+            }
         }
 
         function goBackToCart() { goToStep('cart'); }
@@ -1365,11 +1430,8 @@
                 var ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
                 var resized;
-                try {
-                    resized = canvas.toDataURL('image/jpeg', quality);
-                } catch (err) {
-                    resized = dataUrl;
-                }
+                try { resized = canvas.toDataURL('image/jpeg', quality); }
+                catch (err) { resized = dataUrl; }
                 callback(resized);
             };
             img.onerror = function() { callback(dataUrl); };
@@ -1389,7 +1451,6 @@
             uploadedProof = file;
             var reader = new FileReader();
             reader.onload = function(e) {
-                // Redimensionnement : Firestore limite chaque document à 1 Mo
                 resizeImage(e.target.result, 1000, 1000, 0.7, function(resizedData) {
                     uploadedProofData = resizedData;
                     document.getElementById('proofPreview').src = resizedData;
@@ -1430,12 +1491,25 @@
         }
 
         // ============================================================
-        // WHATSAPP PAYMENT
+        // WHATSAPP PAYMENT (MODE INVITÉ)
         // ============================================================
         function sendWhatsAppPayment() {
             if (!uploadedProofData) { showToast('Veuillez importer une preuve de paiement', 'error'); return; }
             var c = getUserCart();
             if (c.length === 0) { showToast('Panier vide', 'error'); return; }
+
+            // Récupérer les infos invité
+            var guestName = (document.getElementById('guestName')?.value || '').trim();
+            var guestPhone = (document.getElementById('guestPhone')?.value || '').trim();
+            var guestAddress = (document.getElementById('guestAddress')?.value || '').trim();
+
+            var clientName = currentUser ? (currentUser.name || guestName) : guestName;
+            var clientPhone = currentUser ? (currentUser.phone || guestPhone) : guestPhone;
+
+            if (!clientName) { showToast('Veuillez entrer votre nom', 'error'); return; }
+            if (!clientPhone) { showToast('Veuillez entrer votre téléphone', 'error'); return; }
+            if (!guestAddress) { showToast('Veuillez entrer votre adresse de livraison', 'error'); return; }
+
             var total = c.reduce(function(s, i) { return s + (i.price * (i.quantity || 1)); }, 0);
             var shipping = total >= 20000 ? 0 : 2000;
             var grand = total + shipping;
@@ -1443,9 +1517,10 @@
             var itemsList = c.map(function(i) { return '• ' + i.name + ' ×' + i.quantity + ' = ' + formatFCFA(i.price * (i.quantity || 1)); }).join('%0A');
             var message = '🛍️ *NOUVELLE COMMANDE PLP SHOP*%0A%0A' +
                 '📋 *N° Commande:* ' + orderId + '%0A' +
-                '👤 *Client:* ' + (currentUser.name || 'Client') + '%0A' +
-                '📧 *Email:* ' + (currentUser.email || 'Non renseigné') + '%0A' +
-                '📱 *Tél:* ' + (currentUser.phone || 'Non renseigné') + '%0A%0A' +
+                '👤 *Client:* ' + clientName + '%0A' +
+                '📱 *Tél:* ' + clientPhone + '%0A' +
+                '📍 *Adresse:* ' + guestAddress + '%0A' +
+                (currentUser ? '📧 *Email:* ' + (currentUser.email || 'Non renseigné') + '%0A' : '') + '%0A' +
                 '📦 *Articles commandés:*%0A' + itemsList + '%0A%0A' +
                 '💰 *Sous-total:* ' + formatFCFA(total) + '%0A' +
                 '🚚 *Livraison:* ' + (shipping === 0 ? 'Gratuite' : formatFCFA(shipping)) + '%0A' +
@@ -1453,15 +1528,18 @@
                 '📱 *Paiement Wave:* ' + WHATSAPP_DISPLAY + '%0A' +
                 '📸 *Preuve de paiement:* (voir pièce jointe ci-dessous)%0A%0A' +
                 '✅ Veuillez confirmer la commande dès réception du paiement.';
+
             var order = {
                 id: orderId,
-                userId: currentUser.uid,
+                userId: currentUser ? currentUser.uid : 'guest_' + getGuestId(),
+                isGuest: !currentUser,
                 items: c.map(function(i) { return { name: i.name, price: i.price, qty: i.quantity }; }),
                 total: grand,
                 paymentMethod: 'whatsapp',
-                customerName: currentUser.name,
-                customerEmail: currentUser.email,
-                customerPhone: currentUser.phone || '',
+                customerName: clientName,
+                customerEmail: currentUser ? currentUser.email : '',
+                customerPhone: clientPhone,
+                customerAddress: guestAddress,
                 date: new Date().toISOString(),
                 status: 'En attente',
                 proofUploaded: true,
@@ -1476,6 +1554,13 @@
                 window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + message, '_blank');
                 document.getElementById('orderNumberDisplay').textContent = 'N° ' + orderId;
                 document.getElementById('paidAmountDisplay').textContent = formatFCFA(grand);
+
+                // Afficher la proposition de compte si invité
+                var proposal = document.getElementById('guestAccountProposal');
+                if (proposal) {
+                    proposal.style.display = currentUser ? 'none' : 'block';
+                }
+
                 goToStep('confirm');
                 clearUserCart();
                 updateCartCount();
@@ -1533,7 +1618,6 @@
             btn.innerHTML = '...';
             fbSignIn(email, password).then(function() {
                 closeAuthModal();
-                // updateUserMenu() sera déclenché par fbOnAuthChange
             }).catch(function(err) {
                 console.error(err);
                 showAuthAlert(translateAuthError(err), 'error');
@@ -1565,7 +1649,6 @@
             }).then(function() {
                 closeAuthModal();
                 showToast('Bienvenue ' + name + ' !');
-                // updateUserMenu() sera déclenché par fbOnAuthChange
             }).catch(function(err) {
                 console.error(err);
                 showAuthAlert(translateAuthError(err), 'error');
@@ -1600,7 +1683,6 @@
             }
         }
 
-        // Réagit à l'état de connexion Firebase (session persistée automatiquement)
         fbOnAuthChange(function(user) {
             if (user) {
                 getDocIn('users', user.uid).then(function(snap) {
@@ -1614,11 +1696,13 @@
                     };
                     updateUserMenu();
                     updateCartCount();
+                    setTimeout(function() { initChat(); }, 500);
                 });
             } else {
                 currentUser = null;
                 updateUserMenu();
                 updateCartCount();
+                setTimeout(function() { initChat(); }, 500);
             }
         });
 
@@ -1627,6 +1711,112 @@
             if (!dd) return;
             dd.classList.toggle('show');
             document.addEventListener('click', function close(e) { if (!e.target.closest('.user-menu')) { dd.classList.remove('show'); document.removeEventListener('click', close); } });
+        }
+
+        // ============================================================
+        // CHAT CLIENT
+        // ============================================================
+        var chatConversationId = null;
+        var chatUnsubscribe = null;
+        var chatUnreadCount = 0;
+        var chatWidgetOpen = false;
+        var chatConvUnsubscribe = null;
+
+        function toggleChatWidget() {
+            chatWidgetOpen = !chatWidgetOpen;
+            var w = document.getElementById('chatWidget');
+            if (chatWidgetOpen) {
+                w.classList.add('open');
+                chatUnreadCount = 0;
+                updateChatBadge();
+                if (chatConversationId) {
+                    markConversationRead(chatConversationId, 'client').catch(function(){});
+                }
+                setTimeout(function() {
+                    var input = document.getElementById('chatInput');
+                    if (input) input.focus();
+                }, 300);
+            } else {
+                w.classList.remove('open');
+            }
+        }
+
+        function updateChatBadge() {
+            var badge = document.getElementById('chatUnreadBadge');
+            if (!badge) return;
+            if (chatUnreadCount > 0) {
+                badge.textContent = chatUnreadCount;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        async function initChat() {
+            try {
+                var clientId = currentUser ? currentUser.uid : 'guest_' + getGuestId();
+                var clientName = currentUser ? currentUser.name : 'Invité';
+                var clientPhone = currentUser ? (currentUser.phone || '') : '';
+
+                chatConversationId = await getOrCreateConversation(clientId, clientName, clientPhone);
+
+                if (chatUnsubscribe) chatUnsubscribe();
+                chatUnsubscribe = watchMessages(chatConversationId, function(messages) {
+                    renderChatMessages(messages);
+                });
+
+                if (chatConvUnsubscribe) chatConvUnsubscribe();
+                chatConvUnsubscribe = watchConversation(chatConversationId, function(conv) {
+                    if (conv && conv.unreadByClient && !chatWidgetOpen) {
+                        chatUnreadCount = 1;
+                        updateChatBadge();
+                    }
+                });
+            } catch (err) {
+                console.error('Erreur init chat:', err);
+            }
+        }
+
+        function renderChatMessages(messages) {
+            var container = document.getElementById('chatMessages');
+            if (!container) return;
+            if (messages.length === 0) {
+                container.innerHTML = '<div class="chat-welcome">' +
+                    '<i class="fas fa-comments" style="font-size:2rem;color:var(--color-gold);margin-bottom:0.6rem;"></i>' +
+                    '<h4 style="font-family:var(--font-serif);font-size:1.1rem;margin-bottom:0.3rem;">Bienvenue !</h4>' +
+                    '<p style="font-size:11px;color:var(--color-silver);line-height:1.6;">Posez votre question, notre équipe vous répondra dans les plus brefs délais.</p>' +
+                    '</div>';
+                return;
+            }
+            container.innerHTML = messages.map(function(m) {
+                var time = m.createdAt ? new Date(m.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '';
+                var cls = m.sender === 'client' ? 'client' : 'admin';
+                return '<div class="chat-msg ' + cls + '">' + escapeHtml(m.text) + '<span class="time">' + time + '</span></div>';
+            }).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+
+        async function sendChatMessage() {
+            var input = document.getElementById('chatInput');
+            if (!input) return;
+            var text = input.value.trim();
+            if (!text) return;
+            if (!chatConversationId) {
+                await initChat();
+            }
+            input.value = '';
+            try {
+                await sendMessage(chatConversationId, 'client', text);
+            } catch (err) {
+                console.error(err);
+                showToast('❌ Erreur d\'envoi du message', 'error');
+            }
         }
 
         // ============================================================
@@ -1656,6 +1846,7 @@
             displayProducts();
             updateCartCount();
             updateUserMenu();
+            initChat();
         }
 
         document.addEventListener('scroll', function() {
@@ -1681,7 +1872,6 @@
             });
         });
 
-        // Initialisation asynchrone
         loadAllFromDB().then(function() {
             init();
         }).catch(function() {
@@ -1721,6 +1911,8 @@
         window.handleDrop = handleDrop;
         window.checkProofStatus = checkProofStatus;
         window.getProductImage = getProductImage;
+        window.toggleChatWidget = toggleChatWidget;
+        window.sendChatMessage = sendChatMessage;
     </script>
 </body>
 </html>

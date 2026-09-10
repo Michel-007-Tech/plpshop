@@ -20,6 +20,10 @@ import {
     getDoc,
     onSnapshot,
     serverTimestamp,
+    query,
+    orderBy,
+    limit,
+    addDoc,
     enableIndexedDbPersistence
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
@@ -37,7 +41,7 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// Cache local hors-ligne (facultatif, échoue silencieusement si plusieurs onglets ouverts)
+// Cache local hors-ligne (échoue silencieusement si plusieurs onglets ouverts)
 try {
     enableIndexedDbPersistence(db).catch(function() {});
 } catch (e) {}
@@ -57,8 +61,6 @@ export function fbOnAuthChange(callback) {
 }
 
 // ---- FIRESTORE : collections (produits, commandes, utilisateurs) ----
-// Écoute en temps réel une collection entière ; callback reçoit un tableau à jour
-// à chaque changement, sur TOUS les appareils connectés.
 export function watchCollection(name, callback, onError) {
     return onSnapshot(collection(db, name), function(snap) {
         var list = [];
@@ -90,4 +92,141 @@ export function getDocIn(collectionName, docId) {
 
 export function fbTimestamp() {
     return serverTimestamp();
+}
+
+// ============================================================
+// CHAT EN TEMPS RÉEL
+// Structure Firestore :
+//   conversations/{conversationId}
+//     - clientId (uid ou guest_xxx)
+//     - clientName
+//     - clientPhone
+//     - lastMessage
+//     - lastMessageAt
+//     - unreadByAdmin (bool)
+//     - unreadByClient (bool)
+//     - createdAt
+//   conversations/{conversationId}/messages/{messageId}
+//     - sender ('client' | 'admin')
+//     - text
+//     - createdAt
+// ============================================================
+
+/**
+ * Écoute toutes les conversations (pour l'admin)
+ */
+export function watchConversations(callback, onError) {
+    const q = query(collection(db, 'conversations'), orderBy('lastMessageAt', 'desc'));
+    return onSnapshot(q, function(snap) {
+        var list = [];
+        snap.forEach(function(d) {
+            var data = d.data();
+            data.id = d.id;
+            list.push(data);
+        });
+        callback(list);
+    }, function(err) {
+        console.error('Erreur conversations:', err);
+        if (onError) onError(err);
+    });
+}
+
+/**
+ * Écoute les messages d'une conversation
+ */
+export function watchMessages(conversationId, callback, onError) {
+    const q = query(
+        collection(db, 'conversations', conversationId, 'messages'),
+        orderBy('createdAt', 'asc'),
+        limit(200)
+    );
+    return onSnapshot(q, function(snap) {
+        var list = [];
+        snap.forEach(function(d) {
+            var data = d.data();
+            data.id = d.id;
+            list.push(data);
+        });
+        callback(list);
+    }, function(err) {
+        console.error('Erreur messages:', err);
+        if (onError) onError(err);
+    });
+}
+
+/**
+ * Écoute une conversation unique (pour le client)
+ */
+export function watchConversation(conversationId, callback, onError) {
+    return onSnapshot(doc(db, 'conversations', conversationId), function(snap) {
+        if (snap.exists()) {
+            var data = snap.data();
+            data.id = snap.id;
+            callback(data);
+        } else {
+            callback(null);
+        }
+    }, function(err) {
+        console.error('Erreur conversation:', err);
+        if (onError) onError(err);
+    });
+}
+
+/**
+ * Crée ou récupère une conversation pour un client
+ */
+export async function getOrCreateConversation(clientId, clientName, clientPhone) {
+    const conversationId = 'conv_' + clientId;
+    const ref = doc(db, 'conversations', conversationId);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) {
+        await setDoc(ref, {
+            clientId: clientId,
+            clientName: clientName || 'Invité',
+            clientPhone: clientPhone || '',
+            lastMessage: '',
+            lastMessageAt: new Date().toISOString(),
+            unreadByAdmin: false,
+            unreadByClient: false,
+            createdAt: new Date().toISOString()
+        });
+    }
+    return conversationId;
+}
+
+/**
+ * Envoie un message dans une conversation
+ */
+export async function sendMessage(conversationId, sender, text) {
+    const msgRef = collection(db, 'conversations', conversationId, 'messages');
+    await addDoc(msgRef, {
+        sender: sender,
+        text: text,
+        createdAt: new Date().toISOString()
+    });
+
+    const convRef = doc(db, 'conversations', conversationId);
+    const updateData = {
+        lastMessage: text,
+        lastMessageAt: new Date().toISOString()
+    };
+    if (sender === 'client') {
+        updateData.unreadByAdmin = true;
+        updateData.unreadByClient = false;
+    } else {
+        updateData.unreadByClient = true;
+        updateData.unreadByAdmin = false;
+    }
+    await updateDoc(convRef, updateData);
+}
+
+/**
+ * Marque une conversation comme lue
+ */
+export async function markConversationRead(conversationId, reader) {
+    const convRef = doc(db, 'conversations', conversationId);
+    const updateData = {};
+    if (reader === 'admin') updateData.unreadByAdmin = false;
+    else updateData.unreadByClient = false;
+    await updateDoc(convRef, updateData);
 }
