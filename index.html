@@ -434,7 +434,6 @@
     <!-- TOP BAR -->
     <div class="top-bar">
         <span><i class="fas fa-star"></i> PLP Shop — Votre Style, Notre Passion</span>
-        <span class="hide-mobile"><i class="fas fa-truck"></i> Livraison offerte dès 20 000 FCFA</span>
         <span class="hide-mobile"><i class="fas fa-shield-alt"></i> Paiement sécurisé</span>
         <span><a href="https://wa.me/221768597835"><i class="fab fa-whatsapp"></i> +221 76 859 78 35</a></span>
     </div>
@@ -1381,7 +1380,7 @@
                 }).join('');
             }
             var total = c.reduce(function(s, i) { return s + (i.price * (i.quantity || 1)); }, 0);
-            var shipping = total >= 20000 ? 0 : 2000;
+            var shipping = 0;
             var grand = total + shipping;
             var summary = document.getElementById('cartSummary');
             if (summary) {
@@ -1511,7 +1510,7 @@
             if (!guestAddress) { showToast('Veuillez entrer votre adresse de livraison', 'error'); return; }
 
             var total = c.reduce(function(s, i) { return s + (i.price * (i.quantity || 1)); }, 0);
-            var shipping = total >= 20000 ? 0 : 2000;
+            var shipping = 0;
             var grand = total + shipping;
             var orderId = 'PLP' + Date.now().toString().slice(-8);
             var itemsList = c.map(function(i) { return '• ' + i.name + ' ×' + i.quantity + ' = ' + formatFCFA(i.price * (i.quantity || 1)); }).join('%0A');
