@@ -32,6 +32,11 @@
             --color-maillot: #dc2626;
             --color-ensemble: #7c3aed;
             --color-chaussure: #d97706;
+            --color-robe: #e11d48;
+            --color-jupe: #a855f7;
+            --color-sac: #0891b2;
+            --color-bijou: #eab308;
+            --color-accessoire: #ec4899;
             --font-serif: 'Playfair Display', serif;
             --font-sans: 'Inter', sans-serif;
             --radius-sm: 6px;
@@ -154,6 +159,8 @@
         .category-card .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%); display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; color: var(--color-white); transition: var(--transition); }
         .category-card .overlay h2 { font-size: clamp(2rem,4vw,3.2rem); font-weight: 700; letter-spacing: -0.02em; text-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .category-card .overlay span { font-size: 0.9rem; opacity: 0.8; font-weight: 300; margin-top: 0.2rem; }
+        .category-card .overlay .admin-hint { display: inline-block; margin-top: 0.6rem; font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--color-gold); border: 1px solid rgba(201,168,76,0.4); padding: 4px 12px; border-radius: var(--radius-full); opacity: 0.85; transition: var(--transition); align-self: flex-start; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); }
+        .category-card:hover .admin-hint { background: var(--color-gold); color: var(--color-black); border-color: var(--color-gold); }
 
         /* ===== FEATURES ===== */
         .features { background: var(--color-white); padding: clamp(2rem,4vw,4rem) 0; margin-top: 2rem; border-bottom: 1px solid rgba(0,0,0,0.03); }
@@ -182,6 +189,16 @@
         .filter-tab.ensemble:hover, .filter-tab.ensemble.active { background: var(--color-ensemble); color: white; }
         .filter-tab.chaussure { border-color: var(--color-chaussure); color: var(--color-chaussure); }
         .filter-tab.chaussure:hover, .filter-tab.chaussure.active { background: var(--color-chaussure); color: white; }
+        .filter-tab.robe { border-color: var(--color-robe); color: var(--color-robe); }
+        .filter-tab.robe:hover, .filter-tab.robe.active { background: var(--color-robe); color: white; }
+        .filter-tab.jupe { border-color: var(--color-jupe); color: var(--color-jupe); }
+        .filter-tab.jupe:hover, .filter-tab.jupe.active { background: var(--color-jupe); color: white; }
+        .filter-tab.sac { border-color: var(--color-sac); color: var(--color-sac); }
+        .filter-tab.sac:hover, .filter-tab.sac.active { background: var(--color-sac); color: white; }
+        .filter-tab.bijou { border-color: var(--color-bijou); color: var(--color-bijou); }
+        .filter-tab.bijou:hover, .filter-tab.bijou.active { background: var(--color-bijou); color: white; }
+        .filter-tab.accessoire { border-color: var(--color-accessoire); color: var(--color-accessoire); }
+        .filter-tab.accessoire:hover, .filter-tab.accessoire.active { background: var(--color-accessoire); color: white; }
 
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(clamp(170px,22vw,280px),1fr)); gap: clamp(1rem,1.8vw,2rem); }
         .product-card { background: var(--color-white); border-radius: var(--radius-md); overflow: hidden; transition: var(--transition-bounce); box-shadow: 0 2px 12px var(--color-shadow); position: relative; display: flex; flex-direction: column; cursor: pointer; border: 1px solid rgba(0,0,0,0.02); }
@@ -484,6 +501,11 @@
             <a href="#" class="nav-link" onclick="filterProducts('maillot'); scrollToSection('products')">🏃 Maillot</a>
             <a href="#" class="nav-link" onclick="filterProducts('ensemble sport'); scrollToSection('products')">🏋️ Ensemble</a>
             <a href="#" class="nav-link" onclick="filterProducts('chaussures'); scrollToSection('products')">👟 Chaussures</a>
+            <a href="#" class="nav-link" onclick="filterProducts('robe'); scrollToSection('products')">👗 Robes</a>
+            <a href="#" class="nav-link" onclick="filterProducts('jupe'); scrollToSection('products')">👚 Jupes</a>
+            <a href="#" class="nav-link" onclick="filterProducts('sac'); scrollToSection('products')">👜 Sacs</a>
+            <a href="#" class="nav-link" onclick="filterProducts('bijou'); scrollToSection('products')">💎 Bijoux</a>
+            <a href="#" class="nav-link" onclick="filterProducts('accessoire'); scrollToSection('products')">🕶️ Accessoires</a>
         </div>
     </nav>
 
@@ -529,18 +551,20 @@
     <!-- CATEGORY CARDS -->
     <section class="category-cards" id="categoryCards">
         <div class="category-cards-grid">
-            <div class="category-card" onclick="openCurtain('homme')">
+            <div class="category-card" onclick="goToAdminCollection('homme')">
                 <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=800&h=600&fit=crop&crop=center" alt="Homme" loading="lazy" />
                 <div class="overlay">
                     <h2>HOMME</h2>
                     <span>Élégance &amp; caractère</span>
+                    <span class="admin-hint"><i class="fas fa-cog"></i> Gérer la collection</span>
                 </div>
             </div>
-            <div class="category-card" onclick="openCurtain('femme')">
+            <div class="category-card" onclick="goToAdminCollection('femme')">
                 <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&h=600&fit=crop&crop=center" alt="Femme" loading="lazy" />
                 <div class="overlay">
                     <h2>FEMME</h2>
                     <span>Féminité &amp; audace</span>
+                    <span class="admin-hint"><i class="fas fa-cog"></i> Gérer la collection</span>
                 </div>
             </div>
         </div>
@@ -586,6 +610,11 @@
                 <button class="filter-tab maillot" onclick="filterProducts('maillot')">🏃 Maillot</button>
                 <button class="filter-tab ensemble" onclick="filterProducts('ensemble sport')">🏋️ Ensemble Sport</button>
                 <button class="filter-tab chaussure" onclick="filterProducts('chaussures')">👟 Chaussures</button>
+                <button class="filter-tab robe" onclick="filterProducts('robe')">👗 Robes</button>
+                <button class="filter-tab jupe" onclick="filterProducts('jupe')">👚 Jupes</button>
+                <button class="filter-tab sac" onclick="filterProducts('sac')">👜 Sacs</button>
+                <button class="filter-tab bijou" onclick="filterProducts('bijou')">💎 Bijoux</button>
+                <button class="filter-tab accessoire" onclick="filterProducts('accessoire')">🕶️ Accessoires</button>
             </div>
         </div>
         <div class="products-grid" id="productsGrid"></div>
@@ -662,6 +691,11 @@
                     <li><a href="#" onclick="filterProducts('maillot'); scrollToSection('products')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Maillot</a></li>
                     <li><a href="#" onclick="filterProducts('ensemble sport'); scrollToSection('products')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Ensemble Sport</a></li>
                     <li><a href="#" onclick="filterProducts('chaussures'); scrollToSection('products')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Chaussures</a></li>
+                    <li><a href="#" onclick="filterProducts('robe'); scrollToSection('products')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Robes</a></li>
+                    <li><a href="#" onclick="filterProducts('jupe'); scrollToSection('products')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Jupes</a></li>
+                    <li><a href="#" onclick="filterProducts('sac'); scrollToSection('products')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Sacs</a></li>
+                    <li><a href="#" onclick="filterProducts('bijou'); scrollToSection('products')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Bijoux</a></li>
+                    <li><a href="#" onclick="filterProducts('accessoire'); scrollToSection('products')"><i class="fas fa-chevron-right" style="font-size:6px;color:var(--color-gold);"></i> Accessoires</a></li>
                 </ul>
             </div>
 
@@ -916,7 +950,12 @@
             'short': '🩳',
             'maillot': '🏃',
             'ensemble sport': '🏋️',
-            'chaussures': '👟'
+            'chaussures': '👟',
+            'robe': '👗',
+            'jupe': '👚',
+            'sac': '👜',
+            'bijou': '💎',
+            'accessoire': '🕶️'
         };
 
         // ============================================================
@@ -1208,6 +1247,21 @@
             document.getElementById('collectionTitle').textContent = gender === 'homme' ? 'Collection Homme' : 'Collection Femme';
         }
 
+        // ============================================================
+        // REDIRECTION VERS L'ADMIN COLLECTION (clic sur carte Homme/Femme)
+        // ============================================================
+        function goToAdminCollection(gender) {
+            // Animation rideau
+            var overlay = document.getElementById('curtainOverlay');
+            overlay.classList.remove('open');
+            void overlay.offsetWidth;
+            overlay.classList.add('open');
+
+            setTimeout(function() {
+                window.location.href = 'admin.html?collection=' + encodeURIComponent(gender);
+            }, 700);
+        }
+
         function openCurtain(gender) {
             var overlay = document.getElementById('curtainOverlay');
             overlay.classList.remove('open');
@@ -1397,10 +1451,8 @@
         function goToPayment() {
             var c = getUserCart();
             if (c.length === 0) { showToast('Panier vide', 'error'); return; }
-            // MODE INVITÉ : plus besoin d'être connecté
             goToStep('payment');
             checkProofStatus();
-            // Pré-remplir si connecté
             if (currentUser) {
                 var nameField = document.getElementById('guestName');
                 var phoneField = document.getElementById('guestPhone');
@@ -1499,7 +1551,6 @@
             var c = getUserCart();
             if (c.length === 0) { showToast('Panier vide', 'error'); return; }
 
-            // Récupérer les infos invité
             var guestName = (document.getElementById('guestName')?.value || '').trim();
             var guestPhone = (document.getElementById('guestPhone')?.value || '').trim();
             var guestAddress = (document.getElementById('guestAddress')?.value || '').trim();
@@ -1556,7 +1607,6 @@
                 document.getElementById('orderNumberDisplay').textContent = 'N° ' + orderId;
                 document.getElementById('paidAmountDisplay').textContent = formatFCFA(grand);
 
-                // Afficher la proposition de compte si invité
                 var proposal = document.getElementById('guestAccountProposal');
                 if (proposal) {
                     proposal.style.display = currentUser ? 'none' : 'block';
@@ -1890,6 +1940,7 @@
         window.filterProducts = filterProducts;
         window.filterByGender = filterByGender;
         window.openCurtain = openCurtain;
+        window.goToAdminCollection = goToAdminCollection;
         window.searchProducts = searchProducts;
         window.openAuthModal = openAuthModal;
         window.closeAuthModal = closeAuthModal;
