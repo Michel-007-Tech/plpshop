@@ -26,6 +26,11 @@
             --maillot-color: #dc2626;
             --ensemble-color: #7c3aed;
             --chaussure-color: #d97706;
+            --robe-color: #e11d48;
+            --jupe-color: #a855f7;
+            --sac-color: #0891b2;
+            --bijou-color: #eab308;
+            --accessoire-color: #ec4899;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { font-size: 16px; scroll-behavior: smooth; }
@@ -174,6 +179,74 @@
         .cat-maillot { border-left-color: var(--maillot-color); }
         .cat-ensemble { border-left-color: var(--ensemble-color); }
         .cat-chaussure { border-left-color: var(--chaussure-color); }
+        .cat-robe { border-left-color: var(--robe-color); }
+        .cat-jupe { border-left-color: var(--jupe-color); }
+        .cat-sac { border-left-color: var(--sac-color); }
+        .cat-bijou { border-left-color: var(--bijou-color); }
+        .cat-accessoire { border-left-color: var(--accessoire-color); }
+
+        /* ===== COLLECTION TABS ===== */
+        .collection-tabs {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            padding: 0.4rem;
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0,0,0,0.06);
+            margin-bottom: 1rem;
+        }
+        .collection-tab {
+            padding: 8px 16px;
+            border: 1px solid rgba(0,0,0,0.1);
+            background: transparent;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            transition: var(--transition);
+            font-family: 'Montserrat', sans-serif;
+            color: var(--gray-cool);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .collection-tab:hover {
+            background: rgba(26,86,219,0.08);
+            color: var(--plp-blue);
+            border-color: var(--plp-blue);
+        }
+        .collection-tab.active {
+            background: var(--plp-blue);
+            color: var(--white);
+            border-color: var(--plp-blue);
+        }
+        .collection-tab[data-collection="femme"].active {
+            background: var(--femme-color);
+            border-color: var(--femme-color);
+        }
+        .collection-tab[data-collection="femme"]:hover {
+            background: rgba(219,39,119,0.1);
+            color: var(--femme-color);
+            border-color: var(--femme-color);
+        }
+
+        /* ===== BIJOUX SECTION (mixte) ===== */
+        .bijoux-banner {
+            background: linear-gradient(135deg, #eab308, #facc15);
+            color: #422006;
+            padding: 1rem 1.2rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
 
         .toast-admin { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: var(--black); color: var(--white); padding: 10px 24px; border-radius: var(--radius-sm); font-size: 10px; font-weight: 500; z-index: 9999; box-shadow: var(--shadow-md); opacity: 0; transition: opacity 0.4s ease, transform 0.4s ease; transform: translateX(-50%) translateY(20px); pointer-events: none; border: 1px solid rgba(255,255,255,0.05); max-width: 90vw; text-align: center; }
         .toast-admin.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -251,6 +324,7 @@
             .btn-action { padding: 2px 6px; font-size: 6px; }
             .status-badge, .genre-badge { font-size: 6px; padding: 2px 4px; }
             .modal-content { max-width: 95vw; padding: 0.8rem; }
+            .collection-tab { padding: 6px 10px; font-size: 7px; }
         }
     </style>
 </head>
@@ -335,44 +409,244 @@
                     <button class="btn-add" onclick="openProductModal()" style="background:var(--plp-blue);"><i class="fas fa-plus"></i> Ajouter un produit</button>
                 </div>
 
-                <div class="category-section cat-tshirt">
-                    <div class="section-header">
-                        <h3><i class="fas fa-tshirt" style="color:var(--tshirt-color);"></i> T-shirts <span class="badge-cat count" id="count-tshirt">0</span></h3>
-                        <button class="btn-add" onclick="openProductModalWithCategory('t-shirt')" style="padding:4px 10px;font-size:7px;background:var(--tshirt-color);"><i class="fas fa-plus"></i> Ajouter</button>
-                    </div>
-                    <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-tshirt"></tbody></table></div>
+                <!-- Filtre par collection -->
+                <div class="collection-tabs">
+                    <button class="collection-tab active" data-collection="all" onclick="filterCollection('all')">
+                        <i class="fas fa-th-large"></i> Toutes les collections
+                    </button>
+                    <button class="collection-tab" data-collection="homme" onclick="filterCollection('homme')">
+                        <i class="fas fa-mars"></i> Collection Homme
+                    </button>
+                    <button class="collection-tab" data-collection="femme" onclick="filterCollection('femme')">
+                        <i class="fas fa-venus"></i> Collection Femme
+                    </button>
+                    <button class="collection-tab" data-collection="mixte" onclick="filterCollection('mixte')">
+                        <i class="fas fa-venus-mars"></i> Collection Mixte
+                    </button>
+                    <button class="collection-tab" data-collection="bijoux" onclick="filterCollection('bijoux')">
+                        <i class="fas fa-gem"></i> Bijoux
+                    </button>
                 </div>
 
-                <div class="category-section cat-short">
-                    <div class="section-header">
-                        <h3><i class="fas fa-shorts" style="color:var(--short-color);"></i> Shorts <span class="badge-cat count" id="count-short">0</span></h3>
-                        <button class="btn-add" onclick="openProductModalWithCategory('short')" style="padding:4px 10px;font-size:7px;background:var(--short-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                <!-- SECTION FEMME (visible uniquement si filtre femme actif) -->
+                <div id="femmeCollectionSection" style="display:none;">
+                    <div class="femme-banner" style="background:linear-gradient(135deg,#db2777,#f472b6);color:white;padding:1rem 1.2rem;border-radius:var(--radius-sm);margin-bottom:1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+                        <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">
+                            <i class="fas fa-venus"></i>
+                        </div>
+                        <div style="flex:1;min-width:180px;">
+                            <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:0.2rem;">Collection Femme</h2>
+                            <p style="font-size:10px;opacity:0.9;">Robes, jupes, sacs, bijoux et tous les vêtements/accessoires portés par les femmes.</p>
+                        </div>
+                        <button class="btn-add" onclick="openProductModalWithGender('femme')" style="background:white;color:#db2777;font-weight:700;">
+                            <i class="fas fa-plus"></i> Ajouter un produit Femme
+                        </button>
                     </div>
-                    <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-short"></tbody></table></div>
+
+                    <!-- Vêtements Femme -->
+                    <div class="category-section cat-robe">
+                        <div class="section-header">
+                            <h3><i class="fas fa-female" style="color:var(--robe-color);"></i> Robes <span class="badge-cat count" id="count-femme-robe">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategoryAndGender('robe','femme')" style="padding:4px 10px;font-size:7px;background:var(--robe-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-femme-robe"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-jupe">
+                        <div class="section-header">
+                            <h3><i class="fas fa-person-dress" style="color:var(--jupe-color);"></i> Jupes <span class="badge-cat count" id="count-femme-jupe">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategoryAndGender('jupe','femme')" style="padding:4px 10px;font-size:7px;background:var(--jupe-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-femme-jupe"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-tshirt">
+                        <div class="section-header">
+                            <h3><i class="fas fa-tshirt" style="color:var(--femme-color);"></i> T-shirts Femme <span class="badge-cat count" id="count-femme-tshirt">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategoryAndGender('t-shirt','femme')" style="padding:4px 10px;font-size:7px;background:var(--femme-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-femme-tshirt"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-short">
+                        <div class="section-header">
+                            <h3><i class="fas fa-shorts" style="color:var(--femme-color);"></i> Shorts Femme <span class="badge-cat count" id="count-femme-short">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategoryAndGender('short','femme')" style="padding:4px 10px;font-size:7px;background:var(--femme-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-femme-short"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-maillot">
+                        <div class="section-header">
+                            <h3><i class="fas fa-jersey" style="color:var(--femme-color);"></i> Maillots Femme <span class="badge-cat count" id="count-femme-maillot">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategoryAndGender('maillot','femme')" style="padding:4px 10px;font-size:7px;background:var(--femme-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-femme-maillot"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-ensemble">
+                        <div class="section-header">
+                            <h3><i class="fas fa-running" style="color:var(--femme-color);"></i> Ensembles Sport Femme <span class="badge-cat count" id="count-femme-ensemble">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategoryAndGender('ensemble sport','femme')" style="padding:4px 10px;font-size:7px;background:var(--femme-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-femme-ensemble"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-chaussure">
+                        <div class="section-header">
+                            <h3><i class="fas fa-shoe-prints" style="color:var(--femme-color);"></i> Chaussures Femme <span class="badge-cat count" id="count-femme-chaussure">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategoryAndGender('chaussures','femme')" style="padding:4px 10px;font-size:7px;background:var(--femme-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-femme-chaussure"></tbody></table></div>
+                    </div>
+
+                    <!-- Accessoires Femme -->
+                    <div class="category-section cat-sac">
+                        <div class="section-header">
+                            <h3><i class="fas fa-bag-shopping" style="color:var(--sac-color);"></i> Sacs à main <span class="badge-cat count" id="count-femme-sac">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategoryAndGender('sac','femme')" style="padding:4px 10px;font-size:7px;background:var(--sac-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-femme-sac"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-bijou">
+                        <div class="section-header">
+                            <h3><i class="fas fa-gem" style="color:var(--bijou-color);"></i> Bijoux Femme <span class="badge-cat count" id="count-femme-bijou">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategoryAndGender('bijou','femme')" style="padding:4px 10px;font-size:7px;background:var(--bijou-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-femme-bijou"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-accessoire">
+                        <div class="section-header">
+                            <h3><i class="fas fa-glasses" style="color:var(--accessoire-color);"></i> Accessoires Femme <span class="badge-cat count" id="count-femme-accessoire">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategoryAndGender('accessoire','femme')" style="padding:4px 10px;font-size:7px;background:var(--accessoire-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-femme-accessoire"></tbody></table></div>
+                    </div>
                 </div>
 
-                <div class="category-section cat-maillot">
-                    <div class="section-header">
-                        <h3><i class="fas fa-jersey" style="color:var(--maillot-color);"></i> Maillots <span class="badge-cat count" id="count-maillot">0</span></h3>
-                        <button class="btn-add" onclick="openProductModalWithCategory('maillot')" style="padding:4px 10px;font-size:7px;background:var(--maillot-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                <!-- SECTION BIJOUX (mixte homme + femme) -->
+                <div id="bijouxCollectionSection" style="display:none;">
+                    <div class="bijoux-banner">
+                        <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <div style="flex:1;min-width:180px;">
+                            <h2 style="font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:0.2rem;">Bijoux & Montres</h2>
+                            <p style="font-size:10px;opacity:0.85;">Bijoux pour Homme et Femme : colliers, bracelets, bagues, montres, chaînes, boucles d'oreilles...</p>
+                        </div>
+                        <button class="btn-add" onclick="openProductModalWithCategory('bijou')" style="background:white;color:#a16207;font-weight:700;">
+                            <i class="fas fa-plus"></i> Ajouter un bijou
+                        </button>
                     </div>
-                    <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-maillot"></tbody></table></div>
+
+                    <div class="category-section cat-bijou">
+                        <div class="section-header">
+                            <h3><i class="fas fa-gem" style="color:var(--bijou-color);"></i> Bijoux Homme <span class="badge-cat count" id="count-bijou-homme">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategoryAndGender('bijou','homme')" style="padding:4px 10px;font-size:7px;background:var(--bijou-color);color:#422006;"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-bijou-homme"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-bijou">
+                        <div class="section-header">
+                            <h3><i class="fas fa-gem" style="color:var(--femme-color);"></i> Bijoux Femme <span class="badge-cat count" id="count-bijou-femme">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategoryAndGender('bijou','femme')" style="padding:4px 10px;font-size:7px;background:var(--femme-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-bijou-femme"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-bijou">
+                        <div class="section-header">
+                            <h3><i class="fas fa-gem" style="color:var(--gray-cool);"></i> Bijoux Mixtes <span class="badge-cat count" id="count-bijou-mixte">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategoryAndGender('bijou','mixte')" style="padding:4px 10px;font-size:7px;background:var(--gray-cool);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-bijou-mixte"></tbody></table></div>
+                    </div>
                 </div>
 
-                <div class="category-section cat-ensemble">
-                    <div class="section-header">
-                        <h3><i class="fas fa-running" style="color:var(--ensemble-color);"></i> Ensembles Sport <span class="badge-cat count" id="count-ensemble">0</span></h3>
-                        <button class="btn-add" onclick="openProductModalWithCategory('ensemble sport')" style="padding:4px 10px;font-size:7px;background:var(--ensemble-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                <!-- SECTION STANDARD (Toutes / Homme / Mixte) -->
+                <div id="standardCollectionSection">
+                    <div class="category-section cat-tshirt">
+                        <div class="section-header">
+                            <h3><i class="fas fa-tshirt" style="color:var(--tshirt-color);"></i> T-shirts <span class="badge-cat count" id="count-tshirt">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategory('t-shirt')" style="padding:4px 10px;font-size:7px;background:var(--tshirt-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-tshirt"></tbody></table></div>
                     </div>
-                    <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-ensemble"></tbody></table></div>
-                </div>
 
-                <div class="category-section cat-chaussure">
-                    <div class="section-header">
-                        <h3><i class="fas fa-shoe-prints" style="color:var(--chaussure-color);"></i> Chaussures <span class="badge-cat count" id="count-chaussure">0</span></h3>
-                        <button class="btn-add" onclick="openProductModalWithCategory('chaussures')" style="padding:4px 10px;font-size:7px;background:var(--chaussure-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                    <div class="category-section cat-short">
+                        <div class="section-header">
+                            <h3><i class="fas fa-shorts" style="color:var(--short-color);"></i> Shorts <span class="badge-cat count" id="count-short">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategory('short')" style="padding:4px 10px;font-size:7px;background:var(--short-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-short"></tbody></table></div>
                     </div>
-                    <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-chaussure"></tbody></table></div>
+
+                    <div class="category-section cat-maillot">
+                        <div class="section-header">
+                            <h3><i class="fas fa-jersey" style="color:var(--maillot-color);"></i> Maillots <span class="badge-cat count" id="count-maillot">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategory('maillot')" style="padding:4px 10px;font-size:7px;background:var(--maillot-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-maillot"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-ensemble">
+                        <div class="section-header">
+                            <h3><i class="fas fa-running" style="color:var(--ensemble-color);"></i> Ensembles Sport <span class="badge-cat count" id="count-ensemble">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategory('ensemble sport')" style="padding:4px 10px;font-size:7px;background:var(--ensemble-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-ensemble"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-chaussure">
+                        <div class="section-header">
+                            <h3><i class="fas fa-shoe-prints" style="color:var(--chaussure-color);"></i> Chaussures <span class="badge-cat count" id="count-chaussure">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategory('chaussures')" style="padding:4px 10px;font-size:7px;background:var(--chaussure-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-chaussure"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-robe">
+                        <div class="section-header">
+                            <h3><i class="fas fa-female" style="color:var(--robe-color);"></i> Robes <span class="badge-cat count" id="count-robe">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategory('robe')" style="padding:4px 10px;font-size:7px;background:var(--robe-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-robe"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-jupe">
+                        <div class="section-header">
+                            <h3><i class="fas fa-person-dress" style="color:var(--jupe-color);"></i> Jupes <span class="badge-cat count" id="count-jupe">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategory('jupe')" style="padding:4px 10px;font-size:7px;background:var(--jupe-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-jupe"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-sac">
+                        <div class="section-header">
+                            <h3><i class="fas fa-bag-shopping" style="color:var(--sac-color);"></i> Sacs <span class="badge-cat count" id="count-sac">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategory('sac')" style="padding:4px 10px;font-size:7px;background:var(--sac-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-sac"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-bijou">
+                        <div class="section-header">
+                            <h3><i class="fas fa-gem" style="color:var(--bijou-color);"></i> Bijoux <span class="badge-cat count" id="count-bijou">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategory('bijou')" style="padding:4px 10px;font-size:7px;background:var(--bijou-color);color:#422006;"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-bijou"></tbody></table></div>
+                    </div>
+
+                    <div class="category-section cat-accessoire">
+                        <div class="section-header">
+                            <h3><i class="fas fa-glasses" style="color:var(--accessoire-color);"></i> Accessoires <span class="badge-cat count" id="count-accessoire">0</span></h3>
+                            <button class="btn-add" onclick="openProductModalWithCategory('accessoire')" style="padding:4px 10px;font-size:7px;background:var(--accessoire-color);"><i class="fas fa-plus"></i> Ajouter</button>
+                        </div>
+                        <div class="section-table"><table><thead><tr><th>ID</th><th>Image</th><th>Nom</th><th>Genre</th><th>Prix</th><th>Actions</th></tr></thead><tbody id="table-accessoire"></tbody></table></div>
+                    </div>
                 </div>
             </div>
 
@@ -458,7 +732,7 @@
                 
                 <div class="form-group-luxe">
                     <label>Nom du produit *</label>
-                    <input type="text" id="productName" required placeholder="Ex: T-shirt Premium">
+                    <input type="text" id="productName" required placeholder="Ex: Robe élégante">
                 </div>
                 
                 <div class="form-row">
@@ -470,6 +744,11 @@
                             <option value="maillot">🏃 Maillot</option>
                             <option value="ensemble sport">🏋️ Ensemble sport</option>
                             <option value="chaussures">👟 Chaussures</option>
+                            <option value="robe">👗 Robe</option>
+                            <option value="jupe">👚 Jupe</option>
+                            <option value="sac">👜 Sac à main</option>
+                            <option value="bijou">💎 Bijou / Montre</option>
+                            <option value="accessoire">🕶️ Accessoire</option>
                         </select>
                     </div>
                     <div class="form-group-luxe">
@@ -589,12 +868,22 @@
             'short': 'short',
             'maillot': 'maillot',
             'ensemble sport': 'ensemble',
-            'chaussures': 'chaussure'
+            'chaussures': 'chaussure',
+            'robe': 'robe',
+            'jupe': 'jupe',
+            'sac': 'sac',
+            'bijou': 'bijou',
+            'accessoire': 'accessoire'
         };
+
+        var CATEGORIES_ALL = ['t-shirt', 'short', 'maillot', 'ensemble sport', 'chaussures', 'robe', 'jupe', 'sac', 'bijou', 'accessoire'];
+        var CATEGORIES_FEMME = ['robe', 'jupe', 't-shirt', 'short', 'maillot', 'ensemble sport', 'chaussures', 'sac', 'bijou', 'accessoire'];
 
         var currentFilterOrder = 'all';
         var currentImageMethod = 'upload';
         var preselectedCategory = null;
+        var preselectedGender = null;
+        var currentCollection = 'all';
         var editingProductId = null;
         var currentAdminUser = null;
 
@@ -632,7 +921,13 @@
 
             unsubscribeProducts = watchCollection('products', function(list) {
                 productsCache = list;
-                loadProductsByCategory();
+                if (currentCollection === 'femme') {
+                    loadFemmeCollection();
+                } else if (currentCollection === 'bijoux') {
+                    loadBijouxCollection();
+                } else {
+                    loadProductsByCategory(currentCollection);
+                }
                 loadDashboard();
                 updateSyncIndicator('synced');
             }, function() { showToast('⚠️ Erreur de synchronisation des produits.', 'error'); });
@@ -750,6 +1045,16 @@
             adminInitialized = true;
             startRealtimeSync();
             watchConversationsRealtime();
+
+            var urlParams = new URLSearchParams(window.location.search);
+            var collectionParam = urlParams.get('collection');
+            if (collectionParam) {
+                currentCollection = collectionParam;
+                setTimeout(function() {
+                    showSection('products');
+                    filterCollection(collectionParam);
+                }, 500);
+            }
         }
 
         // ============================================================
@@ -912,7 +1217,7 @@
             if (titleEl) titleEl.textContent = titles[s] || 'Admin';
 
             if (s === 'dashboard') loadDashboard();
-            if (s === 'products') loadProductsByCategory();
+            if (s === 'products') filterCollection(currentCollection);
             if (s === 'orders') loadOrders();
             if (s === 'users') loadUsers();
         }
@@ -925,6 +1230,132 @@
                 'Livrée': 'status-livree'
             };
             return c[s] || 'status-en-attente';
+        }
+
+        // ============================================================
+        // FILTRE COLLECTION
+        // ============================================================
+        function filterCollection(collection) {
+            currentCollection = collection;
+
+            var tabs = document.querySelectorAll('.collection-tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+                if (tabs[i].getAttribute('data-collection') === collection) {
+                    tabs[i].classList.add('active');
+                }
+            }
+
+            var femmeSection = document.getElementById('femmeCollectionSection');
+            var bijouxSection = document.getElementById('bijouxCollectionSection');
+            var standardSection = document.getElementById('standardCollectionSection');
+
+            femmeSection.style.display = 'none';
+            bijouxSection.style.display = 'none';
+            standardSection.style.display = 'none';
+
+            if (collection === 'femme') {
+                femmeSection.style.display = 'block';
+                loadFemmeCollection();
+            } else if (collection === 'bijoux') {
+                bijouxSection.style.display = 'block';
+                loadBijouxCollection();
+            } else {
+                standardSection.style.display = 'block';
+                loadProductsByCategory(collection);
+            }
+        }
+
+        function loadFemmeCollection() {
+            var products = getProducts().filter(function(p) {
+                return p.gender === 'femme';
+            });
+
+            for (var i = 0; i < CATEGORIES_FEMME.length; i++) {
+                var cat = CATEGORIES_FEMME[i];
+                var filtered = products.filter(function(p) { return p.category === cat; });
+                var catKey = CATEGORY_KEYS[cat] || cat.replace(/\s+/g, '');
+                var tableId = 'table-femme-' + catKey;
+                var countId = 'count-femme-' + catKey;
+                var tbody = document.getElementById(tableId);
+                var countEl = document.getElementById(countId);
+
+                if (countEl) countEl.textContent = filtered.length;
+
+                if (tbody) {
+                    if (filtered.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:1rem;color:var(--gray-warm);">Aucun produit femme dans cette catégorie</td></tr>';
+                    } else {
+                        var html = '';
+                        for (var j = 0; j < filtered.length; j++) {
+                            var p = filtered[j];
+                            html += '<tr>' +
+                                '<td>#' + p.id + '</td>' +
+                                '<td><img src="' + p.image + '" style="width:25px;height:25px;object-fit:cover;border-radius:2px;" onerror="this.src=\'https://via.placeholder.com/25\'"></td>' +
+                                '<td>' + p.name + '</td>' +
+                                '<td><strong>' + formatFCFA(p.price) + '</strong></td>' +
+                                '<td><div class="action-buttons">' +
+                                '<button class="btn-action btn-edit" onclick="editProduct(' + p.id + ')" style="padding:2px 6px;font-size:6px;"><i class="fas fa-edit"></i></button>' +
+                                '<button class="btn-action btn-delete" onclick="deleteProduct(' + p.id + ')" style="padding:2px 6px;font-size:6px;"><i class="fas fa-trash"></i></button>' +
+                                '</div></td>' +
+                                '</tr>';
+                        }
+                        tbody.innerHTML = html;
+                    }
+                }
+            }
+        }
+
+        function loadBijouxCollection() {
+            var products = getProducts().filter(function(p) {
+                return p.category === 'bijou';
+            });
+
+            var genderKeys = ['homme', 'femme', 'mixte'];
+
+            for (var i = 0; i < genderKeys.length; i++) {
+                var g = genderKeys[i];
+                var filtered = products.filter(function(p) { return p.gender === g; });
+                var tableId = 'table-bijou-' + g;
+                var countId = 'count-bijou-' + g;
+                var tbody = document.getElementById(tableId);
+                var countEl = document.getElementById(countId);
+
+                if (countEl) countEl.textContent = filtered.length;
+
+                if (tbody) {
+                    if (filtered.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:1rem;color:var(--gray-warm);">Aucun bijou ' + g + ' pour le moment</td></tr>';
+                    } else {
+                        var html = '';
+                        for (var j = 0; j < filtered.length; j++) {
+                            var p = filtered[j];
+                            html += '<tr>' +
+                                '<td>#' + p.id + '</td>' +
+                                '<td><img src="' + p.image + '" style="width:25px;height:25px;object-fit:cover;border-radius:2px;" onerror="this.src=\'https://via.placeholder.com/25\'"></td>' +
+                                '<td>' + p.name + '</td>' +
+                                '<td><strong>' + formatFCFA(p.price) + '</strong></td>' +
+                                '<td><div class="action-buttons">' +
+                                '<button class="btn-action btn-edit" onclick="editProduct(' + p.id + ')" style="padding:2px 6px;font-size:6px;"><i class="fas fa-edit"></i></button>' +
+                                '<button class="btn-action btn-delete" onclick="deleteProduct(' + p.id + ')" style="padding:2px 6px;font-size:6px;"><i class="fas fa-trash"></i></button>' +
+                                '</div></td>' +
+                                '</tr>';
+                        }
+                        tbody.innerHTML = html;
+                    }
+                }
+            }
+        }
+
+        function openProductModalWithGender(gender) {
+            preselectedGender = gender;
+            openProductModal();
+        }
+
+        function openProductModalWithCategoryAndGender(category, gender) {
+            preselectedCategory = category;
+            preselectedGender = gender;
+            openProductModal();
         }
 
         // ============================================================
@@ -971,12 +1402,15 @@
             return productsCache;
         }
 
-        function loadProductsByCategory() {
+        function loadProductsByCategory(filter) {
             var products = getProducts();
-            var categories = ['t-shirt', 'short', 'maillot', 'ensemble sport', 'chaussures'];
 
-            for (var i = 0; i < categories.length; i++) {
-                var cat = categories[i];
+            if (filter && filter !== 'all') {
+                products = products.filter(function(p) { return p.gender === filter; });
+            }
+
+            for (var i = 0; i < CATEGORIES_ALL.length; i++) {
+                var cat = CATEGORIES_ALL[i];
                 var filtered = products.filter(function(p) { return p.category === cat; });
                 var catKey = CATEGORY_KEYS[cat] || cat.replace(/\s+/g, '');
                 var tableId = 'table-' + catKey;
@@ -1062,6 +1496,10 @@
                     document.getElementById('productCategory').value = preselectedCategory;
                     preselectedCategory = null;
                 }
+                if (preselectedGender) {
+                    document.getElementById('productGender').value = preselectedGender;
+                    preselectedGender = null;
+                }
                 switchImageTab('upload');
             }
         }
@@ -1080,6 +1518,7 @@
             document.getElementById('productModal').classList.remove('active');
             resetImageForm();
             preselectedCategory = null;
+            preselectedGender = null;
             editingProductId = null;
         }
 
@@ -1426,10 +1865,15 @@
         window.deleteProduct = deleteProduct;
         window.editProduct = editProduct;
         window.filterOrders = filterOrders;
+        window.filterCollection = filterCollection;
         window.handleImageUpload = handleImageUpload;
+        window.loadFemmeCollection = loadFemmeCollection;
+        window.loadBijouxCollection = loadBijouxCollection;
         window.logout = logout;
         window.openProductModal = openProductModal;
         window.openProductModalWithCategory = openProductModalWithCategory;
+        window.openProductModalWithGender = openProductModalWithGender;
+        window.openProductModalWithCategoryAndGender = openProductModalWithCategoryAndGender;
         window.removeUploadedImage = removeUploadedImage;
         window.saveProduct = saveProduct;
         window.saveSettings = saveSettings;
@@ -1443,7 +1887,7 @@
         window.adminSendMessage = adminSendMessage;
         window.deleteConversation = deleteConversation;
 
-        console.log('🔥 Administration PLP Shop - Synchronisation Firebase (temps réel) + Chat');
+        console.log('🔥 Administration PLP Shop - Sync Firebase + Chat + Collections Femme/Bijoux');
     </script>
 </body>
 </html>
