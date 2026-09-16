@@ -551,20 +551,24 @@
     <!-- CATEGORY CARDS -->
     <section class="category-cards" id="categoryCards">
         <div class="category-cards-grid">
-            <div class="category-card" onclick="goToAdminCollection('homme')">
+            <!-- MODIFICATION : onclick openCurtain au lieu de goToAdminCollection -->
+            <div class="category-card" onclick="openCurtain('homme')">
                 <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=800&h=600&fit=crop&crop=center" alt="Homme" loading="lazy" />
                 <div class="overlay">
                     <h2>HOMME</h2>
                     <span>Élégance &amp; caractère</span>
-                    <span class="admin-hint"><i class="fas fa-cog"></i> Gérer la collection</span>
+                    <!-- MODIFICATION : texte + icône -->
+                    <span class="admin-hint"><i class="fas fa-eye"></i> Voir la collection</span>
                 </div>
             </div>
-            <div class="category-card" onclick="goToAdminCollection('femme')">
+            <!-- MODIFICATION : onclick openCurtain au lieu de goToAdminCollection -->
+            <div class="category-card" onclick="openCurtain('femme')">
                 <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&h=600&fit=crop&crop=center" alt="Femme" loading="lazy" />
                 <div class="overlay">
                     <h2>FEMME</h2>
                     <span>Féminité &amp; audace</span>
-                    <span class="admin-hint"><i class="fas fa-cog"></i> Gérer la collection</span>
+                    <!-- MODIFICATION : texte + icône -->
+                    <span class="admin-hint"><i class="fas fa-eye"></i> Voir la collection</span>
                 </div>
             </div>
         </div>
@@ -1248,10 +1252,9 @@
         }
 
         // ============================================================
-        // REDIRECTION VERS L'ADMIN COLLECTION (clic sur carte Homme/Femme)
+        // REDIRECTION VERS L'ADMIN COLLECTION (conservée pour compatibilité)
         // ============================================================
         function goToAdminCollection(gender) {
-            // Animation rideau
             var overlay = document.getElementById('curtainOverlay');
             overlay.classList.remove('open');
             void overlay.offsetWidth;
@@ -1262,6 +1265,9 @@
             }, 700);
         }
 
+        // ============================================================
+        // OUVERTURE COLLECTION AVEC RIDEAU (utilisée par les cartes Homme/Femme)
+        // ============================================================
         function openCurtain(gender) {
             var overlay = document.getElementById('curtainOverlay');
             overlay.classList.remove('open');
