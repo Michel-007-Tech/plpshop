@@ -110,6 +110,7 @@
         .status-confirmee { background: rgba(13,92,46,0.08); color: var(--emerald); }
         .status-expediee { background: rgba(37,99,235,0.08); color: #2563eb; }
         .status-livree { background: rgba(13,123,74,0.08); color: var(--success); }
+        .status-annulee { background: rgba(220,38,38,0.1); color: var(--danger); text-decoration: line-through; }
         .genre-badge { padding: 2px 6px; border-radius: 2px; font-size: 7px; font-weight: 600; text-transform: uppercase; display: inline-block; white-space: nowrap; }
         .genre-homme { background: rgba(26,86,219,0.1); color: var(--plp-blue-dark); }
         .genre-femme { background: rgba(219,39,119,0.1); color: var(--femme-color); }
@@ -123,6 +124,7 @@
         .btn-view { background: rgba(26,86,219,0.1); color: var(--plp-blue-dark); }
         .btn-edit { background: rgba(26,86,219,0.1); color: var(--plp-blue-dark); }
         .btn-delete { background: rgba(220,38,38,0.1); color: var(--danger); }
+        .btn-cancel { background: rgba(245,158,11,0.15); color: #92400e; }
 
         .btn-add { padding: 6px 14px; background: var(--plp-blue); color: var(--white); border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px; transition: var(--transition); font-family: 'Montserrat', sans-serif; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
         .btn-add:hover { background: var(--plp-blue-dark); }
@@ -659,6 +661,7 @@
                         <button class="filter-btn" onclick="filterOrders('Confirmée')">Confirmées</button>
                         <button class="filter-btn" onclick="filterOrders('Expédiée')">Expédiées</button>
                         <button class="filter-btn" onclick="filterOrders('Livrée')">Livrées</button>
+                        <button class="filter-btn" onclick="filterOrders('Annulée')">Annulées</button>
                     </div>
                     <div class="table-container"><table><thead><tr><th>N°</th><th>Client</th><th>Date</th><th>Montant</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="ordersTableBody"></tbody></table></div>
                 </div>
@@ -1227,7 +1230,8 @@
                 'En attente': 'status-en-attente',
                 'Confirmée': 'status-confirmee',
                 'Expédiée': 'status-expediee',
-                'Livrée': 'status-livree'
+                'Livrée': 'status-livree',
+                'Annulée': 'status-annulee'
             };
             return c[s] || 'status-en-attente';
         }
@@ -1603,16 +1607,22 @@
             for (var j = 0; j < orders.length; j++) {
                 var o = orders[j];
                 var guestTag = o.isGuest ? ' <span style="font-size:7px;color:var(--warning);">(invité)</span>' : '';
-                var actions = '<button class="btn-action btn-view" onclick="viewOrder(\'' + o.id + '\')"><i class="fas fa-eye"></i></button>';
+                var actions = '<button class="btn-action btn-view" onclick="viewOrder(\'' + o.id + '\')" title="Voir"><i class="fas fa-eye"></i></button>';
                 if (o.status === 'En attente') {
-                    actions += '<button class="btn-action btn-validate" onclick="updateOrderStatus(\'' + o.id + '\',\'Confirmée\')">✓</button>';
+                    actions += '<button class="btn-action btn-validate" onclick="updateOrderStatus(\'' + o.id + '\',\'Confirmée\')" title="Confirmer">✓</button>';
                 }
                 if (o.status === 'Confirmée') {
-                    actions += '<button class="btn-action btn-ship" onclick="updateOrderStatus(\'' + o.id + '\',\'Expédiée\')">🚚</button>';
+                    actions += '<button class="btn-action btn-ship" onclick="updateOrderStatus(\'' + o.id + '\',\'Expédiée\')" title="Expédier">🚚</button>';
                 }
                 if (o.status === 'Expédiée') {
-                    actions += '<button class="btn-action btn-deliver" onclick="updateOrderStatus(\'' + o.id + '\',\'Livrée\')">🏠</button>';
+                    actions += '<button class="btn-action btn-deliver" onclick="updateOrderStatus(\'' + o.id + '\',\'Livrée\')" title="Livrer">🏠</button>';
                 }
+                // Bouton Annuler (uniquement si la commande n'est pas déjà livrée ou annulée)
+                if (o.status !== 'Livrée' && o.status !== 'Annulée') {
+                    actions += '<button class="btn-action btn-cancel" onclick="cancelOrder(\'' + o.id + '\')" title="Annuler la commande"><i class="fas fa-ban"></i></button>';
+                }
+                // Bouton Supprimer (toujours disponible)
+                actions += '<button class="btn-action btn-delete" onclick="deleteOrder(\'' + o.id + '\')" title="Supprimer définitivement"><i class="fas fa-trash"></i></button>';
                 html += '<tr>' +
                     '<td><strong>' + o.id + '</strong></td>' +
                     '<td>' + o.customerName + guestTag + '</td>' +
@@ -1644,6 +1654,32 @@
             }).catch(function(err) {
                 console.error(err);
                 showToast('❌ Erreur lors de la mise à jour.', 'error');
+            });
+        }
+
+        function cancelOrder(oid) {
+            if (!confirm('Annuler la commande ' + oid + ' ?\n\nLe client sera notifié que sa commande est annulée.')) return;
+            updateSyncIndicator('syncing');
+            updateDocIn('orders', oid, {
+                status: 'Annulée',
+                cancelledAt: fbTimestamp(),
+                cancelledBy: 'admin'
+            }).then(function() {
+                showToast('🚫 Commande ' + oid + ' annulée.', 'success');
+            }).catch(function(err) {
+                console.error(err);
+                showToast('❌ Erreur lors de l\'annulation.', 'error');
+            });
+        }
+
+        function deleteOrder(oid) {
+            if (!confirm('⚠️ SUPPRESSION DÉFINITIVE ⚠️\n\nSupprimer la commande ' + oid + ' ?\n\nCette action est irréversible.')) return;
+            updateSyncIndicator('syncing');
+            deleteDocIn('orders', oid).then(function() {
+                showToast('🗑️ Commande ' + oid + ' supprimée définitivement.', 'success');
+            }).catch(function(err) {
+                console.error(err);
+                showToast('❌ Erreur lors de la suppression.', 'error');
             });
         }
 
@@ -1881,13 +1917,15 @@
         window.switchImageTab = switchImageTab;
         window.toggleSidebar = toggleSidebar;
         window.updateOrderStatus = updateOrderStatus;
+        window.cancelOrder = cancelOrder;
+        window.deleteOrder = deleteOrder;
         window.verifyOwner = verifyOwner;
         window.viewOrder = viewOrder;
         window.openConversation = openConversation;
         window.adminSendMessage = adminSendMessage;
         window.deleteConversation = deleteConversation;
 
-        console.log('🔥 Administration PLP Shop - Sync Firebase + Chat + Collections Femme/Bijoux');
+        console.log('🔥 Administration PLP Shop - Sync Firebase + Chat + Collections Femme/Bijoux + Annulation/Suppression commandes');
     </script>
 </body>
 </html>
