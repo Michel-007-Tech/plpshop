@@ -8,6 +8,7 @@ import {
     onAuthStateChanged,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
+    signInAnonymously,
     signOut
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
@@ -58,6 +59,22 @@ export function fbSignOut() {
 }
 export function fbOnAuthChange(callback) {
     return onAuthStateChanged(auth, callback);
+}
+
+/**
+ * Garantit qu'une identité Firebase Auth existe pour l'utilisateur courant,
+ * même s'il n'a pas de compte (mode invité). Ceci permet aux règles Firestore
+ * de savoir QUI écrit une commande ou un message de chat (request.auth.uid),
+ * au lieu de faire confiance à un identifiant "guest_..." généré côté client
+ * et donc falsifiable. Ne remplace jamais une session déjà connectée.
+ */
+export function fbEnsureAuth() {
+    if (auth.currentUser) {
+        return Promise.resolve(auth.currentUser);
+    }
+    return signInAnonymously(auth).then(function(cred) {
+        return cred.user;
+    });
 }
 
 // ---- FIRESTORE : collections (produits, commandes, utilisateurs) ----
