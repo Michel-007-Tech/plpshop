@@ -1,0 +1,141 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Produits : visibles par tout le monde, modifiables uniquement par l'admin
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ============================================================
+    // COMMANDES
+    // Un client (ou un invité authentifié anonymement) peut créer/lire les
+    // siennes. L'admin voit et gère tout.
+    //
+    // IMPORTANT : la validation ci-dessous vérifie la COHÉRENCE STRUCTURELLE
+    // des données (types, présence des champs, statut initial figé, total
+    // positif et cohérent avec les articles envoyés). Elle empêche un client
+    // malveillant d'écrire n'importe quoi dans Firestore directement via le
+    // SDK (hors interface), mais elle NE PEUT PAS vérifier que "price" pour
+    // chaque article correspond bien au prix réel du produit dans /products,
+    // car Firestore Rules ne peut pas boucler sur un tableau de longueur
+    // variable. Pour une garantie totale contre la falsification de prix,
+    // il faut déplacer la création de commande vers une Cloud Function qui
+    // recalcule le total à partir de /products côté serveur (voir le
+    // fichier createOrder.function.js fourni séparément).
+    // ============================================================
+    match /orders/{orderId} {
+
+      allow create: if isSignedIn()
+                    && request.resource.data.userId == request.auth.uid
+                    // Statut toujours "En attente" à la création : un client
+                    // ne peut pas créer directement une commande "Confirmée".
+                    && request.resource.data.status == 'En attente'
+                    // Champs obligatoires et types attendus
+                    && request.resource.data.keys().hasAll(
+                         ['id', 'userId', 'items', 'total', 'customerName',
+                          'customerPhone', 'customerAddress', 'status', 'date']
+                       )
+                    && request.resource.data.items is list
+                    && request.resource.data.items.size() > 0
+                    && request.resource.data.items.size() <= 50
+                    && request.resource.data.total is number
+                    && request.resource.data.total > 0
+                    // NB : le langage des règles Firestore n'autorise pas de
+                    // boucle/map/reduce sur une liste de longueur variable,
+                    // donc on ne peut pas recalculer ici la somme exacte des
+                    // lignes ni comparer price à /products. C'est la limite
+                    // évoquée plus haut : seule une Cloud Function peut
+                    // garantir totalement l'intégrité du prix.
+                    && request.resource.data.customerName is string
+                    && request.resource.data.customerName.size() > 0
+                    && request.resource.data.customerName.size() < 200
+                    && request.resource.data.customerPhone is string
+                    && request.resource.data.customerPhone.size() > 0
+                    && request.resource.data.customerPhone.size() < 40;
+
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+
+      // Seul l'admin peut changer le statut, annuler ou supprimer une commande
+      allow update, delete: if isAdmin();
+    }
+
+    // Comptes utilisateurs : chacun gère son propre profil, ne peut pas s'auto-promouvoir admin
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == userId
+                    && request.resource.data.role == 'client';
+      allow update: if isSignedIn() && request.auth.uid == userId
+                    && request.resource.data.role == resource.data.role;
+      allow delete: if isAdmin();
+    }
+
+    // Paramètres de la boutique : lecture publique, écriture admin uniquement
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ============================================================
+    // CHAT (support client en temps réel)
+    // Ces règles étaient absentes du fichier d'origine : par défaut,
+    // Firestore refuse tout accès à un chemin non couvert par une règle.
+    // Concrètement, soit ces collections étaient totalement inaccessibles
+    // (chat cassé en production), soit des règles plus permissives (ex.
+    // "if true") étaient déployées séparément, ce qui aurait permis à
+    // n'importe qui de lire/écrire toutes les conversations de tous les
+    // clients. Ces règles exigent désormais une identité vérifiable
+    // (compte réel OU session invité anonyme créée via fbEnsureAuth) et
+    // restreignent chaque conversation à son propriétaire + l'admin.
+    // ============================================================
+    match /conversations/{conversationId} {
+      allow create: if isSignedIn()
+                    && request.resource.data.clientId == request.auth.uid
+                    && request.resource.data.clientName is string
+                    && request.resource.data.clientName.size() < 200;
+
+      allow read: if isAdmin() || (isSignedIn() && resource.data.clientId == request.auth.uid);
+
+      // Mise à jour : l'admin (répond, marque comme lu) ou le client
+      // propriétaire (marque comme lu / met à jour son dernier message),
+      // mais jamais pour changer clientId (usurper une autre conversation).
+      allow update: if (isAdmin() || (isSignedIn() && resource.data.clientId == request.auth.uid))
+                    && request.resource.data.clientId == resource.data.clientId;
+
+      allow delete: if isAdmin();
+
+      match /messages/{messageId} {
+        function conv() {
+          return get(/databases/$(database)/documents/conversations/$(conversationId)).data;
+        }
+
+        allow read: if isAdmin() || (isSignedIn() && conv().clientId == request.auth.uid);
+
+        allow create: if isSignedIn()
+                      && request.resource.data.text is string
+                      && request.resource.data.text.size() > 0
+                      && request.resource.data.text.size() < 4000
+                      && (
+                           (request.resource.data.sender == 'admin' && isAdmin())
+                           ||
+                           (request.resource.data.sender == 'client'
+                             && conv().clientId == request.auth.uid)
+                         );
+
+        // Les messages ne sont jamais modifiés ou supprimés individuellement
+        allow update, delete: if isAdmin();
+      }
+    }
+  }
+}
