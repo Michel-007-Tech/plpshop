@@ -819,6 +819,7 @@
     <!-- Toast -->
     <div class="toast-admin" id="toastAdmin"></div>
 
+    <script src="invoice.js"></script>
     <script type="module">
         import {
             auth, db, fbSignIn, fbSignOut, fbOnAuthChange,
@@ -1608,6 +1609,9 @@
                 var o = orders[j];
                 var guestTag = o.isGuest ? ' <span style="font-size:7px;color:var(--warning);">(invité)</span>' : '';
                 var actions = '<button class="btn-action btn-view" onclick="viewOrder(\'' + o.id + '\')" title="Voir"><i class="fas fa-eye"></i></button>';
+                if (window.PLPInvoice && PLPInvoice.canInvoice(o)) {
+                    actions += '<button class="btn-action btn-view" onclick="openInvoice(\'' + o.id + '\')" title="Facture" style="color:#c9a84c;"><i class="fas fa-file-invoice"></i></button>';
+                }
                 if (o.status === 'En attente') {
                     actions += '<button class="btn-action btn-validate" onclick="updateOrderStatus(\'' + o.id + '\',\'Confirmée\')" title="Confirmer">✓</button>';
                 }
@@ -1681,6 +1685,13 @@
                 console.error(err);
                 showToast('❌ Erreur lors de la suppression.', 'error');
             });
+        }
+
+        function openInvoice(oid) {
+            var orders = getOrders();
+            for (var i = 0; i < orders.length; i++) {
+                if (orders[i].id === oid) { PLPInvoice.show(orders[i]); return; }
+            }
         }
 
         function viewOrder(oid) {
@@ -1921,6 +1932,7 @@
         window.deleteOrder = deleteOrder;
         window.verifyOwner = verifyOwner;
         window.viewOrder = viewOrder;
+        window.openInvoice = openInvoice;
         window.openConversation = openConversation;
         window.adminSendMessage = adminSendMessage;
         window.deleteConversation = deleteConversation;
