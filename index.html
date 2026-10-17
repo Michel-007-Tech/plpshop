@@ -438,6 +438,78 @@
             .chat-float { right: 16px; bottom: 80px; }
             .chat-widget { width: calc(100vw - 24px); height: 65vh; bottom: 70px; right: 12px; }
         }
+
+        /* ============================================================
+           ANIMATIONS PLP SHOP (ajout) — désactivées si l'utilisateur
+           a demandé "réduire les animations" dans son système.
+           ============================================================ */
+        @keyframes plpRevealUp { from { opacity: 0; transform: translateY(36px) scale(0.97); } to { opacity: 1; transform: none; } }
+        @keyframes plpHeroIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+        @keyframes plpHeroImg { from { opacity: 0; transform: translateX(60px) scale(0.95); } to { opacity: 1; transform: none; } }
+        @keyframes plpShimmer { to { background-position: 200% center; } }
+        @keyframes plpUnderline { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+        @keyframes plpBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes plpRing { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(1.7); opacity: 0; } }
+        @keyframes plpPop { 0% { transform: scale(1); } 40% { transform: scale(1.7) rotate(-8deg); } 100% { transform: scale(1); } }
+        @keyframes plpRipple { to { transform: scale(4); opacity: 0; } }
+        @keyframes plpCartIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: none; } }
+
+        /* Barre de progression du scroll */
+        .plp-progress { position: fixed; top: 0; left: 0; height: 3px; width: 100%; transform-origin: left; transform: scaleX(0); background: linear-gradient(90deg, var(--color-gold), #f3e3a1, var(--color-gold)); z-index: 10000; pointer-events: none; }
+
+        /* En-tête : ombre au scroll */
+        .header-main.plp-scrolled { box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+        .header-main .brand-link:hover .brand-icon { transform: rotate(360deg) scale(1.08); transition: transform 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+
+        /* Hero : entrée en cascade */
+        .plp-anim .hero-text .overline { animation: plpHeroIn 0.9s 0.1s cubic-bezier(0.2,0.7,0.2,1) backwards; }
+        .plp-anim .hero-text h1 { animation: plpHeroIn 0.9s 0.3s cubic-bezier(0.2,0.7,0.2,1) backwards; }
+        .plp-anim .hero-text p { animation: plpHeroIn 0.9s 0.5s cubic-bezier(0.2,0.7,0.2,1) backwards; }
+        .plp-anim .hero-actions { animation: plpHeroIn 0.9s 0.7s cubic-bezier(0.2,0.7,0.2,1) backwards; }
+        .plp-anim .hero-image { animation: plpHeroImg 1.1s 0.4s cubic-bezier(0.2,0.7,0.2,1) backwards; }
+        .plp-anim .hero-badge { animation: plpBob 4s ease-in-out infinite; }
+        .hero-text h1 em { background: linear-gradient(90deg, #c9a84c 0%, #f6e7b0 25%, #c9a84c 50%, #f6e7b0 75%, #c9a84c 100%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: plpShimmer 5s linear infinite; }
+        .hero-text h1 em::after { transform-origin: left; animation: plpUnderline 1s 1.1s cubic-bezier(0.2,0.7,0.2,1) backwards; }
+        .hero-bg, .hero-grid { will-change: transform; transform: translate3d(0, var(--plp-parallax, 0px), 0) scale(1.1); }
+
+        /* Apparition au scroll */
+        .plp-anim .plp-reveal:not(.plp-in) { opacity: 0; }
+        .plp-anim .plp-reveal.plp-in { animation: plpRevealUp 0.8s cubic-bezier(0.2,0.7,0.2,1) var(--plp-d, 0s) backwards; }
+
+        /* Cartes catégories */
+        .category-card::after, .product-card::after { content: ''; position: absolute; top: 0; left: -130%; width: 60%; height: 100%; background: linear-gradient(105deg, transparent, rgba(255,255,255,0.32), transparent); transform: skewX(-20deg); transition: left 0.9s ease; pointer-events: none; z-index: 5; }
+        .category-card:hover::after, .product-card:hover::after { left: 150%; }
+        .category-card .overlay h2 { transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+        .category-card:hover .overlay h2 { transform: translateY(-8px); }
+
+        /* Produits */
+        .product-card:hover .product-image { transform: scale(1.08); }
+        .product-card .badge { animation: plpBob 3s ease-in-out infinite; }
+        .btn-cart:active, .btn-add-modal:active, .btn:active { transform: scale(0.95); }
+
+        /* Icônes avantages */
+        .feature-icon { transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), background 0.4s; }
+        .feature-item:hover .feature-icon { transform: translateY(-4px) rotate(-10deg) scale(1.12); background: rgba(201,168,76,0.12); }
+
+        /* Effet "ripple" sur les boutons */
+        .btn, .btn-cart, .btn-add-modal, .btn-auth, .whatsapp-btn, .filter-tab { position: relative; overflow: hidden; }
+        .plp-ripple { position: absolute; border-radius: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; background: rgba(255,255,255,0.45); transform: scale(0); animation: plpRipple 0.6s ease-out forwards; pointer-events: none; }
+        .filter-tab .plp-ripple { background: rgba(201,168,76,0.35); }
+
+        /* Panier : badge + articles */
+        .btn-icon .badge.plp-pop { animation: plpPop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+
+        /* Boutons flottants : halo pulsé */
+        .whatsapp-float a, .chat-float-btn { position: relative; }
+        .whatsapp-float a::before, .chat-float-btn::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: currentColor; opacity: 0; z-index: -1; animation: plpRing 2.4s ease-out infinite; }
+        .whatsapp-float a::before { background: #25d366; }
+        .chat-float-btn::before { background: var(--color-gold); animation-delay: 1.2s; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
+            .plp-reveal { opacity: 1 !important; }
+            .hero-text h1 em { -webkit-text-fill-color: currentColor; background: none; }
+        }
     </style>
 </head>
 <body>
@@ -2003,6 +2075,86 @@
         window.getProductImage = getProductImage;
         window.toggleChatWidget = toggleChatWidget;
         window.sendChatMessage = sendChatMessage;
+    </script>
+    <script>
+    /* ===== ANIMATIONS PLP SHOP (ajout) ===== */
+    (function () {
+        if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var root = document.documentElement;
+        root.classList.add('plp-anim');
+
+        // 1. Barre de progression + ombre d'en-tête + parallaxe du hero
+        var bar = document.createElement('div');
+        bar.className = 'plp-progress';
+        document.body.appendChild(bar);
+        var header = document.getElementById('headerMain');
+        var ticking = false;
+        function onScroll() {
+            var y = window.scrollY || 0;
+            var max = document.documentElement.scrollHeight - window.innerHeight;
+            bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(y / max, 1) : 0) + ')';
+            if (header) header.classList.toggle('plp-scrolled', y > 30);
+            if (y < 900) root.style.setProperty('--plp-parallax', (y * 0.18).toFixed(1) + 'px');
+            ticking = false;
+        }
+        window.addEventListener('scroll', function () {
+            if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+        }, { passive: true });
+        onScroll();
+
+        // 2. Apparition au scroll (inclut les produits chargés dynamiquement)
+        var SELECTOR = '.category-card, .feature-item, .products-header, .product-card, .footer-col, .footer-bottom';
+        var io = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                if (e.isIntersecting) { e.target.classList.add('plp-in'); io.unobserve(e.target); }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' }) : null;
+
+        function register(nodes) {
+            var i = 0;
+            nodes.forEach(function (el) {
+                if (el.classList.contains('plp-reveal')) return;
+                el.classList.add('plp-reveal');
+                el.style.setProperty('--plp-d', ((i++ % 8) * 0.07).toFixed(2) + 's');
+                if (io) io.observe(el); else el.classList.add('plp-in');
+            });
+        }
+        function scan(scope) {
+            var found = [];
+            if (scope.matches && scope.matches(SELECTOR)) found.push(scope);
+            if (scope.querySelectorAll) scope.querySelectorAll(SELECTOR).forEach(function (n) { found.push(n); });
+            if (found.length) register(found);
+        }
+        scan(document);
+        new MutationObserver(function (muts) {
+            muts.forEach(function (m) {
+                m.addedNodes.forEach(function (n) { if (n.nodeType === 1) scan(n); });
+            });
+        }).observe(document.body, { childList: true, subtree: true });
+
+        // 3. Effet ripple sur les boutons
+        document.addEventListener('click', function (e) {
+            var btn = e.target.closest && e.target.closest('.btn, .btn-cart, .btn-add-modal, .btn-auth, .whatsapp-btn, .filter-tab');
+            if (!btn) return;
+            var r = btn.getBoundingClientRect();
+            var dot = document.createElement('span');
+            dot.className = 'plp-ripple';
+            dot.style.left = (e.clientX - r.left) + 'px';
+            dot.style.top = (e.clientY - r.top) + 'px';
+            btn.appendChild(dot);
+            setTimeout(function () { dot.remove(); }, 650);
+        });
+
+        // 4. Le badge du panier "saute" quand la quantité change
+        var count = document.getElementById('cartCount');
+        if (count) {
+            new MutationObserver(function () {
+                count.classList.remove('plp-pop');
+                void count.offsetWidth;
+                count.classList.add('plp-pop');
+            }).observe(count, { childList: true, characterData: true, subtree: true });
+        }
+    })();
     </script>
 </body>
 </html>
