@@ -1035,7 +1035,7 @@
         import {
             auth, db, fbSignIn, fbSignUp, fbSignOut, fbOnAuthChange, fbEnsureAuth,
             watchCollection, setDocIn, updateDocIn, deleteDocIn, getDocIn, fbTimestamp,
-            getOrCreateConversation, watchUserOrders, watchMessages, watchConversation, sendMessage, markConversationRead
+            getOrCreateConversation, watchMessages, watchConversation, sendMessage, markConversationRead
         } from './firebase-init.js';
 
         // ============================================================
@@ -2122,11 +2122,20 @@
             document.getElementById('ordersModal').classList.add('active');
             document.body.style.overflow = 'hidden';
             document.getElementById('ordersList').innerHTML = '<div class="orders-empty">Chargement…</div>';
-            if (myOrdersUnsub) myOrdersUnsub();
-            myOrdersUnsub = watchUserOrders(currentUser.uid, function(list) {
-                myOrdersCache = list;
-                renderMyOrders();
-            }, function() {
+            if (myOrdersUnsub) { myOrdersUnsub(); myOrdersUnsub = null; }
+            // Import dynamique : la page reste fonctionnelle même si firebase-init.js n'est pas à jour
+            import('./firebase-init.js').then(function(mod) {
+                if (typeof mod.watchUserOrders !== 'function') {
+                    document.getElementById('ordersList').innerHTML = '<div class="orders-empty">Mettez à jour le fichier firebase-init.js pour afficher vos commandes.</div>';
+                    return;
+                }
+                myOrdersUnsub = mod.watchUserOrders(currentUser.uid, function(list) {
+                    myOrdersCache = list;
+                    renderMyOrders();
+                }, function() {
+                    document.getElementById('ordersList').innerHTML = '<div class="orders-empty">Impossible de charger vos commandes.</div>';
+                });
+            }).catch(function() {
                 document.getElementById('ordersList').innerHTML = '<div class="orders-empty">Impossible de charger vos commandes.</div>';
             });
         }
@@ -2147,9 +2156,10 @@
             var list = myOrdersCache.slice().sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
             box.innerHTML = list.map(function(o) {
                 var qty = (o.items || []).reduce(function(s, i) { return s + (Number(i.qty) || 1); }, 0);
-                var cls = o.status === 'Annulée' ? 'cancel' : (PLPInvoice.canInvoice(o) ? 'ok' : '');
+                var canInv = !!(window.PLPInvoice && PLPInvoice.canInvoice(o));
+                var cls = o.status === 'Annulée' ? 'cancel' : (canInv ? 'ok' : '');
                 var action = '';
-                if (PLPInvoice.canInvoice(o)) {
+                if (canInv) {
                     action = '<button class="btn-invoice" onclick="openMyInvoice(\'' + escapeHtml(o.id) + '\')"><i class="fas fa-file-invoice"></i> Voir la facture</button>';
                 } else if (o.status === 'En attente') {
                     action = '<div class="invoice-hint">🧾 Facture disponible dès que votre paiement est confirmé.</div>';
