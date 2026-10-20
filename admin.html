@@ -328,6 +328,15 @@
             .modal-content { max-width: 95vw; padding: 0.8rem; }
             .collection-tab { padding: 6px 10px; font-size: 7px; }
         }
+
+        /* ===== ALERTE ACTIVITÉ (propriétaire) ===== */
+        .sales-alert { display: none; align-items: flex-start; gap: 14px; margin: 0 0 1.4rem; padding: 16px 20px; border-radius: 14px; background: linear-gradient(135deg, #fff4e5, #ffe3e3); border: 1px solid #f5b5a8; border-left: 6px solid #d9381e; color: #5a1a10; box-shadow: 0 6px 20px rgba(217,56,30,0.12); animation: salesAlertPulse 2.6s ease-in-out infinite; }
+        .sales-alert.show { display: flex; }
+        .sales-alert .sa-icon { font-size: 26px; color: #d9381e; line-height: 1; }
+        .sales-alert h4 { font-size: 15px; margin-bottom: 4px; color: #b3260f; }
+        .sales-alert p { font-size: 13px; line-height: 1.55; }
+        .sales-alert .sa-days { display: inline-block; margin-top: 8px; padding: 4px 12px; border-radius: 999px; background: #d9381e; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .5px; }
+        @keyframes salesAlertPulse { 0%,100% { box-shadow: 0 6px 20px rgba(217,56,30,0.12); } 50% { box-shadow: 0 6px 28px rgba(217,56,30,0.32); } }
     </style>
 </head>
 <body>
@@ -390,6 +399,16 @@
                     <div class="user-avatar">A</div>
                     <div><strong>Administrateur</strong></div>
                     <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+                </div>
+            </div>
+
+            <!-- ALERTE : aucune vente ce mois-ci -->
+            <div class="sales-alert" id="salesAlert" role="alert">
+                <div class="sa-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div>
+                    <h4>⚠️ Attention : aucune vente enregistrée ce mois-ci</h4>
+                    <p id="salesAlertText"></p>
+                    <span class="sa-days" id="salesAlertDays"></span>
                 </div>
             </div>
 
@@ -941,6 +960,7 @@
                 ordersCache = list;
                 loadOrders();
                 loadDashboard();
+                updateSalesAlert();
                 updateSyncIndicator('synced');
             }, function() { showToast('⚠️ Erreur de synchronisation des commandes.', 'error'); });
 
@@ -1586,6 +1606,43 @@
         // ============================================================
         // ORDERS
         // ============================================================
+        // ============================================================
+        // ALERTE PROPRIÉTAIRE : aucune vente / aucun chiffre d'affaires dans le mois
+        // Une vente = commande payée (Confirmée, Expédiée ou Livrée) du mois en cours.
+        // L'alerte disparaît dès qu'une vente est enregistrée.
+        // ============================================================
+        var SALES_ALERT_TEXT = "Aucune vente ni chiffre d'affaires n'a été enregistré ce mois-ci. " +
+            "Si aucune vente n'est réalisée avant la fin du mois, le site sera mis hors service, " +
+            "faute d'utilisation correcte de la plateforme comme convenu. " +
+            "Merci de publier vos produits, de les promouvoir et de traiter les commandes.";
+
+        function updateSalesAlert() {
+            var box = document.getElementById('salesAlert');
+            if (!box) return;
+            var now = new Date();
+            var paid = ['Confirmée', 'Expédiée', 'Livrée'];
+            var monthRevenue = 0;
+            var monthSales = 0;
+            ordersCache.forEach(function(o) {
+                var d = new Date(o.date);
+                if (paid.indexOf(o.status) !== -1 && d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()) {
+                    monthSales++;
+                    monthRevenue += Number(o.total) || 0;
+                }
+            });
+            if (monthSales > 0 && monthRevenue > 0) {
+                box.classList.remove('show');
+                return;
+            }
+            var lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            var daysLeft = Math.max(0, lastDay.getDate() - now.getDate());
+            document.getElementById('salesAlertText').textContent = SALES_ALERT_TEXT;
+            document.getElementById('salesAlertDays').textContent = daysLeft === 0
+                ? "⏳ Dernier jour du mois"
+                : "⏳ " + daysLeft + " jour" + (daysLeft > 1 ? "s" : "") + " restant" + (daysLeft > 1 ? "s" : "") + " avant la fin du mois";
+            box.classList.add('show');
+        }
+
         function getOrders() {
             return ordersCache;
         }
