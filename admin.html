@@ -337,6 +337,23 @@
         .sales-alert p { font-size: 13px; line-height: 1.55; }
         .sales-alert .sa-days { display: inline-block; margin-top: 8px; padding: 4px 12px; border-radius: 999px; background: #d9381e; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .5px; }
         @keyframes salesAlertPulse { 0%,100% { box-shadow: 0 6px 20px rgba(217,56,30,0.12); } 50% { box-shadow: 0 6px 28px rgba(217,56,30,0.32); } }
+
+        /* ===== HISTORIQUE DES COMMANDES ===== */
+        .hist-tools { display: flex; gap: 8px; margin: 0.6rem 0; flex-wrap: wrap; align-items: center; }
+        .hist-tools input { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid rgba(0,0,0,0.12); border-radius: 6px; font-size: 12px; }
+        .hist-reason { display: block; font-size: 9px; color: var(--danger); margin-top: 2px; }
+        .hist-overlay { position: fixed; inset: 0; z-index: 5000; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(6px); }
+        .hist-box { background: #fff; border-radius: 12px; width: 100%; max-width: 480px; max-height: 88vh; overflow-y: auto; padding: 1.3rem 1.4rem; }
+        .hist-box h3 { font-size: 15px; margin-bottom: 2px; }
+        .hist-box .hist-sub { font-size: 11px; color: #777; margin-bottom: 14px; }
+        .hist-timeline { position: relative; margin-left: 8px; padding-left: 20px; border-left: 2px solid #e5e5e5; }
+        .hist-event { position: relative; margin-bottom: 16px; }
+        .hist-event::before { content: ''; position: absolute; left: -27px; top: 3px; width: 12px; height: 12px; border-radius: 50%; background: #c9a84c; border: 2px solid #fff; box-shadow: 0 0 0 2px #c9a84c; }
+        .hist-event.cancel::before { background: #dc2626; box-shadow: 0 0 0 2px #dc2626; }
+        .hist-event.done::before { background: #1e9e57; box-shadow: 0 0 0 2px #1e9e57; }
+        .hist-event strong { font-size: 12px; display: block; }
+        .hist-event span { font-size: 11px; color: #777; display: block; }
+        .hist-close { margin-top: 6px; padding: 8px 18px; border: none; border-radius: 999px; background: #0a0a0a; color: #fff; cursor: pointer; font-size: 11px; }
     </style>
 </head>
 <body>
@@ -380,6 +397,7 @@
                 <li><a class="active" onclick="showSection('dashboard');closeSidebar()"><i class="fas fa-chart-line"></i> Dashboard</a></li>
                 <li><a onclick="showSection('products');closeSidebar()"><i class="fas fa-box"></i> Produits <span class="badge-count" id="productCount">0</span></a></li>
                 <li><a onclick="showSection('orders');closeSidebar()"><i class="fas fa-shopping-cart"></i> Commandes <span class="badge-count" id="pendingCount">0</span></a></li>
+                <li><a onclick="showSection('history');closeSidebar()"><i class="fas fa-history"></i> Historique</a></li>
                 <li><a onclick="showSection('messages');closeSidebar()"><i class="fas fa-comments"></i> Messages <span class="badge-count" id="unreadMessagesCount" style="display:none;">0</span></a></li>
                 <li><a onclick="showSection('users');closeSidebar()"><i class="fas fa-users"></i> Clients</a></li>
                 <li><a onclick="showSection('settings');closeSidebar()"><i class="fas fa-cog"></i> Paramètres</a></li>
@@ -686,6 +704,26 @@
                 </div>
             </div>
 
+            <!-- HISTORIQUE DES COMMANDES -->
+            <div id="historySection" class="content-section" style="display:none;">
+                <div class="stats-grid" id="histStats"></div>
+                <div class="data-section"><h3>🕘 Historique des commandes</h3>
+                    <div class="filter-buttons" id="histFilters">
+                        <button class="filter-btn active" onclick="filterHistory('all')">Toutes</button>
+                        <button class="filter-btn" onclick="filterHistory('Annulée')">Annulées</button>
+                        <button class="filter-btn" onclick="filterHistory('Livrée')">Livrées</button>
+                        <button class="filter-btn" onclick="filterHistory('Expédiée')">Expédiées</button>
+                        <button class="filter-btn" onclick="filterHistory('Confirmée')">Confirmées</button>
+                        <button class="filter-btn" onclick="filterHistory('En attente')">En attente</button>
+                    </div>
+                    <div class="hist-tools">
+                        <input type="search" id="histSearch" placeholder="🔍 Rechercher (n° commande, client, téléphone)…" oninput="loadHistory()">
+                        <button class="filter-btn" onclick="exportHistoryCSV()"><i class="fas fa-download"></i> Exporter CSV</button>
+                    </div>
+                    <div class="table-container"><table><thead><tr><th>N°</th><th>Client</th><th>Commandée le</th><th>Dernière mise à jour</th><th>Montant</th><th>Statut</th><th>Détails</th></tr></thead><tbody id="historyTableBody"></tbody></table></div>
+                </div>
+            </div>
+
             <!-- MESSAGES -->
             <div id="messagesSection" class="content-section" style="display:none;">
                 <div class="data-section" style="padding:0;overflow:hidden;">
@@ -961,6 +999,7 @@
                 loadOrders();
                 loadDashboard();
                 updateSalesAlert();
+                if (typeof loadHistory === 'function') loadHistory();
                 updateSyncIndicator('synced');
             }, function() { showToast('⚠️ Erreur de synchronisation des commandes.', 'error'); });
 
@@ -1222,6 +1261,7 @@
                 dashboard: 'dashboardSection',
                 products: 'productsSection',
                 orders: 'ordersSection',
+                history: 'historySection',
                 messages: 'messagesSection',
                 users: 'usersSection',
                 settings: 'settingsSection'
@@ -1233,6 +1273,7 @@
                 dashboard: '📊 Tableau de bord',
                 products: '📦 Gestion des produits',
                 orders: '🛒 Gestion des commandes',
+                history: '🕘 Historique des commandes',
                 messages: '💬 Messagerie',
                 users: '👥 Gestion des clients',
                 settings: '⚙️ Paramètres'
@@ -1243,6 +1284,7 @@
             if (s === 'dashboard') loadDashboard();
             if (s === 'products') filterCollection(currentCollection);
             if (s === 'orders') loadOrders();
+            if (s === 'history') loadHistory();
             if (s === 'users') loadUsers();
         }
 
@@ -1708,8 +1750,25 @@
             loadOrders();
         }
 
+        function findOrderById(oid) {
+            for (var i = 0; i < ordersCache.length; i++) {
+                if (ordersCache[i].id === oid) return ordersCache[i];
+            }
+            return null;
+        }
+
+        // Ajoute une ligne à l'historique de la commande (journal des changements de statut)
+        function buildHistory(order, status, extra) {
+            var h = (order && Array.isArray(order.history)) ? order.history.slice() : [];
+            var entry = { status: status, at: new Date().toISOString(), by: 'admin' };
+            if (extra) { for (var k in extra) { entry[k] = extra[k]; } }
+            h.push(entry);
+            return h;
+        }
+
         function updateOrderStatus(oid, status) {
-            updateDocIn('orders', oid, { status: status }).then(function() {
+            var order = findOrderById(oid);
+            updateDocIn('orders', oid, { status: status, history: buildHistory(order, status) }).then(function() {
                 showToast('✅ ' + oid + ' → "' + status + '"', 'success');
             }).catch(function(err) {
                 console.error(err);
@@ -1719,12 +1778,18 @@
 
         function cancelOrder(oid) {
             if (!confirm('Annuler la commande ' + oid + ' ?\n\nLe client sera notifié que sa commande est annulée.')) return;
+            var reason = prompt('Motif de l\'annulation (facultatif) :', '');
+            reason = reason ? reason.trim().slice(0, 200) : '';
+            var order = findOrderById(oid);
             updateSyncIndicator('syncing');
-            updateDocIn('orders', oid, {
+            var data = {
                 status: 'Annulée',
                 cancelledAt: fbTimestamp(),
-                cancelledBy: 'admin'
-            }).then(function() {
+                cancelledBy: 'admin',
+                history: buildHistory(order, 'Annulée', reason ? { reason: reason } : null)
+            };
+            if (reason) data.cancelReason = reason;
+            updateDocIn('orders', oid, data).then(function() {
                 showToast('🚫 Commande ' + oid + ' annulée.', 'success');
             }).catch(function(err) {
                 console.error(err);
@@ -1741,6 +1806,156 @@
                 console.error(err);
                 showToast('❌ Erreur lors de la suppression.', 'error');
             });
+        }
+
+        // ============================================================
+        // HISTORIQUE DES COMMANDES (toutes, y compris annulées)
+        // ============================================================
+        var histFilter = 'all';
+
+        function escH(s) {
+            return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+        function toDateObj(v) {
+            if (!v) return null;
+            if (typeof v.toDate === 'function') return v.toDate();
+            if (typeof v.seconds === 'number') return new Date(v.seconds * 1000);
+            var d = new Date(v);
+            return isNaN(d.getTime()) ? null : d;
+        }
+        function fmtDateTime(v) {
+            var d = toDateObj(v);
+            return d ? d.toLocaleDateString('fr-FR') + ' à ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '—';
+        }
+
+        // Liste chronologique des événements d'une commande
+        function getOrderEvents(o) {
+            var events = [{ status: 'En attente', label: 'Commande passée', at: o.date }];
+            var h = Array.isArray(o.history) ? o.history : [];
+            for (var i = 0; i < h.length; i++) {
+                events.push({ status: h[i].status, label: 'Statut : ' + h[i].status, at: h[i].at, reason: h[i].reason, by: h[i].by });
+            }
+            // Anciennes commandes (avant l'historique) : on reconstitue ce qu'on peut
+            if (!h.length && o.status !== 'En attente') {
+                events.push({
+                    status: o.status,
+                    label: 'Statut : ' + o.status,
+                    at: o.status === 'Annulée' ? o.cancelledAt : null,
+                    reason: o.cancelReason,
+                    by: o.cancelledBy
+                });
+            }
+            return events;
+        }
+
+        function lastUpdateOf(o) {
+            var ev = getOrderEvents(o);
+            for (var i = ev.length - 1; i >= 0; i--) {
+                if (toDateObj(ev[i].at)) return ev[i].at;
+            }
+            return o.date;
+        }
+
+        function getHistoryRows() {
+            var q = (document.getElementById('histSearch') || { value: '' }).value.trim().toLowerCase();
+            return ordersCache.filter(function(o) {
+                if (histFilter !== 'all' && o.status !== histFilter) return false;
+                if (!q) return true;
+                return (String(o.id) + ' ' + (o.customerName || '') + ' ' + (o.customerPhone || '')).toLowerCase().indexOf(q) !== -1;
+            });
+        }
+
+        function loadHistory() {
+            var tbody = document.getElementById('historyTableBody');
+            if (!tbody) return;
+
+            // Compteurs
+            var counts = { total: ordersCache.length, cancel: 0, done: 0, cancelAmount: 0 };
+            ordersCache.forEach(function(o) {
+                if (o.status === 'Annulée') { counts.cancel++; counts.cancelAmount += Number(o.total) || 0; }
+                if (o.status === 'Livrée') counts.done++;
+            });
+            var stats = document.getElementById('histStats');
+            if (stats) {
+                stats.innerHTML =
+                    '<div class="stat-card"><div class="stat-icon blue"><i class="fas fa-list"></i></div><h3>' + counts.total + '</h3><p>Commandes (toutes)</p></div>' +
+                    '<div class="stat-card"><div class="stat-icon emerald"><i class="fas fa-check-circle"></i></div><h3>' + counts.done + '</h3><p>Livrées</p></div>' +
+                    '<div class="stat-card"><div class="stat-icon blue" style="background:rgba(220,38,38,0.12);color:#dc2626;"><i class="fas fa-ban"></i></div><h3>' + counts.cancel + '</h3><p>Annulées</p></div>' +
+                    '<div class="stat-card"><div class="stat-icon blue" style="background:rgba(220,38,38,0.12);color:#dc2626;"><i class="fas fa-coins"></i></div><h3>' + formatFCFA(counts.cancelAmount) + '</h3><p>Montant annulé</p></div>';
+            }
+
+            var rows = getHistoryRows().slice().sort(function(x, y) {
+                return (toDateObj(lastUpdateOf(y)) || 0) - (toDateObj(lastUpdateOf(x)) || 0);
+            });
+            if (!rows.length) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;">Aucune commande dans l\'historique</td></tr>';
+                return;
+            }
+            tbody.innerHTML = rows.map(function(o) {
+                var reason = (o.status === 'Annulée' && o.cancelReason) ? '<span class="hist-reason">Motif : ' + escH(o.cancelReason) + '</span>' : '';
+                return '<tr>' +
+                    '<td><strong>' + escH(o.id) + '</strong></td>' +
+                    '<td>' + escH(o.customerName) + (o.isGuest ? ' <span style="font-size:7px;color:var(--warning);">(invité)</span>' : '') + '</td>' +
+                    '<td>' + escH(fmtDateTime(o.date)) + '</td>' +
+                    '<td>' + escH(fmtDateTime(lastUpdateOf(o))) + '</td>' +
+                    '<td><strong>' + formatFCFA(o.total) + '</strong></td>' +
+                    '<td><span class="status-badge ' + getStatusClass(o.status) + '">' + escH(o.status) + '</span>' + reason + '</td>' +
+                    '<td><button class="btn-action btn-view" title="Voir le détail" onclick="openOrderHistory(\'' + escH(o.id) + '\')"><i class="fas fa-history"></i></button></td>' +
+                    '</tr>';
+            }).join('');
+        }
+
+        function filterHistory(status) {
+            histFilter = status;
+            var btns = document.querySelectorAll('#histFilters .filter-btn');
+            for (var i = 0; i < btns.length; i++) {
+                var text = btns[i].textContent.trim();
+                var on = (status === 'all' && text === 'Toutes') || (status !== 'all' && text.indexOf(status.slice(0, 5)) === 0);
+                btns[i].classList.toggle('active', on);
+            }
+            loadHistory();
+        }
+
+        // Fenêtre : détail + chronologie d'une commande
+        function openOrderHistory(oid) {
+            var o = findOrderById(oid);
+            if (!o) return;
+            var items = (o.items || []).map(function(it) {
+                return escH(it.name) + ' × ' + (Number(it.qty) || 1);
+            }).join(', ');
+            var events = getOrderEvents(o).map(function(ev) {
+                var cls = ev.status === 'Annulée' ? 'cancel' : (ev.status === 'Livrée' ? 'done' : '');
+                return '<div class="hist-event ' + cls + '"><strong>' + escH(ev.label) + '</strong>' +
+                    '<span>' + (ev.at ? escH(fmtDateTime(ev.at)) : 'Date non enregistrée') + (ev.by ? ' · par ' + escH(ev.by) : '') + '</span>' +
+                    (ev.reason ? '<span style="color:#dc2626;">Motif : ' + escH(ev.reason) + '</span>' : '') + '</div>';
+            }).join('');
+
+            var ov = document.createElement('div');
+            ov.className = 'hist-overlay';
+            ov.innerHTML = '<div class="hist-box"><h3>Commande ' + escH(o.id) + '</h3>' +
+                '<div class="hist-sub">' + escH(o.customerName) + ' · ' + escH(o.customerPhone || '—') + '<br>' + escH(o.customerAddress || '') +
+                '<br>' + items + '<br><strong>' + formatFCFA(o.total) + '</strong></div>' +
+                '<div class="hist-timeline">' + events + '</div>' +
+                '<button class="hist-close" type="button">Fermer</button></div>';
+            ov.addEventListener('click', function(e) { if (e.target === ov || e.target.classList.contains('hist-close')) ov.remove(); });
+            document.body.appendChild(ov);
+        }
+
+        function exportHistoryCSV() {
+            var rows = getHistoryRows();
+            if (!rows.length) { showToast('Rien à exporter.', 'error'); return; }
+            function cell(v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; }
+            var lines = [['N°', 'Client', 'Téléphone', 'Commandée le', 'Dernière mise à jour', 'Montant (FCFA)', 'Statut', 'Motif annulation'].map(cell).join(';')];
+            rows.forEach(function(o) {
+                lines.push([o.id, o.customerName, o.customerPhone, fmtDateTime(o.date), fmtDateTime(lastUpdateOf(o)), o.total, o.status, o.cancelReason || ''].map(cell).join(';'));
+            });
+            var blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'historique-commandes-' + new Date().toISOString().slice(0, 10) + '.csv';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
         }
 
         function openInvoice(oid) {
@@ -1989,6 +2204,10 @@
         window.verifyOwner = verifyOwner;
         window.viewOrder = viewOrder;
         window.openInvoice = openInvoice;
+        window.loadHistory = loadHistory;
+        window.filterHistory = filterHistory;
+        window.openOrderHistory = openOrderHistory;
+        window.exportHistoryCSV = exportHistoryCSV;
         window.openConversation = openConversation;
         window.adminSendMessage = adminSendMessage;
         window.deleteConversation = deleteConversation;
