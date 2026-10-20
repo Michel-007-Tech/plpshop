@@ -406,7 +406,7 @@
             <div class="sales-alert" id="salesAlert" role="alert">
                 <div class="sa-icon"><i class="fas fa-exclamation-triangle"></i></div>
                 <div>
-                    <h4>⚠️ Attention : aucune vente enregistrée ce mois-ci</h4>
+                    <h4>⚠️ Attention : aucune vente enregistrée depuis la mise en fonction du site</h4>
                     <p id="salesAlertText"></p>
                     <span class="sa-days" id="salesAlertDays"></span>
                 </div>
@@ -1607,11 +1607,11 @@
         // ORDERS
         // ============================================================
         // ============================================================
-        // ALERTE PROPRIÉTAIRE : aucune vente / aucun chiffre d'affaires dans le mois
-        // Une vente = commande payée (Confirmée, Expédiée ou Livrée) du mois en cours.
+        // ALERTE PROPRIÉTAIRE : aucune vente / aucun chiffre d'affaires depuis la mise en fonction
+        // Une vente = commande payée (Confirmée, Expédiée ou Livrée), toutes dates confondues.
         // L'alerte disparaît dès qu'une vente est enregistrée.
         // ============================================================
-        var SALES_ALERT_TEXT = "Aucune vente ni chiffre d'affaires n'a été enregistré ce mois-ci. " +
+        var SALES_ALERT_TEXT = "Aucune vente ni chiffre d'affaires n'a été enregistré depuis la mise en fonction du site. " +
             "Si aucune vente n'est réalisée avant la fin du mois, le site sera mis hors service, " +
             "faute d'utilisation correcte de la plateforme comme convenu. " +
             "Merci de publier vos produits, de les promouvoir et de traiter les commandes.";
@@ -1621,16 +1621,15 @@
             if (!box) return;
             var now = new Date();
             var paid = ['Confirmée', 'Expédiée', 'Livrée'];
-            var monthRevenue = 0;
-            var monthSales = 0;
+            var totalRevenue = 0;
+            var totalSales = 0;
             ordersCache.forEach(function(o) {
-                var d = new Date(o.date);
-                if (paid.indexOf(o.status) !== -1 && d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()) {
-                    monthSales++;
-                    monthRevenue += Number(o.total) || 0;
+                if (paid.indexOf(o.status) !== -1) {
+                    totalSales++;
+                    totalRevenue += Number(o.total) || 0;
                 }
             });
-            if (monthSales > 0 && monthRevenue > 0) {
+            if (totalSales > 0 && totalRevenue > 0) {
                 box.classList.remove('show');
                 return;
             }
